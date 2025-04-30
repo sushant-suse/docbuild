@@ -1,0 +1,43 @@
+[build-system]
+requires = [
+  "setuptools>=77",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "docbuild"
+# version = "0.1.0"
+description = "Building SUSE documentation"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
+dependencies = []
+authors = [
+  {name = "Tom Schraitle", email = "toms@suse.de"},
+]
+maintainers = [
+  {name = "Tom Schraitle", email = "toms@suse.de"},
+]
+dynamic = ["version",]
+classifiers = [
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "Development Status :: 1 - Planning",
+    # "Development Status :: 2 - Pre-Alpha".
+    # "Development Status :: 1 - Alpha",
+    # "Development Status :: 4 - Beta",
+    # "Development Status :: 5 - Production/Stable",
+    # "Development Status :: 6 - Mature",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Documentation",
+    "Topic :: Software Development :: Documentation",
+]
+
+[tool.setuptools.dynamic]
+version = {attr = "docbuild.__about__.__version__"}
+
+[project.scripts]
+docbuild = "docbuild.cli:main"
