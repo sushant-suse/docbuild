@@ -12,7 +12,12 @@ readme = "README.md"
 requires-python = ">=3.12"
 license = "GPL-3.0-or-later"
 license-files = ["LICENSE"]
-dependencies = []
+dependencies = [
+    "click>=8.1.8",
+    "jinja2>=3.1.6",
+    "lxml>=5.4.0",
+    "rich>=14.0.0",
+]
 authors = [
   {name = "Tom Schraitle", email = "toms@suse.de"},
 ]
@@ -40,4 +45,4 @@ classifiers = [
 version = {attr = "docbuild.__about__.__version__"}
 
 [project.scripts]
-docbuild = "docbuild.cli:main"
+docbuild = "docbuild.cli:cli"
