@@ -41,8 +41,53 @@ classifiers = [
     "Topic :: Software Development :: Documentation",
 ]
 
-[tool.setuptools.dynamic]
-version = {attr = "docbuild.__about__.__version__"}
+[dependency-groups]
+typing = []
+formatting = [
+    "docformatter>=1.7.5",
+    "ruff>=0.11.7",
+]
+tests = [
+    "pytest>=8.3.5",
+    "pytest-cov>=6.1.1",
+]
+changelog = [
+    "towncrier>=24.8.0",
+]
+devel = [
+  {include-group = "typing"},
+  {include-group = "formatting"},
+  {include-group = "tests"},
+  {include-group = "changelog"},
+  # {include-group = "docs"},
+  # {include-group = "publish"},
+]
+
 
 [project.scripts]
 docbuild = "docbuild.cli:cli"
+
+
+# --- Setuptools configuration ---
+[tool.setuptools]
+package-dir = {"" = "src"}
+package-data = { "semver" = ["py.typed"] }
+include-package-data = true
+
+[tool.setuptools.dynamic]
+version = {attr = "docbuild.__about__.__version__"}
+
+
+[tool.setuptools.packages.find]
+# Is that still necessary?
+# list of folders that contain the packages (["."] by default)
+where = ["src"]
+
+
+[tool.docformatter]
+wrap-summaries = 80
+close-quotes-on-newline = true
+# make-summary-multi-line = true
+black = true
+pre-summary-newline = true
+recursive = true
