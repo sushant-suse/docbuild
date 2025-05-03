@@ -1,5 +1,20 @@
+import re
+
+DEFAULT_LANGS = ("en-us",)
 #: All languages supported by the documentation portal
-ALL_LANGUAGES = frozenset("de-de en-us es-es fr-fr ja-jp ko-kr pt-br zh-cn".split(" "))
+ALL_LANGUAGES = frozenset(
+    "de-de en-us es-es fr-fr ja-jp ko-kr pt-br zh-cn".split(" ")
+)
+
+#: The different server roles, including long and short spelling
+SERVER_ROLE = ("production", "prod", "p",
+               "testing", "test", "t",
+               "staging", "stage", "s",
+               )
+
+#: The different lifecycle states of a docset
+LIFECYCLES = ("supported", "beta", "hidden", "unsupported")
+
 
 #: All product acronyms and their names
 #: - key: /product/@productid
@@ -40,3 +55,35 @@ suse-edge SUSE Edge
 trd Technical Reference Documentation""".strip().splitlines()
 )
 }
+
+
+#: Regex for one or more languages, separated by comma:
+SINGLE_LANG_REGEX = re.compile(r"[a-z]{2}-[a-z]{2}")
+MULTIPLE_LANG_REGEX = re.compile(
+    rf"^({SINGLE_LANG_REGEX.pattern},)*"
+    rf"{SINGLE_LANG_REGEX.pattern}"
+)
+
+#: Regex for splitting a path into its components
+PRODUCT_REGEX = r"[\w\d_-]+"
+DOCSET_REGEX = r"[\w\d\._-]+"
+LIFECYCLES_REGEX = '|'.join(LIFECYCLES)
+HTML_REGEX = r"(?:single-)?html"
+DCFILE_REGEX = r"([\w\d_-]+)"
+
+#: Syntax for a single doctype
+#:
+#: <product-value|*>/<docset-value|*>@<lifecycle-value>/<lang-value1,lang-value2,...|*>
+#:
+#:
+SINGLE_DOCTYPE = (
+    rf"^/?(?P<product>{PRODUCT_REGEX}|\*)?"
+    rf"/(?P<docset>{DOCSET_REGEX}|\*)?"
+    rf"(?:@(?P<lifecycle>{LIFECYCLES_REGEX}|\*))?"
+    rf"(?:/(?P<lang>(?:{SINGLE_LANG_REGEX.pattern}(?:,{SINGLE_LANG_REGEX.pattern})*)|\*))?$"
+)
+
+
+SEPARATORS = r"[ ,;]+"
+RE_SEPARATORS = re.compile(SEPARATORS)
+SINGLE_DOCTYPE_REGEX = re.compile(SINGLE_DOCTYPE)
