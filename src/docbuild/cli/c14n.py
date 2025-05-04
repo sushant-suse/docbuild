@@ -1,8 +1,12 @@
+"""Apply canonicals
+
+"""
+
 import click
 from .context import DocBuildContext
 
 
-@click.command()
+@click.command(help=__doc__,)
 @click.pass_context
 def c14n(ctx):
     context: DocBuildContext = ctx.obj

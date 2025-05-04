@@ -7,6 +7,7 @@ from .c14n import c14n
 
 
 @click.group(
+    name="Subcommands",
     context_settings=dict(show_default=True),
 )
 @click.option("-v", "--verbose", count=True, help="Increase verbosity")
@@ -41,12 +42,12 @@ def cli(ctx,
         dry_run,
         debug
 ):
+    # ctx.max_content_width = 0  # Disable automatic line wrapping
     ctx.obj = DocBuildContext(
         verbosity=verbose,
         config=config,
         role=role,
         dry_run=dry_run,
-
         )
 
 
