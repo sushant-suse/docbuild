@@ -1,22 +1,22 @@
 import click
 
+from ..__about__ import __version__
 from ..constants import SERVER_ROLE
 from .context import DocBuildContext
 from .build import build
 from .c14n import c14n
 
-
 @click.group(
-    name="Subcommands",
+    name="docbuild",
     context_settings=dict(show_default=True,
                           help_option_names=["-h", "--help"]
                           ),
     help="Main CLI tool for document operations.",
 )
+@click.version_option(__version__,
+                      # package_name=,
+                      prog_name=__package__)
 @click.option("-v", "--verbose", count=True, help="Increase verbosity")
-# @click.option(
-#     "--version", is_flag=True, help="Show the version of the script and exit."
-# )
 @click.option(
     "--config",
     type=click.Path(exists=True, dir_okay=False),
