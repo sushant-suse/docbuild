@@ -2,9 +2,7 @@ import re
 
 DEFAULT_LANGS = ("en-us",)
 #: All languages supported by the documentation portal
-ALL_LANGUAGES = frozenset(
-    "de-de en-us es-es fr-fr ja-jp ko-kr pt-br zh-cn".split(" ")
-)
+ALLOWED_LANGUAGES = frozenset("de-de en-us es-es fr-fr ja-jp ko-kr pt-br zh-cn".split(" "))
 
 #: The different server roles, including long and short spelling
 SERVER_ROLE = ("production", "prod", "p",
@@ -13,8 +11,8 @@ SERVER_ROLE = ("production", "prod", "p",
                )
 
 #: The different lifecycle states of a docset
-LIFECYCLES = ("supported", "beta", "hidden", "unsupported")
-
+ALLOWED_LIFECYCLES = ("supported", "beta", "hidden", "unsupported")
+DEFAULT_LIFECYCLE = "supported"
 
 #: All product acronyms and their names
 #: - key: /product/@productid
@@ -55,6 +53,7 @@ suse-edge SUSE Edge
 trd Technical Reference Documentation""".strip().splitlines()
 )
 }
+ALLOWED_PRODUCTS = tuple([item for item in VALID_PRODUCTS])
 
 
 #: Regex for one or more languages, separated by comma:
@@ -65,9 +64,9 @@ MULTIPLE_LANG_REGEX = re.compile(
 )
 
 #: Regex for splitting a path into its components
-LIFECYCLES_STR = "|".join(LIFECYCLES)
+LIFECYCLES_STR = "|".join(ALLOWED_LIFECYCLES)
 
-PRODUCT_REGEX = re.compile(r"[\w\d_-]+")
+PRODUCT_REGEX = re.compile(rf"{'|'.join(VALID_PRODUCTS)}")
 DOCSET_REGEX = re.compile(r"[\w\d\._-]+")
 
 HTML_REGEX = r"(?:single-)?html"
@@ -79,8 +78,11 @@ DCFILE_REGEX = r"([\w\d_-]+)"
 #: <product-value|*>/<docset-value|*>@<lifecycle-value>/<lang-value1,lang-value2,...|*>
 #:
 #:
+
+PRODUCT_FULL_REGEX = re.compile(rf"(?P<product>{PRODUCT_REGEX.pattern}|\*)")
+
 PRODUCT_DOCSET = (
-    rf"^/?(?P<product>{PRODUCT_REGEX.pattern}|\*)?"
+    rf"^/(?P<product>{PRODUCT_REGEX.pattern}|\*)?"
     rf"/(?P<docset>{DOCSET_REGEX.pattern}|\*)?"
 )
 
@@ -89,7 +91,6 @@ SINGLE_DOCTYPE = (
     rf"(?:@(?P<lifecycle>{LIFECYCLES_STR}|\*))?"
     rf"(?:/(?P<lang>(?:{SINGLE_LANG_REGEX.pattern}(?:,{SINGLE_LANG_REGEX.pattern})*)|\*))?$"
 )
-
 
 
 SEPARATORS = r"[ :;]+"
