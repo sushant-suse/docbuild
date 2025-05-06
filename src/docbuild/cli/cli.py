@@ -51,6 +51,7 @@ def cli(ctx,
         config=config,
         role=role,
         dry_run=dry_run,
+        debug=debug,
         )
 
 
