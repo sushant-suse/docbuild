@@ -8,7 +8,10 @@ from .c14n import c14n
 
 @click.group(
     name="Subcommands",
-    context_settings=dict(show_default=True),
+    context_settings=dict(show_default=True,
+                          help_option_names=["-h", "--help"]
+                          ),
+    help="Main CLI tool for document operations.",
 )
 @click.option("-v", "--verbose", count=True, help="Increase verbosity")
 # @click.option(
