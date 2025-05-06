@@ -271,3 +271,11 @@ docs/_api
 
 # For node
 node_modules/
+
+## ---- Toms' own rules
+#
+# Ignore files in the project's root:                                                               
+/*.patch                                                                                            
+/*.diff                                                                                             
+/*.py
+/tmp
