@@ -31,10 +31,10 @@ class Doctype(BaseModel):
     # The regex contains non-capturing groups on purpose
     # This leads to None in the result if that group isn't matched
     _DOCTYPE_REGEX: ClassVar[Pattern] = re.compile(
-        r"^"                          # start
-        r"(?:([^/@]+|\*))?"           # optional product (group 1)
-        r"/(?:([^/@]+|\*))?"          # optional docset (group 2)
-        r"(?:@([a-z]+))?"             # optional lifecycle (group 3)
+        r"^"  # start
+        r"(?:([^/@]+|\*))?"  # optional product (group 1)
+        r"/(?:([^/@]+|\*))?"  # optional docset (group 2)
+        r"(?:@([a-z]+(?:[,|][a-z]+)*))?"  # optional lifecycle (group 3)
         r"/(\*|[\w-]+(?:,[\w-]+)*)$"  # required langs (group 4)
     )
 
@@ -58,9 +58,15 @@ class Doctype(BaseModel):
         return value if isinstance(value, Product) else Product(value)
 
     @field_validator("lifecycle", mode="before")
-    def coerce_lifecycle(cls, value: str|LifecycleFlag):
+    def coerce_lifecycle(cls, value: str):
         """Converts a string into a LifecycleFlag"""
-        return value if isinstance(value, LifecycleFlag) else LifecycleFlag[value]
+        if isinstance(value, str|LifecycleFlag):
+            # Delegate it to the LifecycleFlag to deal with
+            # the correct parsing and validation
+            lifecycles = LifecycleFlag.from_str(value)
+            return lifecycles
+        elif isinstance(value, LifecycleFlag):
+            return value
 
     @field_validator("langs", mode="before")
     def coerce_langs(cls, value: str|list[str]):
