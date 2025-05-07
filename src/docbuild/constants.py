@@ -67,11 +67,6 @@ MULTIPLE_LANG_REGEX = re.compile(
 #: Regex for splitting a path into its components
 LIFECYCLES_STR = "|".join(ALLOWED_LIFECYCLES)
 
-PRODUCT_REGEX = re.compile(rf"{'|'.join(VALID_PRODUCTS)}")
-DOCSET_REGEX = re.compile(r"[\w\d\._-]+")
-
-HTML_REGEX = r"(?:single-)?html"
-DCFILE_REGEX = r"([\w\d_-]+)"
 
 
 #: Syntax for a single doctype
@@ -80,21 +75,5 @@ DCFILE_REGEX = r"([\w\d_-]+)"
 #:
 #:
 
-PRODUCT_FULL_REGEX = re.compile(rf"(?P<product>{PRODUCT_REGEX.pattern}|\*)")
-
-PRODUCT_DOCSET = (
-    rf"^/(?P<product>{PRODUCT_REGEX.pattern}|\*)?"
-    rf"/(?P<docset>{DOCSET_REGEX.pattern}|\*)?"
-)
-
-SINGLE_DOCTYPE = (
-    rf"{PRODUCT_DOCSET}"
-    rf"(?:@(?P<lifecycle>{LIFECYCLES_STR}|\*))?"
-    rf"(?:/(?P<lang>(?:{SINGLE_LANG_REGEX.pattern}(?:,{SINGLE_LANG_REGEX.pattern})*)|\*))?$"
-)
-
-
 SEPARATORS = r"[ :;]+"
 RE_SEPARATORS = re.compile(SEPARATORS)
-SINGLE_DOCTYPE_REGEX = re.compile(SINGLE_DOCTYPE)
-PRODUCT_DOCSET_REGEX = re.compile(PRODUCT_DOCSET)
