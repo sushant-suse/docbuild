@@ -20,9 +20,10 @@ DEFAULT_LIFECYCLE = "supported"
 #
 # Use the following command to create the output below:
 # xmlstarlet sel -t -v '/product/@productid' -o ' ' -v '/product/name' -nl config.d/[a-z]*.xml
-VALID_PRODUCTS = {key.strip(): value.strip()
-                    for key, value in (line.split(" ", 1)
-                    for line in """appliance Appliance building
+VALID_PRODUCTS: dict[str, str] = {
+    key.strip(): value.strip()
+    for key, value in (line.split(" ", 1)
+    for line in """appliance Appliance building
 cloudnative Cloud Native
 compliance Compliance Documentation
 container Container Documentation
