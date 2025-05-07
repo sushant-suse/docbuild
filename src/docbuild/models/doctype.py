@@ -5,6 +5,7 @@ from typing import Sequence
 from pydantic import BaseModel, field_validator
 
 from ..constants import ALLOWED_LANGUAGES, ALLOWED_LIFECYCLES, ALLOWED_PRODUCTS
+from .language import LanguageCode
 
 
 #--- Enums
@@ -28,26 +29,26 @@ LifecycleFlag = Flag(
 
 # Language allows all the definied languages, but also "*" (=ALL).
 # We only define "ALL" as uppercase to denote a constant, the rest is lowercase.
-Language = StrEnum(
-    "Language",
-    # The dict is mapped like "de_de": "de-de"
-    {"ALL": "*"} | {item.replace("-", "_"): item
-                    for item in sorted(ALLOWED_LANGUAGES)},
-)
+# Language = StrEnum(
+#     "Language",
+#     # The dict is mapped like "de_de": "de-de"
+#     {"ALL": "*"} | {item.replace("-", "_"): item
+#                     for item in sorted(ALLOWED_LANGUAGES)},
+# )
 
 #--- Models
 class Doctype(BaseModel):
     product: Product  # type: ignore
     docset: str
     lifecycle: LifecycleFlag  # type: ignore
-    langs: list[Language]  # type: ignore
+    langs: list[LanguageCode]  # type: ignore
 
     def __str__(self) -> str:
-        langs_str = ",".join(lang.value for lang in self.langs)
+        langs_str = ",".join(lang.language for lang in self.langs)
         return f"{self.product.value}/{self.docset}@{self.lifecycle.value}/{langs_str}"
 
     def __repr__(self) -> str:
-        langs_str = ",".join(lang.value for lang in self.langs)
+        langs_str = ",".join(lang.language for lang in self.langs)
         return (
             f"{self.__class__.__name__}(product={self.product.value!r}, "
             f"docset={self.docset!r}, "
