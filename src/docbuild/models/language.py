@@ -1,18 +1,21 @@
 import re
 from typing import ClassVar
 
-from pydantic import BaseModel, Field, computed_field
-from pydantic.errors import PydanticErrorMixin
+from pydantic import BaseModel, computed_field
 from pydantic.functional_validators import field_validator
 
 from ..constants import ALLOWED_LANGUAGES
 
 
-class DocbuildModelValidationError(PydanticErrorMixin, ValueError):
-    def __str__(self) -> str:
-        return self.message  # Only return the message without the additional line
-
-
+# Old definition:
+# Language allows all the definied languages, but also "*" (=ALL).
+# We only define "ALL" as uppercase to denote a constant, the rest is lowercase.
+# Language = StrEnum(
+#     "Language",
+#     # The dict is mapped like "de_de": "de-de"
+#     {"ALL": "*"} | {item.replace("-", "_"): item
+#                     for item in sorted(ALLOWED_LANGUAGES)},
+# )
 
 class LanguageCode(BaseModel):
     """The language in the format language-country (all lowercase)
@@ -46,10 +49,9 @@ class LanguageCode(BaseModel):
         """Check if the passed language adheres to the allowed language"""
         value = value.replace("_", "-")
         if value not in cls.ALLOWED_LANGS:
-            raise DocbuildModelValidationError(
+            raise ValueError(
                 (f"Invalid language code '{value}'. "
                  f"Expected one of {', '.join(sorted(cls.ALLOWED_LANGS))}"),
-                code=None
             )
         return value
 
