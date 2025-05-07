@@ -23,22 +23,11 @@ Examples of the doctypes syntax:
   * "sles/*@unsupported/en-us"
 
 """
-import re
-
 import click
 from pydantic import ValidationError
 
 from .context import DocBuildContext
-from ..constants import (
-    DEFAULT_LIFECYCLE,
-)
-
 from ..models.doctype import Doctype
-
-# Pre-compile regex for efficiency
-DOCTYPE_REGEX = re.compile(
-    r"^([^/@]*|\*)?/([^/@]*|\*)?(?:@([a-z]+))?/(\*|[\w-]+(?:,[\w-]+)*)$"
-)
 
 
 # --- Callback Function ---
@@ -60,50 +49,29 @@ def validate_set(ctx: click.Context,
     if not doctypes:
         return []
 
-    click.echo(f"Our doctypes: {doctypes=}")
+    # click.echo(f"Our doctypes: {doctypes=}")
     for doctype_str in doctypes:
-        match = DOCTYPE_REGEX.match(doctype_str)
-
-        if not match:
-            raise click.BadParameter(
-                f"Invalid format for '{doctype_str}'.\n"
-                f"Expected format: 'PRODUCT/DOCSET@LIFECYCLE/LANGS'.\n"
-                f"LANGS can be 'lang1', 'lang1,lang2,...', or '*'.\n"
-                f"Examples: 'sles/docs@beta/en-us', '*/ug/de-de,fr-fr', '//en-us,ja-jp', '//de-de', '//*'.\n"
-                f"Use '*' for all products or docsets. Lifecycle (@...) is optional (defaults to '@{DEFAULT_LIFECYCLE}').",
-                ctx=ctx,
-                param=param,
-            )
-
-        # Extract matched groups
-        product_str, docset_str, lifecycle_str, langs_raw_str = match.groups()
-        if product_str is None:
-            product_str: str = "*"
-        if lifecycle_str is None:
-            lifecycle_str = "supported"
-        if langs_raw_str is None:
-            langs_raw_str = "en-us"
-
-        click.echo(f"""Received these values:
-    {product_str=}
-    {docset_str=}
-    {lifecycle_str=}
-    {langs_raw_str=}""")
 
         try:
-            doctype = Doctype(
-                product=product_str,  # type: ignore
-                docset=docset_str,
-                lifecycle=lifecycle_str,  # type: ignore
-                langs=langs_raw_str.split(","),  # type: ignore
-            )
+            doctype = Doctype.from_str(doctype_str)
+            click.echo(f"Got {doctype}")
             processed_data.append(doctype)
+
         except ValidationError as e:
-            click.secho(f"ERROR: Invalid input for {doctype_str!r}:", fg="red")
+            click.secho(
+                f"ERROR: Invalid input for {doctype_str!r}:", fg="red", err=True
+            )
             for idx, err in enumerate(e.errors(), 1):
                 loc = " → ".join(str(p) for p in err["loc"])
                 msg = err["msg"]
-                click.echo(f"  [{idx}] {loc}: {msg}")
+                click.echo(f"  [{idx}] {loc}: {msg}", err=True)
+            raise click.Abort()
+
+        except ValueError as e:
+            click.secho(
+                f"ERROR: Invalid input for {doctype_str!r}:", fg="red", err=True
+            )
+            click.echo(e, err=True)
             raise click.Abort()
 
     # --- Optional: Post-validation checks across all inputs ---
