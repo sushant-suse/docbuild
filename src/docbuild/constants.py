@@ -1,5 +1,7 @@
 import re
 
+APP_NAME = "docbuild"
+
 DEFAULT_LANGS = ("en-us",)
 #: All languages supported by the documentation portal
 ALLOWED_LANGUAGES = frozenset("de-de en-us es-es fr-fr ja-jp ko-kr pt-br zh-cn".split(" "))
@@ -77,3 +79,8 @@ LIFECYCLES_STR = "|".join(ALLOWED_LIFECYCLES)
 
 SEPARATORS = r"[ :;]+"
 RE_SEPARATORS = re.compile(SEPARATORS)
+
+#: Paths to the app's config
+APP_CONFIG_PATHS = (f"/etc/{APP_NAME}", f"~/.config/{APP_NAME}", "./")
+#: The filename of the app's config file without any paths
+APP_CONFIG_FILENAME = "config.toml"
