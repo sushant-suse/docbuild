@@ -1,10 +1,12 @@
 import click
 
 from ..__about__ import __version__
+from ..config import load_app_config
 from ..constants import SERVER_ROLE
 from .context import DocBuildContext
 from .build import build
 from .c14n import c14n
+
 
 @click.group(
     name="docbuild",
@@ -20,6 +22,7 @@ from .c14n import c14n
 @click.option(
     "--config",
     type=click.Path(exists=True, dir_okay=False),
+    default=None,
     help="Path to the config file.",
 )
 @click.option(
@@ -45,10 +48,14 @@ def cli(ctx,
         dry_run,
         debug
 ):
-    # ctx.max_content_width = 0  # Disable automatic line wrapping
+    if config:
+        cfg = load_app_config(config)
+    else:
+        cfg = load_app_config()
     ctx.obj = DocBuildContext(
         verbosity=verbose,
-        config=config,
+        configfile=config,
+        config=cfg,
         role=role,
         dry_run=dry_run,
         debug=debug,
