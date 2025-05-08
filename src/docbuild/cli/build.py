@@ -99,14 +99,27 @@ def validate_set(ctx: click.Context,
             click.echo(f"Got {doctype}")
             processed_data.append(doctype)
 
-        except ValidationError as e:
-            click.secho(
-                f"ERROR: Invalid input for {doctype_str!r}:", fg="red", err=True
-            )
-            for idx, err in enumerate(e.errors(), 1):
-                loc = " → ".join(str(p) for p in err["loc"])
-                msg = err["msg"]
-                click.echo(f"  [{idx}] {loc}: {msg}", err=True)
+        except ValidationError as err:
+            for error in err.errors():
+                field = error["loc"][0]
+                msg = error["msg"]
+                hint = Doctype.model_fields[field].description
+                example = Doctype.model_fields[field].examples
+                click.secho(
+                    f"ERROR in '{field}': {msg}",
+                    fg="red",
+                    err=True,
+                )
+                if hint:
+                    click.echo(f"  → Hint: {hint}")
+                if example:
+                    click.echo(f"  → Examples: {', '.join(example)}")
+                click.echo()
+
+            #for idx, err in enumerate(e.errors(), 1):
+            #    loc = " → ".join(str(p) for p in err["loc"])
+            #    msg = err["msg"]
+            #    click.echo(f"  [{idx}] {loc}: {msg}", err=True)
             raise click.Abort()
 
         except ValueError as e:

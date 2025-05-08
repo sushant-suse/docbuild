@@ -1,8 +1,8 @@
 import re
-from typing import ClassVar, Pattern, Self
+from typing import Annotated, ClassVar, Pattern, Self
 
 
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, Field
 
 from .language import LanguageCode
 from .lifecycle import LifecycleFlag
@@ -11,21 +11,45 @@ from .product import Product
 
 #--- Models
 class Doctype(BaseModel):
-    """A SUSE product
-
-    It contains the following attributes:
-
-    * a product: this is taken from the :class:`Product` class
-      which has a limited set of valid products, for example "sles"
-      All product names are lowercase acronyms.
-    * a docset: a specific release of a product (for example, "15-SP6")
-    * a lifecycle: the status of the Doctype, for example "supported"
-    * the langs: the languages for a Doctype
+    """A "doctype" that comprises of a product, docset,
+    lifecycle, and language.
     """
-    product: Product
-    docset: list[str]
-    lifecycle: LifecycleFlag
-    langs: list[LanguageCode]
+    product: Annotated[
+        Product,
+        Field(
+            title="A SUSE product",
+            description="A SUSE product is a lowercase acronym.",
+            examples=["sles", "smart"],
+        ),
+    ]
+    docset: Annotated[
+        list[str],
+        Field(
+            title="A specific 'docset' of a product",
+            description=(
+                "A specific release or version of a product. "
+                "Values can be combined using commas."
+            ),
+            examples=["15-SP6", "systems-management"],
+        ),
+    ]
+    lifecycle: Annotated[
+        LifecycleFlag,
+        Field(
+            title="The state of the Doctype",
+            description=(
+                "One or more lifecycle states that indicate the "
+                "support or development. "
+                "Values can be combined using commas or pipes."
+            ),
+            examples=["supported", "beta", "unsupported"],
+        ),
+    ]
+    langs: Annotated[list[LanguageCode], Field(
+        title="A language",
+        description="The natural language containing language and country",
+        examples=["en-us", "de-de"],
+    )]
 
     # Pre-compile regex for efficiency
     # The regex contains non-capturing groups on purpose
