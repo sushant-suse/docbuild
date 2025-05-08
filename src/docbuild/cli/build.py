@@ -46,13 +46,13 @@ def is_subsumed_by(specific: Doctype, general: Doctype) -> bool:
     :param general: the general Doctype
     :return: True, if specific is included in general, otherwise False
     """
-    return all(
-        g == "*" or s == g
-        for s, g in zip(
-            [specific.product, specific.docset, specific.lifecycle, specific.langs],
-            [general.product, general.docset, general.lifecycle, general.langs],
-        )
-    )
+
+    return all([
+        general.product == "*" or specific.product == general.product,
+        "*" in general.docset or set(specific.docset) == set(general.docset),
+        specific.lifecycle == general.lifecycle,
+        "*" in general.langs or specific.langs == general.langs,
+    ])
 
 
 def filter_redundant_doctypes(doctypes: list[Doctype]) -> list[Doctype]:
