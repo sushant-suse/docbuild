@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Literal
+from ..models.doctype import Doctype
 
 
 @dataclass
@@ -17,7 +18,7 @@ class DocBuildContext:
     config: str | None = None
 
     # --doctypes
-    doctypes: list[str] | None = None
+    doctypes: list[Doctype] | None = None
 
     # --debug
     debug: bool = False

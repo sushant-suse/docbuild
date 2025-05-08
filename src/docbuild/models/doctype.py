@@ -1,5 +1,5 @@
 import re
-from typing import cast, ClassVar, Pattern, Self
+from typing import ClassVar, Pattern, Self
 
 
 from pydantic import BaseModel, field_validator
