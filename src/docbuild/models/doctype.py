@@ -23,7 +23,7 @@ class Doctype(BaseModel):
     * the langs: the languages for a Doctype
     """
     product: Product
-    docset: str
+    docset: list[str]
     lifecycle: LifecycleFlag
     langs: list[LanguageCode]
 
@@ -40,13 +40,15 @@ class Doctype(BaseModel):
 
     def __str__(self) -> str:
         langs_str = ",".join(lang.language for lang in self.langs)
-        return f"{self.product.value}/{self.docset}@{self.lifecycle.name}/{langs_str}"
+        docset_str = ",".join(self.docset)
+        return f"{self.product.value}/{docset_str}@{self.lifecycle.name}/{langs_str}"
 
     def __repr__(self) -> str:
         langs_str = ",".join(lang.language for lang in self.langs)
+        docset_str = ",".join(self.docset)
         return (
             f"{self.__class__.__name__}(product={self.product.value!r}, "
-            f"docset={self.docset!r}, "
+            f"docset=[{docset_str}], "
             f"lifecycle={self.lifecycle.name!r}, "
             f"langs=[{langs_str}]"
             f")"
@@ -56,6 +58,13 @@ class Doctype(BaseModel):
     def coerce_product(cls, value: str|Product):
         """Converts a string into a valid Product"""
         return value if isinstance(value, Product) else Product(value)
+
+    @field_validator("docset", mode="before")
+    def coerce_docset(cls, value: str) -> list[str]:
+        """Converts a string into a list"""
+        #if not isinstance(value, str):
+        #    return value
+        return value.split(",")
 
     @field_validator("lifecycle", mode="before")
     def coerce_lifecycle(cls, value: str):
