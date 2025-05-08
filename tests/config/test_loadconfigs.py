@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 
 from docbuild.config import load_app_config
-from docbuild.constants import APP_CONFIG_PATHS, APP_CONFIG_FILENAME, APP_NAME
+from docbuild.constants import APP_CONFIG_FILENAME, APP_NAME
 
 
 
@@ -21,7 +21,7 @@ name = "localhost"
 port = 1234
 """
     )
-    config = load_app_config((configpath, ))
+    config = load_app_config(configpath)
     assert config
     assert config == {"server": {"name": "localhost", "port": 1234}}
 
@@ -51,7 +51,7 @@ name = "mydatabase"
 port = 4321""",
     )
 
-    config = load_app_config((system_path, user_path, local_path))
+    config = load_app_config(system_path, user_path, local_path)
     assert config == {
         "server": {"name": "localhost", "port": 4321},
         "db": {"name": "mydatabase"}
@@ -73,5 +73,5 @@ port = 1234
 """,
     )
 
-    config = load_app_config((system_path, missing_path))
+    config = load_app_config(system_path, missing_path)
     assert config == {"server": {"name": "localhost", "port": 1234}}
