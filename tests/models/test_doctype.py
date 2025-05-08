@@ -13,7 +13,7 @@ def test_valid_doctype():
                       lifecycle="supported",
                       langs=["en-us"])
     assert doctype.product == Product.sles
-    assert doctype.docset == "15-SP6"
+    assert doctype.docset == ["15-SP6"]
     assert doctype.lifecycle == LifecycleFlag.supported
     assert doctype.langs == [LanguageCode("en-us")]
 
@@ -31,7 +31,7 @@ def test_repr_in_doctype():
     )
     assert (
         repr(doctype)
-        == "Doctype(product='sles', docset='15-SP6', lifecycle='supported', langs=[en-us])"
+        == "Doctype(product='sles', docset=[15-SP6], lifecycle='supported', langs=[en-us])"
     )
 
 
@@ -54,35 +54,49 @@ def test_multiplestrings_langs_in_doctype():
     [
         (
             "sles/15-SP6/en-us",
-            (Product.sles, "15-SP6", LifecycleFlag.supported, [LanguageCode("en-us")]),
+            (
+                Product.sles,
+                ["15-SP6"],
+                LifecycleFlag.supported,
+                [LanguageCode("en-us")],
+            ),
+        ),
+        (
+            "sles/15-SP5,15-SP6/en-us",
+            (
+                Product.sles,
+                ["15-SP5", "15-SP6"],
+                LifecycleFlag.supported,
+                [LanguageCode("en-us")],
+            ),
         ),
         (
             "//en-us",
-            (Product.ALL, "*", LifecycleFlag.supported, [LanguageCode("en-us")]),
+            (Product.ALL, ["*"], LifecycleFlag.supported, [LanguageCode("en-us")]),
         ),
         (
             "*//en-us",
-            (Product.ALL, "*", LifecycleFlag.supported, [LanguageCode("en-us")]),
+            (Product.ALL, ["*"], LifecycleFlag.supported, [LanguageCode("en-us")]),
         ),
         (
             "/*/en-us",
-            (Product.ALL, "*", LifecycleFlag.supported, [LanguageCode("en-us")]),
+            (Product.ALL, ["*"], LifecycleFlag.supported, [LanguageCode("en-us")]),
         ),
         (
             "*/*/en-us",
-            (Product.ALL, "*", LifecycleFlag.supported, [LanguageCode("en-us")]),
+            (Product.ALL, ["*"], LifecycleFlag.supported, [LanguageCode("en-us")]),
         ),
         (
             "*/@beta/en-us",
-            (Product.ALL, "*", LifecycleFlag.beta, [LanguageCode("en-us")]),
+            (Product.ALL, ["*"], LifecycleFlag.beta, [LanguageCode("en-us")]),
         ),
         (
             "*/*@beta/en-us",
-            (Product.ALL, "*", LifecycleFlag.beta, [LanguageCode("en-us")]),
+            (Product.ALL, ["*"], LifecycleFlag.beta, [LanguageCode("en-us")]),
         ),
         (
             "sles/*@beta/en-us",
-            (Product.sles, "*", LifecycleFlag.beta, [LanguageCode("en-us")]),
+            (Product.sles, ["*"], LifecycleFlag.beta, [LanguageCode("en-us")]),
         ),
     ],
 )
