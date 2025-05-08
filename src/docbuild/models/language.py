@@ -1,7 +1,8 @@
 import re
-from typing import ClassVar
+from typing import Annotated, ClassVar
 
-from pydantic import BaseModel, computed_field
+from pydantic import BaseModel, computed_field, Field
+from pydantic.config import ConfigDict
 from pydantic.functional_validators import field_validator
 
 from ..constants import ALLOWED_LANGUAGES
@@ -24,30 +25,57 @@ class LanguageCode(BaseModel):
     Use "*" to denote "ALL" languages
     """
 
-    language: str
-    # = Field(
-    #     pattern=r"^\*|(([a-z]{2})-([a-z]{2}))$",
-    #     title="The language and country (or '*' for ALL)",
-    #     # default="en-us",
-    #     repr=True,
-    # )
+    language: Annotated[str, Field(
+        title="The natural language",
+        description=(
+            "A natural language in the format ll-cc, "
+            "whereas 'll' is the language and 'cc' the country "
+            "both in lowercase letters. "
+            "The special syntax '*' denotes every language."
+            ),
+        examples=["en-us", "de-de"],
+        frozen=True,
+    )]
+
+    model_config = ConfigDict(frozen=True)
 
     ALLOWED_LANGS: ClassVar[frozenset] = frozenset(
         {"*"} | ALLOWED_LANGUAGES
     )
 
     def __init__(self, language, **kwargs):
-        super().__init__(language=language, **kwargs)
+        super().__init__(language=language.replace("_", "-"), **kwargs)
         if language == "*":
             self._lang, self._country = ("*", "*")
         else:
             self._lang, self._country = re.split(r"[_-]", language)
 
+    def __str__(self):
+        """Implement str(self)"""
+        return f"{self.language}"
+
+    def __repr__(self):
+        """Implement repr(self)"""
+        return f"{self.__class__.__name__}(language={str(self)!r})"
+
+    def __eq__(self, other: "object|str|LanguageCode") -> bool:
+        """Implement self == other"""
+        if not isinstance(other, (LanguageCode, str)):
+            return NotImplemented
+
+        if isinstance(other, str):
+            return "*" in other or (self.language == other)
+
+        if "*" in (self.lang, other.lang):
+            # Comparing an "ALL" language with other should be treated as True
+            return True
+        return (self.lang, self.country) == (other.lang, other.country)
+
     @field_validator("language")
     @classmethod
     def validate_language(cls, value):
         """Check if the passed language adheres to the allowed language"""
-        value = value.replace("_", "-")
+        # value = value.replace("_", "-")
         if value not in cls.ALLOWED_LANGS:
             raise ValueError(
                 (f"Invalid language code '{value}'. "
