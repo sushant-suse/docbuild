@@ -9,7 +9,6 @@ from docbuild.constants import APP_CONFIG_FILENAME, APP_NAME
 
 def write_toml_file(path: Path, data: str):
     path.write_text(data)
-    # path.write_bytes(data)
 
 
 def test_load_app_single_config(tmp_path):
@@ -74,4 +73,20 @@ port = 1234
     )
 
     config = load_app_config(system_path, missing_path)
+    assert config == {"server": {"name": "localhost", "port": 1234}}
+
+
+def test_load_app_with_empty_args(tmp_path):
+    system_path = tmp_path / "etc" / APP_NAME
+
+    system_path.mkdir(parents=True)
+
+    write_toml_file(
+        system_path / APP_CONFIG_FILENAME,
+        """[server]
+name = "localhost"
+port = 1234
+""",
+    )
+    config = load_app_config(default=(system_path,))
     assert config == {"server": {"name": "localhost", "port": 1234}}

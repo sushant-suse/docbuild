@@ -146,13 +146,10 @@ def validate_set(ctx: click.Context,
     "doctypes",
     nargs=-1,
     callback=validate_set,
-    #help=(
-    #    "One or more of PRODUCT/DOCSET@LIFECYCLE/LANG triplets, separated by space, "
-    #    "comma or semicolon. PRODUCT and DOCSET can be '*' meaning 'all'."
-    #),
 )
 @click.pass_context
 def build(ctx, doctypes):
+    """Subcommand build"""
     context: DocBuildContext = ctx.obj
 
     click.echo(f"[BUILD] Verbosity: {context.verbosity}")
