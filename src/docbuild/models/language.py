@@ -1,3 +1,4 @@
+from functools import total_ordering
 import re
 from typing import Annotated, ClassVar
 
@@ -18,6 +19,7 @@ from ..constants import ALLOWED_LANGUAGES
 #                     for item in sorted(ALLOWED_LANGUAGES)},
 # )
 
+@total_ordering
 class LanguageCode(BaseModel):
     """The language in the format language-country (all lowercase)
 
@@ -59,17 +61,59 @@ class LanguageCode(BaseModel):
         return f"{self.__class__.__name__}(language={str(self)!r})"
 
     def __eq__(self, other: "object|str|LanguageCode") -> bool:
-        """Implement self == other"""
-        if not isinstance(other, (LanguageCode, str)):
+        """Implement self == other
+
+        The comparison does NOT break the principle of equality:
+        * Reflexive: a == b
+        * Symmetric: a == b <=> b == a
+        * Transitive: if a == b and b == c, then a == c
+
+        If you need to check for wildcar logic, use matches()
+        """
+        if isinstance(other, LanguageCode):
+            return self.language == other.language
+        elif isinstance(other, str):
+            return self.language == other
+        return NotImplemented
+
+    def __lt__(self, other: "object|str|LanguageCode") -> bool:
+        """Implement self < other"""
+        if isinstance(other, LanguageCode):
+            other_value = other.language
+        elif isinstance(other, str):
+            other_value = other
+        else:
             return NotImplemented
 
-        if isinstance(other, str):
-            return "*" in other or (self.language == other)
+        # "*" is always smallest
+        if self.language == "*":
+            return other_value != "*"
+        if other_value == "*":
+            return False
 
-        if "*" in (self.lang, other.lang):
-            # Comparing an "ALL" language with other should be treated as True
-            return True
-        return (self.lang, self.country) == (other.lang, other.country)
+        # Perform string comparison after handling the wildcard case
+        return self.language < other_value
+
+    def __hash__(self) -> int:
+        """Implement hash(self)
+
+        For using 'in sets' or as dict keys"""
+        return hash(self.language)
+
+    def matches(self, other: "LanguageCode | str") -> bool:
+        """Returns True if this LanguageCode matches the other, considering wildcards.
+
+        '*' matches any language
+
+        >>> LanguageCode("*").matches("de-de")
+        True
+        >>> LanguageCode("de-de").matches("*")
+        True
+        """
+        other_value = str(other)
+        return (self.language == "*" or
+                other_value == "*" or
+                self.language == other_value)
 
     @field_validator("language")
     @classmethod
