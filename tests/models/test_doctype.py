@@ -46,7 +46,7 @@ def test_multiplestrings_langs_in_doctype():
     doctype = Doctype(
         product="sles", docset="15-SP6", lifecycle="supported", langs="en-us,de-de"
     )
-    assert doctype.langs == [LanguageCode("en-us"), LanguageCode("de-de")]
+    assert doctype.langs == [LanguageCode("de-de"), LanguageCode("en-us"), ]
 
 
 @pytest.mark.parametrize(
@@ -112,3 +112,58 @@ def test_valid_string_from_string(string, expected):
 def test_invalid_string_from_string():
     with pytest.raises(ValueError):
         Doctype.from_str("nonsense")
+
+
+def test_compare_with_docstring():
+    dt1 = Doctype.from_str("sles/15-SP6/en-us")
+    dt2 = Doctype.from_str("sles/*/en-us")
+    assert dt1 in dt2
+
+
+def test_compare_with_docstring_and_invalid_type():
+    dt = Doctype.from_str("sles/15-SP6/en-us")
+    result = dt.__contains__("not-a-doctype") # type: ignore
+    assert result is NotImplemented
+
+
+def test_coerce_lifecycle_to_doctype():
+    dt1 = Doctype(product="sles",
+                  docset="15-SP5",
+                  lifecycle=LifecycleFlag.supported,
+                  langs="en-us")
+    assert dt1.lifecycle == LifecycleFlag.supported
+
+
+def test_sorted_docsets_in_doctype():
+    dt1 = Doctype.from_str("sles/15-SP6,15-SP2,16-SP0/en-us")
+    assert dt1.docset == ["15-SP2", "15-SP6", "16-SP0", ]
+
+
+def test_sorted_langs_in_doctype():
+    dt1 = Doctype.from_str("sles/15-SP6/en-us,zh-cn,de-de")
+    assert dt1.langs == [
+        "de-de",
+        "en-us",
+        "zh-cn",
+    ]
+
+
+def test_sorted_docsets_in_doctype_instantiation():
+    dt1 = Doctype(
+        product="sles",
+        docset=["16-SP0", "15-SP7"],
+        lifecycle=LifecycleFlag.supported,
+        langs="en-us",
+    )
+    assert dt1.docset == ["15-SP7", "16-SP0"]
+
+
+def test_sorted_langs_in_doctype_instantiation():
+    langs = ["en-us", "de-de"]
+    dt1 = Doctype(
+        product="sles",
+        docset="15-SP6",
+        lifecycle=LifecycleFlag.supported,
+        langs=langs,
+    )
+    assert dt1.langs == sorted([LanguageCode(lang) for lang in langs])

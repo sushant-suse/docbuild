@@ -28,7 +28,8 @@ class Doctype(BaseModel):
             title="A specific 'docset' of a product",
             description=(
                 "A specific release or version of a product. "
-                "Values can be combined using commas."
+                "Values can be combined using commas. "
+                "After validation, docsets are sorted."
             ),
             examples=["15-SP6", "systems-management"],
         ),
@@ -45,11 +46,17 @@ class Doctype(BaseModel):
             examples=["supported", "beta", "unsupported"],
         ),
     ]
-    langs: Annotated[list[LanguageCode], Field(
-        title="A language",
-        description="The natural language containing language and country",
-        examples=["en-us", "de-de"],
-    )]
+    langs: Annotated[
+        list[LanguageCode],
+        Field(
+            title="A language",
+            description=(
+                "The natural language containing language and country. "
+                "After validation, docsets are sorted"
+            ),
+            examples=["en-us", "de-de"],
+        )
+    ]
 
     # Pre-compile regex for efficiency
     # The regex contains non-capturing groups on purpose
@@ -68,6 +75,7 @@ class Doctype(BaseModel):
         return f"{self.product.value}/{docset_str}@{self.lifecycle.name}/{langs_str}"
 
     def __repr__(self) -> str:
+        """Implement repr(self)"""
         langs_str = ",".join(lang.language for lang in self.langs)
         docset_str = ",".join(self.docset)
         return (
@@ -78,22 +86,37 @@ class Doctype(BaseModel):
             f")"
         )
 
+    def __contains__(self, other: "Doctype") -> bool:
+        """Returns if bool(other in self)
+
+        Every part of a Doctype is compared element-wise.
+        """
+        if not isinstance(other, Doctype):
+            return NotImplemented
+
+        return all(
+            [
+                self.product == other.product or self.product == Product.ALL,
+                set(other.docset).issubset(self.docset) or "*" in self.docset,
+                other.lifecycle in self.lifecycle,
+                set(other.langs).issubset(self.langs) or "*" in self.langs,
+            ]
+        )
+
     @field_validator("product", mode="before")
     def coerce_product(cls, value: str|Product):
         """Converts a string into a valid Product"""
         return value if isinstance(value, Product) else Product(value)
 
     @field_validator("docset", mode="before")
-    def coerce_docset(cls, value: str) -> list[str]:
+    def coerce_docset(cls, value: str | list[str]) -> list[str]:
         """Converts a string into a list"""
-        #if not isinstance(value, str):
-        #    return value
-        return value.split(",")
+        return sorted(value.split(",")) if isinstance(value, str) else sorted(value)
 
     @field_validator("lifecycle", mode="before")
-    def coerce_lifecycle(cls, value: str):
+    def coerce_lifecycle(cls, value: str | LifecycleFlag):
         """Converts a string into a LifecycleFlag"""
-        if isinstance(value, str|LifecycleFlag):
+        if isinstance(value, str):
             # Delegate it to the LifecycleFlag to deal with
             # the correct parsing and validation
             lifecycles = LifecycleFlag.from_str(value)
@@ -102,13 +125,13 @@ class Doctype(BaseModel):
             return value
 
     @field_validator("langs", mode="before")
-    def coerce_langs(cls, value: str|list[str]):
+    def coerce_langs(cls, value: str|list[str|LanguageCode]):
         """Converts a comma-separated string or a list of strings into LanguageCode"""
         # Allow list of strings or Language enums
         if isinstance(value, str):
-            value = value.split(",")
-        return [lang if isinstance(lang, LanguageCode) else
-                LanguageCode(lang) for lang in value]
+            value = sorted(value.split(","))
+        return sorted([lang if isinstance(lang, LanguageCode) else
+                LanguageCode(lang) for lang in value])
 
     @classmethod
     def from_str(cls, doctype_str: str) -> Self:
@@ -116,7 +139,12 @@ class Doctype(BaseModel):
 
         The format has the following syntax::
 
-            [PRODUCT]/[DOCSET][@LIFECYCLE]/LANGS
+            [PRODUCT]/[DOCSETS][@LIFECYCLES]/LANGS
+
+        Plural means you can have one or more items:
+        * DOCSETS: separated by comma
+        * LIFECYCLES: separated by comma or pipe
+        * LANGS: separated by comma
         """
         match = cls._DOCTYPE_REGEX.match(doctype_str)
 
