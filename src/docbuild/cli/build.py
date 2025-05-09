@@ -29,30 +29,30 @@ Examples of the doctypes syntax:
     Same as the previous one, but with comma as the separator between
     the lifecycle states.
 """
+from collections import defaultdict
+from itertools import chain
+
 import click
 from pydantic import ValidationError
 
 from .context import DocBuildContext
 from ..models.doctype import Doctype
+from ..models.language import LanguageCode
 
 
-def is_subsumed_by(specific: Doctype, general: Doctype) -> bool:
-    """Compares two Doctype arguments if specific is contained in general
-
-    If specific is "sles/15-SP6/en-us" and general is "sles/*/en-us",
-    then the first would be included in the latter.
-
-    :param specific: the specific Doctype
-    :param general: the general Doctype
-    :return: True, if specific is included in general, otherwise False
+def is_subsumed_by(existing: Doctype, candidate: Doctype) -> bool:
     """
-
-    return all([
-        general.product == "*" or specific.product == general.product,
-        "*" in general.docset or set(specific.docset) == set(general.docset),
-        specific.lifecycle == general.lifecycle,
-        "*" in general.langs or specific.langs == general.langs,
-    ])
+    Checks if the candidate Doctype can be considered a more general version
+    of the existing Doctype.
+    """
+    # Implement logic to check subsumption between two doctypes
+    # This could compare `product`, `docset`, `langs`, etc.
+    return (
+        (candidate.product == "*" or existing.product == candidate.product)
+        and "*" in candidate.docset
+        or set(candidate.docset).issubset(existing.docset)
+        and "*" in candidate.langs
+    )
 
 
 def filter_redundant_doctypes(doctypes: list[Doctype]) -> list[Doctype]:
@@ -70,6 +70,67 @@ def filter_redundant_doctypes(doctypes: list[Doctype]) -> list[Doctype]:
         result.append(dt)
 
     return result
+
+
+def merge_doctypes(*doctypes: Doctype) -> list[Doctype]:
+    """Merge and deduplicate Doctypes intelligently."""
+
+    # Group by (product, lifecycle)
+    grouped: dict[tuple, list[Doctype]] = defaultdict(list)
+
+    for dt in doctypes:
+        key = (dt.product, tuple(sorted(dt.docset)), dt.lifecycle)
+        grouped[key].append(dt)
+
+    merged: list[Doctype] = []
+
+    for (product, docset, lifecycle), group in grouped.items():
+        # Union all langs
+        all_langs = set(chain.from_iterable(dt.langs for dt in group))
+        merged.append(
+            Doctype(
+                product=product,
+                docset=list(docset),
+                lifecycle=lifecycle.name,
+                langs=all_langs,
+            )
+        )
+
+    return merged
+
+    for (product, lifecycle), group in grouped.items():
+        merged_docsets = set()
+        merged_langs = set()
+
+        for dt in group:
+            merged_docsets.update(dt.docset)
+            merged_langs.update(dt.langs)
+
+        # If "*" is present, collapse to wildcard
+        docset = sorted(["*"] if "*" in merged_docsets else sorted(merged_docsets))
+        langs = (
+            ["*"]
+            if LanguageCode("*") in merged_langs
+            else sorted(merged_langs, key=str)
+        )
+
+        result.append(
+            Doctype(
+                product=product,
+                docset=docset,
+                lifecycle=lifecycle.name,
+                langs=langs,
+            )
+        )
+
+    return result
+
+
+    """
+    Merge the provided doctypes while ensuring that we keep distinct entries
+    """
+    result = []
+    )
 
 
 # --- Callback Function ---
@@ -134,7 +195,8 @@ def validate_set(ctx: click.Context,
     # For now, we'll just validate each argument independently.
     # You might handle the combination logic in the main command.
 
-    processed_data = filter_redundant_doctypes(processed_data)
+    # processed_data = filter_redundant_doctypes(processed_data)
+    processed_data = merge_doctypes(*processed_data)
     ctx.obj.doctypes = processed_data
     return processed_data
 
