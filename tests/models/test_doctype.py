@@ -114,17 +114,46 @@ def test_invalid_string_from_string():
         Doctype.from_str("nonsense")
 
 
-def test_compare_with_docstring():
+def test_contains_with_doctypes():
     dt1 = Doctype.from_str("sles/15-SP6/en-us")
     dt2 = Doctype.from_str("sles/*/en-us")
     assert dt1 in dt2
 
 
-def test_compare_with_docstring_and_invalid_type():
+def test_eq_with_doctypes():
+    dt1 = Doctype.from_str("sles/15-SP6/en-us")
+    dt2 = Doctype.from_str("sles/15-SP6/en-us")
+    assert dt1 == dt2
+
+
+def test_lt_with_doctypes():
+    dt1 = Doctype.from_str("sles/15-SP6/en-us")
+    dt2 = Doctype.from_str("sles/15-SP7/en-us")
+    assert dt1 < dt2
+
+
+def test_compare_with_doctype_and_invalid_type():
     dt = Doctype.from_str("sles/15-SP6/en-us")
     result = dt.__contains__("not-a-doctype") # type: ignore
     assert result is NotImplemented
 
+
+def test_eq_with_doctype_and_invalid_type():
+    dt = Doctype.from_str("sles/15-SP6/en-us")
+    result = dt.__eq__("not-a-doctype")  # type: ignore
+    assert result == NotImplemented
+
+
+def test_lt_with_doctype_and_invalid_type():
+    dt = Doctype.from_str("sles/15-SP6/en-us")
+    result = dt.__lt__("not-a-doctype")  # type: ignore
+    assert result == NotImplemented
+
+
+def test_hash_with_doctype():
+    dt1 = Doctype.from_str("sles/15-SP6/en-us")
+    dt2 = Doctype.from_str("sles/15-SP6/en-us")
+    assert hash(dt1) == hash(dt2)
 
 def test_coerce_lifecycle_to_doctype():
     dt1 = Doctype(product="sles",

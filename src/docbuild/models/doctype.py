@@ -69,6 +69,31 @@ class Doctype(BaseModel):
         r"/(\*|[\w-]+(?:,[\w-]+)*)$"  # required langs (group 4)
     )
 
+    # dunder methods
+    def __eq__(self, other: object) -> bool:
+        """Check equality with another Doctype, ignoring order in docset/langs."""
+        if not isinstance(other, Doctype):
+            return NotImplemented
+
+        return (
+            self.product == other.product and
+            self.lifecycle == other.lifecycle and
+            set(self.docset) == set(other.docset) and
+            set(self.langs) == set(other.langs)
+        )
+
+    def __lt__(self, other: object) -> bool:
+        if not isinstance(other, Doctype):
+            return NotImplemented
+
+        # Define sort priority: product > lifecycle > docset > langs
+        return (
+            self.product,
+            self.lifecycle,
+            self.docset, # we rely on a sorted docset
+            self.langs,  # we rely on sorted languages
+        ) < (other.product, other.lifecycle, other.docset, other.langs)
+
     def __str__(self) -> str:
         langs_str = ",".join(lang.language for lang in self.langs)
         docset_str = ",".join(self.docset)
@@ -103,6 +128,17 @@ class Doctype(BaseModel):
             ]
         )
 
+    def __hash__(self) -> int:
+        """Implement hash(self)"""
+        return hash(
+            (
+                self.product,
+                tuple(self.docset),
+                tuple(self.langs),
+            )
+        )
+
+    # Validators
     @field_validator("product", mode="before")
     def coerce_product(cls, value: str|Product):
         """Converts a string into a valid Product"""
