@@ -22,9 +22,9 @@ def test_wildcard_language():
 
 
 def test_unknown_language():
-    with pytest.raises(ValidationError) as exc:
+    with pytest.raises(ValidationError, match="validation error"):
         LanguageCode("de-ch")
-    assert "validation error" in str(exc.value)
+    # assert "validation error" in str(exc.value)
 
 
 def test_language_with_underscore():
@@ -37,6 +37,7 @@ def test_language_with_underscore():
 def test_str_in_language():
     thelang = LanguageCode("de_de")
     assert str(thelang) == "de-de"
+
 
 def test_repr_in_language():
     thelang = LanguageCode("de-de")
@@ -115,6 +116,17 @@ def test_compare_two_langs():
     lang1 = LanguageCode("de-de")
     lang2 = "en-us"
     assert lang1 < lang2
+
+def test_compare_two_langs_with_asterisk():
+    lang1 = LanguageCode("*")
+    lang2 = LanguageCode("de-de")
+    assert lang1 < lang2
+
+
+def test_compare_two_asterisks():
+    lang1 = LanguageCode("*")
+    lang2 = LanguageCode("*")
+    assert not lang1 < lang2
 
 
 def test_compare_with_unknown_type():

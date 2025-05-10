@@ -77,7 +77,13 @@ class LanguageCode(BaseModel):
         return NotImplemented
 
     def __lt__(self, other: "object|str|LanguageCode") -> bool:
-        """Implement self < other"""
+        """Implement self < other
+
+        Special properties:
+        - "*" is always the "smallest" language
+        - If self contains "*" and the other not, return True
+        - If self and the other contains "*", return False
+        """
         if isinstance(other, LanguageCode):
             other_value = other.language
         elif isinstance(other, str):
