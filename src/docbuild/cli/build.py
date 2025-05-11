@@ -72,65 +72,73 @@ def filter_redundant_doctypes(doctypes: list[Doctype]) -> list[Doctype]:
     return result
 
 
-def merge_doctypes(*doctypes: Doctype) -> list[Doctype]:
-    """Merge and deduplicate Doctypes intelligently."""
 
-    # Group by (product, lifecycle)
-    grouped: dict[tuple, list[Doctype]] = defaultdict(list)
+def merge_doctypes(*doctypes: Doctype) -> list[Doctype]:
+    """
+    Merge a list of Doctype instances into a minimal set of non-redundant entries.
+
+    Strategy:
+    - For each incoming Doctype `dt`, compare it to the existing `result` list.
+    - If any existing Doctype can absorb `dt`, extend its docset/langs as needed.
+    - If `dt` can absorb an existing one, replace it.
+    - Otherwise, keep both.
+    - Wildcards ("*") are treated as "contains all" and will cause merging if overlap exists.
+    - `docset` and `langs` are always sorted lists.
+
+    Examples:
+        'foo/1,2/en-us' + 'foo/*/en-us' => 'foo/*/en-us'
+        'foo/1,2/*' + 'foo/1/en-us' => 'foo/1,2/*'
+    """
+    result: list[Doctype] = []
+    merged: bool = False
 
     for dt in doctypes:
-        key = (dt.product, tuple(sorted(dt.docset)), dt.lifecycle)
-        grouped[key].append(dt)
+        merged = False
+        new_result = []
 
-    merged: list[Doctype] = []
+        for existing in result:
+            if dt.product != existing.product:
+                new_result.append(existing)
+                continue
 
-    for (product, docset, lifecycle), group in grouped.items():
-        # Union all langs
-        all_langs = set(chain.from_iterable(dt.langs for dt in group))
-        merged.append(
-            Doctype(
-                product=product,
-                docset=list(docset),
-                lifecycle=lifecycle.name,
-                langs=all_langs,
+            # Check for docset/langs intersection (wildcards count as overlap)
+            docset_overlap = (
+                "*" in dt.docset
+                or "*" in existing.docset
+                or bool(set(dt.docset) & set(existing.docset))
             )
-        )
-
-    return merged
-
-    for (product, lifecycle), group in grouped.items():
-        merged_docsets = set()
-        merged_langs = set()
-
-        for dt in group:
-            merged_docsets.update(dt.docset)
-            merged_langs.update(dt.langs)
-
-        # If "*" is present, collapse to wildcard
-        docset = sorted(["*"] if "*" in merged_docsets else sorted(merged_docsets))
-        langs = (
-            ["*"]
-            if LanguageCode("*") in merged_langs
-            else sorted(merged_langs, key=str)
-        )
-
-        result.append(
-            Doctype(
-                product=product,
-                docset=docset,
-                lifecycle=lifecycle.name,
-                langs=langs,
+            langs_overlap = (
+                "*" in dt.langs
+                or "*" in existing.langs
+                or bool(set(dt.langs) & set(existing.langs))
             )
-        )
+
+            if docset_overlap and langs_overlap:
+                # Merge the entries
+                docset = (
+                    ["*"]
+                    if "*" in dt.docset or "*" in existing.docset
+                    else sorted(set(dt.docset + existing.docset))
+                )
+                langs = (
+                    ["*"]
+                    if "*" in dt.langs or "*" in existing.langs
+                    else sorted(set(dt.langs + existing.langs))
+                )
+                dt = Doctype(
+                    product=dt.product,
+                    docset=docset,
+                    langs=langs,
+                    lifecycle=dt.lifecycle,  # assuming same lifecycle
+                )
+                merged = True
+            else:
+                new_result.append(existing)
+
+        new_result.append(dt)
+        result = new_result
 
     return result
-
-
-    """
-    Merge the provided doctypes while ensuring that we keep distinct entries
-    """
-    result = []
-    )
 
 
 # --- Callback Function ---
