@@ -33,3 +33,16 @@ def test_cli_load_app_config_called(tmp_path):
         mock_loader.assert_called_once()
         assert str(mock_loader.call_args[0][0]) == "config.toml"
         assert "mocked" in result.output
+
+
+def test_main_entry_point(tmp_path):
+    import subprocess
+    import sys
+    result = subprocess.run(
+        [sys.executable, "-m", "docbuild.cli.cli", "--help"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+    assert result.returncode == 0
+    assert "Main CLI tool" in result.stdout
