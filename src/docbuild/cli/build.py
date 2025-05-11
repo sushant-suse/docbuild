@@ -142,8 +142,8 @@ def merge_doctypes(*doctypes: Doctype) -> list[Doctype]:
 
 
 # --- Callback Function ---
-def validate_set(ctx: click.Context,
-    param: click.Parameter,
+def validate_doctypes(ctx: click.Context,
+    param: click.Parameter|None,
     doctypes: tuple[str, ...]
 ) -> list[Doctype]:
     """
@@ -189,14 +189,14 @@ def validate_set(ctx: click.Context,
             #    loc = " → ".join(str(p) for p in err["loc"])
             #    msg = err["msg"]
             #    click.echo(f"  [{idx}] {loc}: {msg}", err=True)
-            raise click.Abort()
+            raise click.Abort(err)
 
-        except ValueError as e:
-            click.secho(
-                f"ERROR: Invalid input for {doctype_str!r}:", fg="red", err=True
-            )
-            click.echo(e, err=True)
-            raise click.Abort()
+        #except ValueError as e:
+        #    click.secho(
+        #        f"ERROR: Invalid input for {doctype_str!r}:", fg="red", err=True
+        #    )
+        #    click.echo(e, err=True)
+        #    raise click.Abort()
 
     # --- Optional: Post-validation checks across all inputs ---
     # This part becomes more complex if you need to merge/check '*' against lists.
@@ -215,7 +215,7 @@ def validate_set(ctx: click.Context,
 @click.argument(
     "doctypes",
     nargs=-1,
-    callback=validate_set,
+    callback=validate_doctypes,
 )
 @click.pass_context
 def build(ctx, doctypes):
