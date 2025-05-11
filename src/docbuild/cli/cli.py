@@ -1,3 +1,6 @@
+from pathlib import Path
+from typing import cast
+
 import click
 
 from ..__about__ import __version__
@@ -6,6 +9,7 @@ from ..constants import SERVER_ROLE
 from .context import DocBuildContext
 from .build import build
 from .c14n import c14n
+from .test import test
 
 
 @click.group(
@@ -21,7 +25,8 @@ from .c14n import c14n
 @click.option("-v", "--verbose", count=True, help="Increase verbosity")
 @click.option(
     "--config",
-    type=click.Path(exists=True, dir_okay=False),
+    # Convert a click.Path -> pathlib.Path object via path_type:
+    type=click.Path(exists=True, dir_okay=False, path_type=Path),
     default=None,
     help="Path to the config file.",
 )
@@ -43,27 +48,26 @@ from .c14n import c14n
 @click.pass_context
 def cli(ctx,
         verbose,
-        config,
+        config: Path,
         role,
         dry_run,
         debug
 ):
-    if config:
-        cfg = load_app_config(config)
-    else:
-        cfg = load_app_config()
+    # config:Path = cast(Path, config)
+    cfg = load_app_config(config) if config is not None else load_app_config()
     ctx.obj = DocBuildContext(
         verbosity=verbose,
-        configfile=config,
+        configfile=str(config),
         config=cfg,
         role=role,
         dry_run=dry_run,
         debug=debug,
-        )
+    )
 
 
 cli.add_command(build)
 cli.add_command(c14n)
+cli.add_command(test)
 
 
 if __name__ == "__main__":

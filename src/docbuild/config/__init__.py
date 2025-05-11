@@ -18,7 +18,6 @@ def load_app_config(*paths: str|Path, default:tuple[str|Path, ...]=APP_CONFIG_PA
     configs = []
     if not paths:
         paths = default
-    print(">>> load_app_config:", paths)
     for path in paths:
         path = Path(path).expanduser().resolve() / APP_CONFIG_FILENAME
 
