@@ -72,7 +72,6 @@ def filter_redundant_doctypes(doctypes: list[Doctype]) -> list[Doctype]:
     return result
 
 
-
 def merge_doctypes(*doctypes: Doctype) -> list[Doctype]:
     """
     Merge a list of Doctype instances into a minimal set of non-redundant entries.
@@ -139,6 +138,25 @@ def merge_doctypes(*doctypes: Doctype) -> list[Doctype]:
         result = new_result
 
     return result
+
+
+def merge_two_doctypes(dt1: Doctype, dt2: Doctype
+                       ) -> list[Doctype] | list[Doctype, Doctype]:
+    if (dt1.product != dt2.product or
+        dt1.lifecycle != dt2.lifecycle or
+        dt1.langs != dt2.langs
+        ):
+        return [dt1, dt2]
+
+    # The two doctypes distinguish solely on their docsets. Let's merge
+    # them
+    return [Doctype(
+        product=dt1.product,
+        docset=list(set(dt1.docset + dt2.docset)),
+        lifecycle=dt1.lifecycle,
+        langs=dt1.langs
+        )
+    ]
 
 
 # --- Callback Function ---
