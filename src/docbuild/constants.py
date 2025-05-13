@@ -7,10 +7,11 @@ DEFAULT_LANGS = ("en-us",)
 ALLOWED_LANGUAGES = frozenset("de-de en-us es-es fr-fr ja-jp ko-kr pt-br zh-cn".split(" "))
 
 #: The different server roles, including long and short spelling
-SERVER_ROLE = ("production", "prod", "p",
-               "testing", "test", "t",
-               "staging", "stage", "s",
-               )
+SERVER_ROLES = (
+    "production", "prod", "p",
+    "testing", "test", "t",
+    "staging", "stage", "s",
+)
 
 #: The different lifecycle states of a docset
 ALLOWED_LIFECYCLES = ("supported", "beta", "hidden", "unsupported")

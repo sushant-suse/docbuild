@@ -5,7 +5,7 @@ import click
 
 from ..__about__ import __version__
 from ..config.app import load_app_config
-from ..constants import SERVER_ROLE
+from ..constants import SERVER_ROLES
 from .context import DocBuildContext
 from .build import build
 from .c14n import c14n
@@ -34,7 +34,7 @@ from .test import test
     "-r",
     "--role",
     type=click.Choice(
-        SERVER_ROLE,
+        SERVER_ROLES,
         case_sensitive=False,
     ),
     # required=True,
