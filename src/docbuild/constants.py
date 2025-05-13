@@ -12,6 +12,10 @@ SERVER_ROLES = (
     "testing", "test", "t",
     "staging", "stage", "s",
 )
+#: Group every 3 items from the SERVER_ROLES tuple into tuples of 3:
+SERVER_GROUP_ROLES = tuple(
+    SERVER_ROLES[i : i + 3] for i in range(0, len(SERVER_ROLES), 3)
+)
 
 #: The different lifecycle states of a docset
 ALLOWED_LIFECYCLES = ("supported", "beta", "hidden", "unsupported")
@@ -83,5 +87,9 @@ RE_SEPARATORS = re.compile(SEPARATORS)
 
 #: Paths to the app's config
 APP_CONFIG_PATHS = (f"/etc/{APP_NAME}", f"~/.config/{APP_NAME}", "./")
+
 #: The filename of the app's config file without any paths
 APP_CONFIG_FILENAME = "config.toml"
+
+#: THe filename of the env's config file without any paths
+ENV_CONFIG_FILENAME = "env.{role}.toml"
