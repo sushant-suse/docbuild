@@ -1,5 +1,7 @@
 import re
 
+from .models.env.serverroles import ServerRole
+
 APP_NAME = "docbuild"
 
 DEFAULT_LANGS = ("en-us",)
@@ -7,11 +9,14 @@ DEFAULT_LANGS = ("en-us",)
 ALLOWED_LANGUAGES = frozenset("de-de en-us es-es fr-fr ja-jp ko-kr pt-br zh-cn".split(" "))
 
 #: The different server roles, including long and short spelling
-SERVER_ROLES = (
-    "production", "prod", "p",
-    "testing", "test", "t",
-    "staging", "stage", "s",
-)
+#: see docbuild.models.env.serverrole.ServerRole
+# SERVER_ROLES = (
+#     "production", "prod", "p",
+#     "testing", "test", "t",
+#     "staging", "stage", "s",
+# )
+SERVER_ROLES = tuple([role.value for role in ServerRole])
+
 #: Group every 3 items from the SERVER_ROLES tuple into tuples of 3:
 SERVER_GROUP_ROLES = tuple(
     SERVER_ROLES[i : i + 3] for i in range(0, len(SERVER_ROLES), 3)
