@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from docbuild.config import load_app_config
+from docbuild.config.app import load_app_config
 from docbuild.constants import APP_CONFIG_FILENAME, APP_NAME
 
 

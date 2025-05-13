@@ -4,7 +4,7 @@ from typing import cast
 import click
 
 from ..__about__ import __version__
-from ..config import load_app_config
+from ..config.app import load_app_config
 from ..constants import SERVER_ROLE
 from .context import DocBuildContext
 from .build import build
