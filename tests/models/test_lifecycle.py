@@ -16,6 +16,15 @@ def test_unknown_lifecycle():
     instance = getattr(LifecycleFlag, "unknown")
     assert instance.name == "unknown"
     assert instance.value == 0
+    instance = LifecycleFlag(0)
+    assert instance.name == "unknown"
+
+
+def test_lifecycle_flag_from_str_with_empty_string():
+    instance = LifecycleFlag.from_str("")
+    assert instance == LifecycleFlag.UNKNOWN
+    assert instance.name == "unknown"
+    assert instance.value == 0
 
 
 def all_non_empty_combinations(items):

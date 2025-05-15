@@ -17,10 +17,14 @@ class BaseLifecycleFlag(Flag):
         * "supported|beta" => <LifecycleFlag.supported|beta: 6>
         """
         try:
-            parts = [cls[v.strip()] for v in SEPARATOR.split(value)]
-            flag = parts[0]
-            for p in parts[1:]:
-                flag |= p
+            flag = cls(0)  # Start with an empty flag
+            parts = [v.strip() for v in SEPARATOR.split(value) if v.strip()]
+            if not parts:
+                return cls(0)
+
+            for part_name in parts:
+                flag |= cls[part_name]
+
             return flag
 
         except KeyError as e:
@@ -55,7 +59,7 @@ class BaseLifecycleFlag(Flag):
 # TODO: Should we allow weird combination like "supported|unsupported"
 LifecycleFlag = BaseLifecycleFlag(
     "LifecycleFlag",
-    {"unknown": 0}
+    {"unknown": 0, "UNKNOWN": 0}
     | {item: (2 << index) for index, item in enumerate(ALLOWED_LIFECYCLES, 0)},
 )
 
