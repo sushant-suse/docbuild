@@ -1,0 +1,73 @@
+import tomllib as toml
+from pathlib import Path
+
+import pytest
+
+from docbuild.config.app import APP_CONFIG_FILENAME, load_app_config
+
+
+def test_load_single_config_file(tmp_path):
+    config_toml = """
+    [server]
+    name = "demo"
+    """
+
+    config_dir = tmp_path / "config1"
+    config_dir.mkdir()
+    config_file = config_dir / APP_CONFIG_FILENAME
+    config_file.write_text(config_toml)
+
+    result = load_app_config(config_dir)
+    assert result == {"server": {"name": "demo"}}
+
+
+def test_load_multiple_config_files(tmp_path):
+    config1 = """
+    [server]
+    name = "demo"
+    debug = false
+    """
+    config2 = """
+    [server]
+    debug = true
+    version = "1.0"
+    """
+
+    dir1 = tmp_path / "dir1"
+    dir2 = tmp_path / "dir2"
+    dir1.mkdir()
+    dir2.mkdir()
+
+    (dir1 / APP_CONFIG_FILENAME).write_text(config1)
+    (dir2 / APP_CONFIG_FILENAME).write_text(config2)
+
+    result = load_app_config(dir1, dir2)
+    assert result == {"server": {"name": "demo", "debug": True, "version": "1.0"}}
+
+
+def test_load_app_config_with_default_paths(tmp_path, monkeypatch):
+    # Prepare a default config directory with the expected config file
+    default_dir = tmp_path / "default_config"
+    default_dir.mkdir()
+    config_toml = """
+    [app]
+    default_used = true
+    """
+    (default_dir / APP_CONFIG_FILENAME).write_text(config_toml)
+
+    # Call load_app_config without any paths: it should use the default
+    result = load_app_config(default=tuple([default_dir]))
+
+    assert result == {"app": {"default_used": True}}
+
+
+
+def test_when_path_does_not_exist(tmp_path):
+    # Create a non-existing path
+    non_existing_path = tmp_path / "non_existing_dir"
+
+    # Call load_app_config with the non-existing path
+    result = load_app_config(non_existing_path)
+
+    # The result should be an empty dictionary
+    assert result == {}

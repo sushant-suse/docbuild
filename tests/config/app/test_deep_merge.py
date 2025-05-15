@@ -11,9 +11,9 @@ from docbuild.config.merge import deep_merge
         # 2
         ([{"a": 1, "b": 2}, {"a": 2}], {"a": 2, "b": 2}),
         # 3
-        ([{"db": {"host": "localhost", "port": 1234}},
-          {"db": {"port": 5432}}],
-          {'db': {'host': 'localhost', 'port': 5432}}
+        (
+            [{"db": {"host": "localhost", "port": 1234}}, {"db": {"port": 5432}}],
+            {"db": {"host": "localhost", "port": 5432}},
         ),
         #
     ],

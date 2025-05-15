@@ -1,6 +1,8 @@
 import re
+from typing import Pattern
 
 from .models.env.serverroles import ServerRole
+
 
 APP_NAME = "docbuild"
 
@@ -98,3 +100,6 @@ APP_CONFIG_FILENAME = "config.toml"
 
 #: THe filename of the env's config file without any paths
 ENV_CONFIG_FILENAME = "env.{role}.toml"
+
+#: Compiled regex for standard placeholders like {name}
+PLACEHOLDER_PATTERN: Pattern[str] = re.compile(r"(?<!\{)\{([^{}]+)\}(?!\})")
