@@ -9,6 +9,7 @@ from ..constants import SERVER_ROLES
 from .context import DocBuildContext
 from .build import build
 from .c14n import c14n
+from .showconfig import showconfig
 from .test import test
 
 
@@ -68,6 +69,7 @@ def cli(ctx,
 cli.add_command(build)
 cli.add_command(c14n)
 cli.add_command(test)
+cli.add_command(showconfig)
 
 
 if __name__ == "__main__":
