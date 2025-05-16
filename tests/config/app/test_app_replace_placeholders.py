@@ -180,3 +180,9 @@ def test_chained_cross_section_placeholders():
     result = replace_placeholders(config)
 
     assert result["build"]["output"] == "/tmp/docbuild/doc-example-com/deliverable/"
+
+
+def test_escaped_braces():
+    config = {"section": {"key": "This is a literal brace: {{not_a_placeholder}}"}}
+    result = replace_placeholders(config)
+    assert result["section"]["key"] == "This is a literal brace: {not_a_placeholder}"

@@ -111,7 +111,8 @@ def replace_placeholders(config: Container,
             count += 1
         if count == max_recursion_depth:
             raise ValueError(f"Too many nested placeholder expansions in key '{key}'.")
-        return s
+        # Finally, replace escaped braces with literal ones
+        return s.replace("{{", "{").replace("}}", "}")
 
     stack: list[StackItem] = [(config, key, config) for key in config]
 
