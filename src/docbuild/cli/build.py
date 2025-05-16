@@ -238,6 +238,7 @@ def validate_doctypes(ctx: click.Context,
 @click.pass_context
 def build(ctx, doctypes):
     """Subcommand build"""
+    ctx.ensure_object(DocBuildContext)
     context: DocBuildContext = ctx.obj
 
     click.echo(f"[BUILD] Verbosity: {context.verbosity}")

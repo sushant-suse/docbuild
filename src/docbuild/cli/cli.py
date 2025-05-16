@@ -54,6 +54,7 @@ def cli(ctx,
         dry_run,
         debug
 ):
+    ctx.ensure_object(DocBuildContext)
     # config:Path = cast(Path, config)
     cfg = load_app_config(config) if config is not None else load_app_config()
     ctx.obj = DocBuildContext(
