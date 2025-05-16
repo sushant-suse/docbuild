@@ -8,23 +8,16 @@ from ..constants import ALLOWED_PRODUCTS
 
 class StrEnumMeta(EnumMeta):
     def __getitem__(cls, key: str) -> Any:
-        # Allow both dash and underscore access
-        candidates = [key.replace("-", "_"),
-                      key.replace("_", "-")
-                      ]
-        # print(">>> StrEnumMeta.__getitem__", cls, key, candidates)
-        for cand in candidates:
-            try:
-                return super().__getitem__(cand)
-            except KeyError:
-                continue
-
-        # If no match, raise a clear error
-        allowed = ", ".join(repr(k.value) for k in cls)
-        raise KeyError(
-            f"{key!r} is not a valid member name for {cls.__name__}. "
-            f"Allowed values: {allowed}"
-        )
+        """Access enum members using attribute-style names with underscores."""
+        candidate = key.replace("-", "_")
+        try:
+            return super().__getitem__(candidate)
+        except KeyError:
+            allowed = ", ".join(repr(member.value) for member in cls)
+            raise KeyError(
+                f"{key!r} is not a valid member name or value for {cls.__name__}. "
+                f"Allowed (values): {allowed}"
+            )
 
 class BaseProductEnum(StrEnum, metaclass=StrEnumMeta):
     @classmethod
