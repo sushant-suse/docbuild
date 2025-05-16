@@ -1,6 +1,7 @@
+from collections.abc import Sequence
 from pathlib import Path
 import re
-from typing import Any
+from typing import Any, TypedDict
 
 # import tomlkit as toml
 import tomllib as toml
@@ -16,6 +17,13 @@ from .merge import deep_merge
 # Type aliases
 Container = dict[str, Any] | list[Any]
 StackItem = tuple[Container, str | int, Container]
+# class StackItem(TypedDict):
+#     container: Container
+#     section_key: str
+#     parent: Container | Sequence[Any] | None
+
+#: Maximum recursion depth for placeholder replacement
+MAX_RECURSION_DEPTH: int = 10
 
 
 def load_app_config(
@@ -43,7 +51,8 @@ def load_app_config(
     return deep_merge(*configs)
 
 
-def replace_placeholders(config: dict[str, Any]) -> dict[str, Any]:
+def replace_placeholders(config: Container,
+                         max_recursion_depth: int = MAX_RECURSION_DEPTH) -> Container:
     """
     Replace placeholder values in a nested dictionary structure, e.g., from a TOML config.
 
@@ -56,9 +65,7 @@ def replace_placeholders(config: dict[str, Any]) -> dict[str, Any]:
     :raises KeyError: If a placeholder cannot be resolved.
     """
 
-    def lookup_placeholder(
-        path: str, context: dict[str, Any], container_name: str
-    ) -> Any:
+    def lookup_placeholder(path: str, context: dict[str, Any], container_name: str) -> Any:
         parts = path.split(".")
         value: Any = context
         resolved_path = []
@@ -69,7 +76,8 @@ def replace_placeholders(config: dict[str, Any]) -> dict[str, Any]:
                 full_path = ".".join(resolved_path)
                 raise KeyError(
                     f"While resolving '{{{path}}}' in '{container_name}': "
-                    f"'{full_path}' is not a dictionary (got type {type(value).__name__})."
+                    f"'{full_path}' is not a dictionary "
+                    f"(got type {type(value).__name__})."
                 )
             if part not in value:
                 full_path = ".".join(resolved_path)
@@ -83,9 +91,7 @@ def replace_placeholders(config: dict[str, Any]) -> dict[str, Any]:
 
     def replacement(match: re.Match, container: Container, key: str | int) -> str:
         inner = match.group(1)
-        container_name = (
-            str(key) if isinstance(key, str) else f"list item at index {key}"
-        )
+        container_name = str(key) if isinstance(key, str) else f"list item at index {key}"
 
         if "." in inner:
             return str(lookup_placeholder(inner, config, container_name))
@@ -93,9 +99,19 @@ def replace_placeholders(config: dict[str, Any]) -> dict[str, Any]:
             return str(container[inner])
         else:
             raise KeyError(
-                f"While resolving '{{{inner}}}' in '{container_name}': "
-                f"key '{inner}' not found in current section."
+                f"While resolving '{{{inner}}}' in '{container_name}': key '{inner}' not found in current section."
             )
+
+    def resolve_string(s: str, container: Container, key: str | int) -> str:
+        prev = None
+        count = 0
+        while s != prev and count < max_recursion_depth:
+            prev = s
+            s = PLACEHOLDER_PATTERN.sub(lambda m: replacement(m, container, key), s)
+            count += 1
+        if count == max_recursion_depth:
+            raise ValueError(f"Too many nested placeholder expansions in key '{key}'.")
+        return s
 
     stack: list[StackItem] = [(config, key, config) for key in config]
 
@@ -104,16 +120,8 @@ def replace_placeholders(config: dict[str, Any]) -> dict[str, Any]:
         value = container[key]  # type: ignore[assignment]
 
         if isinstance(value, str):
-            new_value = PLACEHOLDER_PATTERN.sub(
-                lambda m: replacement(m, container, key), value
-            )
-            # The following two if statements are needed to avoid
-            # VSCode errors in the IDE, but they are not necessary
-            # for the code to work.
-            if isinstance(container, dict) and isinstance(key, str):
-                container[key] = new_value
-            elif isinstance(container, list) and isinstance(key, int):
-                container[key] = new_value
+            new_value = resolve_string(value, container, key)
+            container[key] = new_value
 
         elif isinstance(value, list):
             for i, item in enumerate(value):
@@ -123,7 +131,5 @@ def replace_placeholders(config: dict[str, Any]) -> dict[str, Any]:
         elif isinstance(value, dict):
             for subkey in value:
                 stack.append((value, subkey, value))
-
-        # else: primitive type → nothing to do
 
     return config

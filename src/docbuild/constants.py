@@ -98,7 +98,7 @@ APP_CONFIG_PATHS = (f"/etc/{APP_NAME}", f"~/.config/{APP_NAME}", "./")
 #: The filename of the app's config file without any paths
 APP_CONFIG_FILENAME = "config.toml"
 
-#: THe filename of the env's config file without any paths
+#: The filename of the env's config file without any paths
 ENV_CONFIG_FILENAME = "env.{role}.toml"
 
 #: Compiled regex for standard placeholders like {name}

@@ -3,7 +3,7 @@ from pathlib import Path
 # import tomlkit as toml
 import tomllib as toml
 
-from ..constants import ENV_CONFIG_FILENAME, SERVER_ROLES, SERVER_GROUP_ROLES
+from ..constants import ENV_CONFIG_FILENAME, SERVER_GROUP_ROLES
 
 
 def load_env_config(*paths: str | Path, role: str ) -> dict:

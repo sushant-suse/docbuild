@@ -1,4 +1,5 @@
 import re
+import tomllib
 
 import pytest
 
@@ -133,3 +134,49 @@ def test_placeholder_path_is_not_dict():
         ),
     ):
         replace_placeholders(config)
+
+
+def test_chained_placeholder_resolution():
+    data = {
+        "paths": {
+            "tmp": {
+                "tmp_base_path": "/tmp/docbuild",
+                "tmp_path": "{tmp_base_path}/doc-example-com",
+                "tmp_deliverable_path": "{tmp_path}/deliverable/",
+            }
+        }
+    }
+
+    result = replace_placeholders(data)
+    tmp = result["paths"]["tmp"]
+    assert tmp["tmp_base_path"] == "/tmp/docbuild"
+    assert tmp["tmp_path"] == "/tmp/docbuild/doc-example-com"
+    assert tmp["tmp_deliverable_path"] == "/tmp/docbuild/doc-example-com/deliverable/"
+
+
+def test_too_many_nested_placeholder_expansions():
+    data = {
+        "section": {
+            "a": "{b}",
+            "b": "{a}",
+        }
+    }
+    with pytest.raises(ValueError, match=f"Too many nested placeholder expansions"):
+        replace_placeholders(data)
+
+
+def test_chained_cross_section_placeholders():
+    config = {
+        "build": {
+            "output": "{paths.tmp_deliverable_path}",
+        },
+        "paths": {
+            "tmp_base_path": "/tmp/docbuild",
+            "tmp_path": "{tmp_base_path}/doc-example-com",
+            "tmp_deliverable_path": "{paths.tmp_path}/deliverable/",
+        },
+    }
+
+    result = replace_placeholders(config)
+
+    assert result["build"]["output"] == "/tmp/docbuild/doc-example-com/deliverable/"
