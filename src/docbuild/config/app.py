@@ -45,51 +45,75 @@ def load_app_config(
 
 def replace_placeholders(config: dict[str, Any]) -> dict[str, Any]:
     """
-    Replace placeholder values in the configuration dictionary.
+    Replace placeholder values in a nested dictionary structure, e.g., from a TOML config.
 
-    Placeholders are indicated by `{placeholder}` syntax. If the name contains dots,
-    it is treated as a reference to a nested section, e.g. `{server.name}`. If no dot
-    is present, it looks up the value in the current section.
+    - `{foo}` resolves from the current section.
+    - `{a.b.c}` resolves deeply from the config.
+    - `{{foo}}` escapes to literal `{foo}`.
 
-    Double curly braces like `{{foo}}` are treated as escaped and returned as `{foo}`.
-
-    :param config: The loaded TOML configuration as a dictionary.
-    :return: A new dictionary with all placeholders replaced.
+    :param config: The loaded configuration dictionary.
+    :return: A new dictionary with placeholders replaced.
     :raises KeyError: If a placeholder cannot be resolved.
     """
 
-    def lookup_placeholder(path: str, context: dict[str, Any]) -> Any:
+    def lookup_placeholder(
+        path: str, context: dict[str, Any], container_name: str
+    ) -> Any:
         parts = path.split(".")
         value: Any = context
+        resolved_path = []
+
         for part in parts:
+            resolved_path.append(part)
             if not isinstance(value, dict):
+                full_path = ".".join(resolved_path)
                 raise KeyError(
-                    f"Cannot resolve '{path}': '{part}' is not a dictionary."
+                    f"While resolving '{{{path}}}' in '{container_name}': "
+                    f"'{full_path}' is not a dictionary (got type {type(value).__name__})."
                 )
             if part not in value:
-                raise KeyError(f"Cannot resolve placeholder: '{path}'")
+                full_path = ".".join(resolved_path)
+                raise KeyError(
+                    f"While resolving '{{{path}}}' in '{container_name}': "
+                    f"missing key '{part}' in path '{full_path}'."
+                )
             value = value[part]
+
         return value
+
+    def replacement(match: re.Match, container: Container, key: str | int) -> str:
+        inner = match.group(1)
+        container_name = (
+            str(key) if isinstance(key, str) else f"list item at index {key}"
+        )
+
+        if "." in inner:
+            return str(lookup_placeholder(inner, config, container_name))
+        elif isinstance(container, dict) and inner in container:
+            return str(container[inner])
+        else:
+            raise KeyError(
+                f"While resolving '{{{inner}}}' in '{container_name}': "
+                f"key '{inner}' not found in current section."
+            )
 
     stack: list[StackItem] = [(config, key, config) for key in config]
 
     while stack:
         container, key, context = stack.pop()
-        value = container[key] # type: ignore
+        value = container[key]  # type: ignore[assignment]
 
         if isinstance(value, str):
-
-            def replacement(match: re.Match) -> str:
-                inner = match.group(1)
-                if "." in inner:
-                    return str(lookup_placeholder(inner, config))
-                elif isinstance(container, dict) and inner in container:
-                    return str(container[inner])
-                else:
-                    raise KeyError(f"Cannot resolve placeholder: '{inner}'")
-
-            new_value = PLACEHOLDER_PATTERN.sub(replacement, value)
-            container[key] = new_value  # type: ignore
+            new_value = PLACEHOLDER_PATTERN.sub(
+                lambda m: replacement(m, container, key), value
+            )
+            # The following two if statements are needed to avoid
+            # VSCode errors in the IDE, but they are not necessary
+            # for the code to work.
+            if isinstance(container, dict) and isinstance(key, str):
+                container[key] = new_value
+            elif isinstance(container, list) and isinstance(key, int):
+                container[key] = new_value
 
         elif isinstance(value, list):
             for i, item in enumerate(value):
@@ -100,6 +124,6 @@ def replace_placeholders(config: dict[str, Any]) -> dict[str, Any]:
             for subkey in value:
                 stack.append((value, subkey, value))
 
-        # else: keep literal value (int, bool, etc.)
+        # else: primitive type → nothing to do
 
     return config

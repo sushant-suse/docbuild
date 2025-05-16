@@ -1,3 +1,5 @@
+import re
+
 import pytest
 
 from docbuild.config.app import replace_placeholders
@@ -48,7 +50,9 @@ def test_missing_key_in_current_section():
 
     with pytest.raises(
         KeyError,
-        match="Cannot resolve placeholder: 'user'"
+        match=re.escape(
+            "While resolving '{user}' in 'url': key 'user' not found in current section."
+        ),
     ):
         replace_placeholders(config)
 
@@ -66,7 +70,9 @@ def test_unresolved_key_in_config():
 
     with pytest.raises(
         KeyError,
-        match="\"Cannot resolve placeholder: 'paths.tmp.session'\"",
+        match=re.escape(
+            "While resolving '{paths.tmp.session}' in 'full_tmp_path': missing key 'session' in path 'paths.tmp.session'."
+        ),
     ):
         replace_placeholders(config)
 
@@ -122,6 +128,8 @@ def test_placeholder_path_is_not_dict():
 
     with pytest.raises(
         KeyError,
-        match="\"Cannot resolve 'paths.tmp.value': 'value' is not a dictionary.\"",
+        match=re.escape(
+            "While resolving '{paths.tmp.value}' in 'path': 'paths.tmp.value' is not a dictionary (got type str)."
+        ),
     ):
         replace_placeholders(config)
