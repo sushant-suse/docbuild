@@ -26,6 +26,10 @@ StackItem = tuple[Container, str | int, Container]
 MAX_RECURSION_DEPTH: int = 10
 
 
+#: Maximum recursion depth for placeholder replacement
+MAX_RECURSION_DEPTH: int = 10
+
+
 def load_app_config(
     *paths: str | Path, default: tuple[str | Path, ...] = APP_CONFIG_PATHS
 ) -> dict:
