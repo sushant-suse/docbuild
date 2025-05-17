@@ -16,22 +16,22 @@ from enum import StrEnum
 class ServerRole(StrEnum):
     # production
     PRODUCTION = "production"
-    PROD = "prod"
-    P = "p"
+    PROD = PRODUCTION
+    P = PRODUCTION
     production = PRODUCTION
-    prod = PROD
-    p = P
+    prod = PRODUCTION
+    p = PRODUCTION
     # staging
     STAGING = "staging"
-    STAGE = "stage"
-    S = "s"
+    STAGE = STAGING
+    S = STAGING
     staging = STAGING
-    stage = STAGE
-    s = S
+    stage = STAGING
+    s = STAGING
     # testing
     TESTING = "testing"
-    TEST = "test"
-    T = "t"
+    TEST = TESTING
+    T = TESTING
     testing = TESTING
-    test = TEST
-    t = T
+    test = TESTING
+    t = TESTING
