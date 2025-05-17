@@ -4,8 +4,6 @@ from pathlib import Path
 from unittest.mock import ANY, call, MagicMock
 
 import pytest
-from click.testing import CliRunner
-from click import Context
 # from docbuild.cli.cli import cli
 from docbuild.constants import ENV_CONFIG_FILENAME
 from docbuild.cli.showconfig.env import env
@@ -27,8 +25,7 @@ def chdir(new_dir: Path | str):
         os.chdir(old_dir)
 
 
-def test_showconfig_env_help_option():
-    runner = CliRunner()
+def test_showconfig_env_help_option(runner):
     result = runner.invoke(env, ["--help"])
     assert result.exit_code == 0
     assert "Usage:" in result.output
@@ -37,9 +34,8 @@ def test_showconfig_env_help_option():
     assert "--role" in result.output
 
 
-def test_showconfig_env_config_option():
+def test_showconfig_env_config_option(runner):
     configfile = Path(__file__).parent / "sample-env.toml"
-    runner = CliRunner()
     context = DocBuildContext()
     result = runner.invoke(env, ["--config", str(configfile)], obj=context)
     assert result.exit_code == 0
@@ -47,7 +43,7 @@ def test_showconfig_env_config_option():
     assert context.configfile == configfile
 
 
-def test_showconfig_env_config_option_invalidfile(tmp_path):
+def test_showconfig_env_config_option_invalidfile(runner, tmp_path):
     content = """
 [paths]
 config_dir = "/etc/docbuild"
@@ -59,7 +55,6 @@ tmp_path = "{tmp_base_path}/doc-example-com"
 """
     configfile = tmp_path / "invalid-env.toml"
     configfile.write_text(content)
-    runner = CliRunner()
     context = DocBuildContext()
     result = runner.invoke(env, ["--config", str(configfile)], obj=context)
     assert result.exit_code != 0
@@ -67,7 +62,7 @@ tmp_path = "{tmp_base_path}/doc-example-com"
     assert context.configfile is None
 
 
-def test_showconfig_env_role_option(tmp_path):
+def test_showconfig_env_role_option(runner, tmp_path):
     content = """# Test file
 [paths]
 config_dir = "/etc/docbuild"
@@ -84,7 +79,6 @@ tmp_path = "{tmp_base_path}/doc-example-com"
 
     with chdir(tmp_path):
         context = DocBuildContext()
-        runner = CliRunner()
         result = runner.invoke(env, ["--role", "prod"], obj=context)
 
     assert result.exit_code == 0
@@ -92,8 +86,7 @@ tmp_path = "{tmp_base_path}/doc-example-com"
     assert context.configfile == Path(envfile)
 
 
-def test_env_no_config_no_role():
-    runner = CliRunner()
+def test_env_no_config_no_role(runner):
     context = DocBuildContext()
 
     # invoke without --role and --config

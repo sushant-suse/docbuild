@@ -123,8 +123,7 @@ def test_validate_doctypes_valid():
         validate_doctypes(ctx, None, ("wrong/1/en-us",))
 
 
-def test_validate_doctypes_called_from_build():
-    runner = CliRunner()
+def test_validate_doctypes_called_from_build(runner):
     result = runner.invoke(cli, ["build", "sles/17/en-us"])
     assert result.exit_code == 0
     assert "Got sles/17@supported/en-us" in result.output

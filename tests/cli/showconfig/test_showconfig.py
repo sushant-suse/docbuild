@@ -1,24 +1,20 @@
-from pathlib import Path
 from unittest.mock import patch, MagicMock
 
 import pytest
 import click
-from click.testing import CliRunner
 from docbuild.cli.cli import cli
 from docbuild.cli.showconfig import showconfig
 from docbuild.cli.context import DocBuildContext
 
 
-def test_showconfig_help_option():
-    runner = CliRunner()
+def test_showconfig_help_option(runner):
     result = runner.invoke(cli, ["showconfig", "--help"])
     assert result.exit_code == 0
     assert "Commands:" in result.output
     assert "env" in result.output
 
 
-def _test_showconfig_calls_ensure_object():
-
+def _test_showconfig_calls_ensure_object(runner):
     @click.command()
     @click.pass_context
     def fake_showconfig(ctx, *args, **kwargs):
@@ -28,7 +24,6 @@ def _test_showconfig_calls_ensure_object():
         ctx.obj = mock_ctx  # store mock on real ctx so we can access after invoke
         return result
 
-    runner = CliRunner()
     with patch("click.Context.ensure_object") as mock_ensure_object:
 
         result = runner.invoke(showconfig, [], standalone_mode=False)
@@ -39,8 +34,7 @@ def _test_showconfig_calls_ensure_object():
         mock_ensure_object.assert_called_once_with(DocBuildContext)
 
 
-def test_showconfig_calls_ensure_object():
-    runner = CliRunner()
+def test_showconfig_calls_ensure_object(runner):
 
     # Wrapper function to spy on ctx.ensure_object
     @click.group()
