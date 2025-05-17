@@ -73,13 +73,13 @@ temp_repo_dir = "/data/docserv/repos/temporary-branches/"
 tmp_base_path = "/tmp"
 tmp_path = "{tmp_base_path}/doc-example-com"
 """
-    envfile = ENV_CONFIG_FILENAME.format(role="prod")
+    envfile = ENV_CONFIG_FILENAME.format(role="production")
     configfile = tmp_path / envfile
     configfile.write_text(content)
 
     with chdir(tmp_path):
         context = DocBuildContext()
-        result = runner.invoke(env, ["--role", "prod"], obj=context)
+        result = runner.invoke(env, ["--role", "production"], obj=context)
 
     assert result.exit_code == 0
     assert "tmp_path" in result.output

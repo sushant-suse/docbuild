@@ -3,7 +3,7 @@ from pathlib import Path
 # import tomlkit as toml
 import tomllib as toml
 
-from ..constants import ENV_CONFIG_FILENAME, SERVER_GROUP_ROLES
+from ..constants import ENV_CONFIG_FILENAME, SERVER_GROUP_ROLES, SERVER_ROLES
 
 
 def load_env_config(*paths: str | Path, role: str ) -> dict:
@@ -21,17 +21,9 @@ def load_env_config(*paths: str | Path, role: str ) -> dict:
     :raises ValueError: If the role is unknown.
     :raises FileNotFoundError: If no matching config file is found in the provided paths.
     """
-    # Normalize and validate the role
-    role_variants = None
-    for group in SERVER_GROUP_ROLES:
-        if role in group:
-            role_variants = group
-            break
-    if role_variants is None:
-        raise ValueError(f"Unknown role: {role!r}")
 
     # Search paths for each variant of the role
-    for variant in role_variants:
+    for variant in SERVER_ROLES: ## TODO: fix that
         filename = ENV_CONFIG_FILENAME.format(role=variant)
         for path in paths:
             config_path = Path(path) / filename

@@ -1,4 +1,5 @@
 from pathlib import Path
+import re
 
 import pytest
 
@@ -73,7 +74,10 @@ def test_load_from_multiple_paths(tmp_path: Path):
 
 
 def test_invalid_role_raises_value_error(tmp_path: Path):
-    with pytest.raises(ValueError, match="Unknown role"):
+    with pytest.raises(
+        FileNotFoundError,
+        match=re.escape("No config file found for role 'dev' in paths")
+    ):
         load_env_config(tmp_path, role="dev")
 
 

@@ -1,11 +1,11 @@
 from pathlib import Path
-from typing import cast
 
 import click
 
+
 from ..__about__ import __version__
-from ..config.app import load_app_config
-from ..constants import SERVER_ROLES
+from ..config.load import load_and_merge_configs
+from ..constants import APP_CONFIG_PATHS, APP_CONFIG_FILENAME, SERVER_ROLES
 from .context import DocBuildContext
 from .build import build
 from .c14n import c14n
@@ -55,12 +55,15 @@ def cli(ctx,
         debug
 ):
     ctx.ensure_object(DocBuildContext)
+
+    cfgfiles, config = load_and_merge_configs([APP_CONFIG_FILENAME], *APP_CONFIG_PATHS)
     # config:Path = cast(Path, config)
-    cfg = load_app_config(config) if config is not None else load_app_config()
+    # cfg = load_app_config(config) if config is not None else load_app_config()
+
     ctx.obj = DocBuildContext(
         verbosity=verbose,
-        configfile=str(config),
-        config=cfg,
+        configfile=cfgfiles[0],
+        config=config,
         role=role,
         dry_run=dry_run,
         debug=debug,

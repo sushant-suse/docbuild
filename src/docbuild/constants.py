@@ -1,5 +1,4 @@
 import re
-from typing import Pattern
 
 from .models.env.serverroles import ServerRole
 
@@ -93,7 +92,16 @@ SEPARATORS = r"[ :;]+"
 RE_SEPARATORS = re.compile(SEPARATORS)
 
 #: Paths to the app's config
-APP_CONFIG_PATHS = (f"/etc/{APP_NAME}", f"~/.config/{APP_NAME}", "./")
+#: The order is important here!
+#: The paths are in the order of system path, user path, and current working directory.
+APP_CONFIG_PATHS = (
+    # The system-wide config path:
+    f"/etc/{APP_NAME}",
+    # The user config path:
+    f"~/.config/{APP_NAME}",
+    # The current working/project directory:
+    "./"
+)
 
 #: The filename of the app's config file without any paths
 APP_CONFIG_FILENAME = "config.toml"
@@ -101,5 +109,11 @@ APP_CONFIG_FILENAME = "config.toml"
 #: The filename of the env's config file without any paths
 ENV_CONFIG_FILENAME = "env.{role}.toml"
 
+#: The default filename of the env config file
+DEFAULT_ENV_CONFIG_FILENAME = ENV_CONFIG_FILENAME.format(role="production")
+
+#: The filename for shared configuration for the env:
+SHARE_ENV_CONFIG_FILENAME = ENV_CONFIG_FILENAME.format(role="share")
+
 #: Compiled regex for standard placeholders like {name}
-PLACEHOLDER_PATTERN: Pattern[str] = re.compile(r"(?<!\{)\{([^{}]+)\}(?!\})")
+PLACEHOLDER_PATTERN: re.Pattern[str] = re.compile(r"(?<!\{)\{([^{}]+)\}(?!\})")
