@@ -3,7 +3,8 @@ from pathlib import Path
 
 import pytest
 
-from docbuild.config.app import APP_CONFIG_FILENAME, load_app_config
+from docbuild.config.app import APP_CONFIG_FILENAME
+from docbuild.config.load import load_and_merge_configs, load_single_config
 
 
 def test_load_single_config_file(tmp_path):
@@ -17,8 +18,9 @@ def test_load_single_config_file(tmp_path):
     config_file = config_dir / APP_CONFIG_FILENAME
     config_file.write_text(config_toml)
 
-    result = load_app_config(config_dir)
-    assert result == {"server": {"name": "demo"}}
+    config = load_single_config(config_file)
+
+    assert config == {"server": {"name": "demo"}}
 
 
 def test_load_multiple_config_files(tmp_path):
@@ -41,11 +43,21 @@ def test_load_multiple_config_files(tmp_path):
     (dir1 / APP_CONFIG_FILENAME).write_text(config1)
     (dir2 / APP_CONFIG_FILENAME).write_text(config2)
 
-    result = load_app_config(dir1, dir2)
-    assert result == {"server": {"name": "demo", "debug": True, "version": "1.0"}}
+    # result = load_app_config(dir1, dir2)
+    cfgfiles, config = load_and_merge_configs(
+        [APP_CONFIG_FILENAME],
+        dir1,
+        dir2,
+    )
+
+    assert cfgfiles == (
+        dir1 / APP_CONFIG_FILENAME,
+        dir2 / APP_CONFIG_FILENAME,
+    )
+    assert config == {"server": {"name": "demo", "debug": True, "version": "1.0"}}
 
 
-def test_load_app_config_with_default_paths(tmp_path, monkeypatch):
+def test_load_app_config_with_default_paths(tmp_path):
     # Prepare a default config directory with the expected config file
     default_dir = tmp_path / "default_config"
     default_dir.mkdir()
@@ -56,9 +68,14 @@ def test_load_app_config_with_default_paths(tmp_path, monkeypatch):
     (default_dir / APP_CONFIG_FILENAME).write_text(config_toml)
 
     # Call load_app_config without any paths: it should use the default
-    result = load_app_config(default=tuple([default_dir]))
+    # result = load_app_config(default=tuple([default_dir]))
+    cfgfiles, config = load_and_merge_configs(
+        [APP_CONFIG_FILENAME],
+        default_dir,
+    )
 
-    assert result == {"app": {"default_used": True}}
+    assert cfgfiles == (default_dir / APP_CONFIG_FILENAME,)
+    assert config == {"app": {"default_used": True}}
 
 
 
@@ -67,7 +84,11 @@ def test_when_path_does_not_exist(tmp_path):
     non_existing_path = tmp_path / "non_existing_dir"
 
     # Call load_app_config with the non-existing path
-    result = load_app_config(non_existing_path)
+    # result = load_app_config(non_existing_path)
+    cfgfiles, config = load_and_merge_configs(
+        [APP_CONFIG_FILENAME],
+        non_existing_path,
+    )
 
-    # The result should be an empty dictionary
-    assert result == {}
+    assert cfgfiles == tuple()
+    assert config == {}

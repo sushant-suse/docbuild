@@ -47,6 +47,16 @@ def process_envconfig_and_role(
     return envconfigfile, replace_placeholders(rawconfig)
 
 
+def load_single_config(configfile: str | Path) -> dict[str, Any]:
+    """Load a single config file and return its content.
+
+    :param configfile: Path to the config file.
+    :return: The loaded config as a dictionary.
+    """
+    with Path(configfile).open("rb") as f:
+        return toml.load(f)
+
+
 def load_and_merge_configs(defaults: Sequence[str | Path], *paths: str | Path,
 ) -> tuple[tuple[str | Path, ...], dict[str, Any]]:
     """Load the app's config files and merge all content regardless
@@ -76,8 +86,7 @@ def load_and_merge_configs(defaults: Sequence[str | Path], *paths: str | Path,
 
         if path.exists():
             configfiles.append(path)
-            with path.open("rb") as f:
-                configs.append(toml.load(f))
+            configs.append(load_single_config(path))
         # Silently ignore files that do not exist:
 
     return tuple(configfiles), deep_merge(*configs)
