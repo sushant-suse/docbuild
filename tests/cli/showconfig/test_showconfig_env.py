@@ -40,7 +40,7 @@ def test_showconfig_env_config_option(runner):
     result = runner.invoke(env, ["--config", str(configfile)], obj=context)
     assert result.exit_code == 0
     assert "# Config file " in result.output
-    assert context.configfile == configfile
+    assert context.envconfigfiles == (configfile,)
 
 
 def test_showconfig_env_config_option_invalidfile(runner, tmp_path):
@@ -59,7 +59,7 @@ tmp_path = "{tmp_base_path}/doc-example-com"
     result = runner.invoke(env, ["--config", str(configfile)], obj=context)
     assert result.exit_code != 0
     assert "ERROR: Invalid config file" in result.output
-    assert context.configfile is None
+    assert context.appconfigfiles is None
 
 
 def test_showconfig_env_role_option(runner, tmp_path):
@@ -83,7 +83,7 @@ tmp_path = "{tmp_base_path}/doc-example-com"
 
     assert result.exit_code == 0
     assert "tmp_path" in result.output
-    assert context.configfile == Path(envfile)
+    assert context.envconfigfiles == (Path(envfile), )
 
 
 def test_env_no_config_no_role(runner):

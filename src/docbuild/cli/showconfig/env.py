@@ -61,7 +61,7 @@ def env(ctx, config: Path, role: str):
         )
         raise click.Abort()
 
-    ctx.obj.configfile = config
+    ctx.obj.envconfigfiles = (config,)
     click.secho(f"# Config file '{config}'", fg="blue")
 
     print(Pretty(ctx.obj.config, expand_all=True))

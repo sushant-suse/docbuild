@@ -60,8 +60,8 @@ def cli(ctx,
 
     ctx.obj = DocBuildContext(
         verbosity=verbose,
-        configfile=str(cfgfiles[0]),
-        config=cfg,
+        appconfigfiles=cfgfiles,
+        appconfig=cfg,
         role=role,
         dry_run=dry_run,
         debug=debug,

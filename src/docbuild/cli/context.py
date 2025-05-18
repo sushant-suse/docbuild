@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from typing import Literal
+from pathlib import Path
+from typing import Any, Literal
 from ..models.doctype import Doctype
 
 
@@ -16,11 +17,17 @@ class DocBuildContext:
     # --role:
     role: Literal["production", "prod", "testing", "test", "staging", "stage"] = "prod"
 
-    # --configfile: The app's config file
-    configfile: str | None = None
+    # --configfile: The app's config files
+    appconfigfiles: tuple[str | Path, ...] | None = None
 
     # --config: The accumulated content of all config files ()
-    config: dict | None = None
+    appconfig: dict[str, Any] | None = None
+
+    # --envconfigfiles: The env's config files
+    envconfigfiles: tuple[str | Path, ...] | None = None
+
+    # --envconfig: The accumulated content of all env config files
+    envconfig: dict[str, Any] | None = None
 
     # --doctypes
     doctypes: list[Doctype] | None = None

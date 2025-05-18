@@ -243,4 +243,4 @@ def build(ctx, doctypes):
 
     click.echo(f"[BUILD] Verbosity: {context.verbosity}")
     click.echo(f"{context=}")
-    click.echo(f"{context.configfile=}")
+    click.echo(f"{context.appconfigfiles=}")
