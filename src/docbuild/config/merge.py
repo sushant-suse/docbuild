@@ -5,26 +5,35 @@ from typing import Any
 
 
 def deep_merge(
-    dct1: dict[str, Any], *dcts: Mapping[str, Any],
+    # dct1: ,
+    *dcts: dict[str, Any],
 ) -> dict[str, Any]:
     """
-    Create a deep copy of dct1 and merge it with dcts[0], dcts[1], ...
-    into a new dict.
+    Merge multiple dictionaries into a new one without modifying inputs.
 
-    Later dict values overwriting earlier ones.
-    Requires at least one dictionary argument.
-    Returns a new merged dictionary without modifying inputs.
+    Make a deep copy of the first dictionary and then update it with the
+    subsequent dictionaries:
 
-    :param dict1: The first dictionary to merge into.
-    :param dicts: Additional dictionaries to merge into the first one.
+    * If a key exists in both dictionaries, the value from the last dictionary will overwrite the previous one.
+    * If the value is a list, it will concatenate the lists.
+    * If the value is a primitive type, it will overwrite the value.
+    * If a key exists in multiple dictionaries, the last one will take precedence.
+
+    This means that the order of dictionaries matters. The first dictionary
+    will be the base, and the subsequent dictionaries will update it.
+
+    :param dcts: Sequence of dictionaries to merge.
     :return: A new dictionary containing the merged values
             (does not change the passed dictionaries).
     """
 
-    # Start with a shallow copy of the first dictionary
-    merged = dct1.copy()
+    if not dcts:
+        return {}
 
-    for d in dcts:
+    # Start with a shallow copy of the first dictionary
+    merged = dcts[0].copy()
+
+    for d in dcts[1:]:
         stack = [(merged, d)]
 
         while stack:
