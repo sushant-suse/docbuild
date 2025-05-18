@@ -43,7 +43,6 @@ def test_load_multiple_config_files(tmp_path):
     (dir1 / APP_CONFIG_FILENAME).write_text(config1)
     (dir2 / APP_CONFIG_FILENAME).write_text(config2)
 
-    # result = load_app_config(dir1, dir2)
     cfgfiles, config = load_and_merge_configs(
         [APP_CONFIG_FILENAME],
         dir1,
@@ -57,7 +56,7 @@ def test_load_multiple_config_files(tmp_path):
     assert config == {"server": {"name": "demo", "debug": True, "version": "1.0"}}
 
 
-def test_load_app_config_with_default_paths(tmp_path):
+def test_load_config_with_default_paths(tmp_path):
     # Prepare a default config directory with the expected config file
     default_dir = tmp_path / "default_config"
     default_dir.mkdir()
@@ -67,8 +66,6 @@ def test_load_app_config_with_default_paths(tmp_path):
     """
     (default_dir / APP_CONFIG_FILENAME).write_text(config_toml)
 
-    # Call load_app_config without any paths: it should use the default
-    # result = load_app_config(default=tuple([default_dir]))
     cfgfiles, config = load_and_merge_configs(
         [APP_CONFIG_FILENAME],
         default_dir,
@@ -78,13 +75,10 @@ def test_load_app_config_with_default_paths(tmp_path):
     assert config == {"app": {"default_used": True}}
 
 
-
 def test_when_path_does_not_exist(tmp_path):
     # Create a non-existing path
     non_existing_path = tmp_path / "non_existing_dir"
 
-    # Call load_app_config with the non-existing path
-    # result = load_app_config(non_existing_path)
     cfgfiles, config = load_and_merge_configs(
         [APP_CONFIG_FILENAME],
         non_existing_path,

@@ -3,7 +3,6 @@ from pathlib import Path
 import pytest
 
 from docbuild.config.load import load_and_merge_configs
-from docbuild.config.app import load_app_config
 from docbuild.constants import APP_CONFIG_FILENAME, APP_NAME
 
 
@@ -19,7 +18,6 @@ port = 1234
     )
 
     cfgfiles, config = load_and_merge_configs([APP_CONFIG_FILENAME], configpath)
-    # config = load_app_config(configpath)
     assert cfgfiles == tuple([configpath / APP_CONFIG_FILENAME])
     assert config == {"server": {"name": "localhost", "port": 1234}}
 
@@ -79,7 +77,6 @@ port = 1234
 """,
     )
 
-    # config = load_app_config(system_path, missing_path)
     cfgfiles, config = load_and_merge_configs(
         [APP_CONFIG_FILENAME], system_path, missing_path
     )
@@ -98,7 +95,6 @@ name = "localhost"
 port = 1234
 """,
     )
-    # config = load_app_config(default=(system_path,))
     cfgfiles, config = load_and_merge_configs(
         [APP_CONFIG_FILENAME], system_path
     )

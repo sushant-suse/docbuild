@@ -56,14 +56,12 @@ def cli(ctx,
 ):
     ctx.ensure_object(DocBuildContext)
 
-    cfgfiles, config = load_and_merge_configs([APP_CONFIG_FILENAME], *APP_CONFIG_PATHS)
-    # config:Path = cast(Path, config)
-    # cfg = load_app_config(config) if config is not None else load_app_config()
+    cfgfiles, cfg = load_and_merge_configs([APP_CONFIG_FILENAME], *APP_CONFIG_PATHS)
 
     ctx.obj = DocBuildContext(
         verbosity=verbose,
-        configfile=cfgfiles[0],
-        config=config,
+        configfile=str(cfgfiles[0]),
+        config=cfg,
         role=role,
         dry_run=dry_run,
         debug=debug,
