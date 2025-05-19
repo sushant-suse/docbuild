@@ -94,7 +94,7 @@ RE_SEPARATORS = re.compile(SEPARATORS)
 #: Paths to the app's config
 #: The order is important here!
 #: The paths are in the order of system path, user path, and current working directory.
-APP_CONFIG_PATHS = (
+CONFIG_PATHS = (
     # The system-wide config path:
     f"/etc/{APP_NAME}",
     # The user config path:

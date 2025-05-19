@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Literal
 from ..models.doctype import Doctype
+from ..models.env.serverroles import ServerRole
 
 
 @dataclass
@@ -12,10 +13,10 @@ class DocBuildContext:
     dry_run: bool = False
 
     # -v: verbosity level
-    verbosity: int = 0
+    verbose: int = 0
 
     # --role:
-    role: Literal["production", "prod", "testing", "test", "staging", "stage"] = "prod"
+    role: ServerRole | None = None  # ServerRole.production
 
     # --configfile: The app's config files
     appconfigfiles: tuple[str | Path, ...] | None = None

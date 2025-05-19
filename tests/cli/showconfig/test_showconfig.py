@@ -8,6 +8,7 @@ from docbuild.cli.context import DocBuildContext
 
 def test_showconfig_help_option(runner):
     result = runner.invoke(cli, ["showconfig", "--help"])
+    print(result.output)
     assert result.exit_code == 0
     assert "Commands:" in result.output
     assert "env" in result.output

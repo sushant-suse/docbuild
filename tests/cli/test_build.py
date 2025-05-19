@@ -1,10 +1,11 @@
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
 
 from click import Abort, Context, Command
-from click.testing import CliRunner
 
+from docbuild.cli.context import DocBuildContext
 from docbuild.models.doctype import Doctype
 from docbuild.cli.build import (
     is_subsumed_by,
@@ -13,6 +14,8 @@ from docbuild.cli.build import (
     validate_doctypes,
 )
 from docbuild.cli.cli import cli
+
+from ..common import changedir
 
 
 @pytest.mark.parametrize(
@@ -94,16 +97,6 @@ def test_merge_doctypes(doctypes, expected):
     assert merge_doctypes(*real_dts) == [Doctype.from_str(dt) for dt in expected]
 
 
-def test_validate_doctypes_valid():
-    cmd = Command("dummy_build")
-    ctx = Context(cmd)
-    ctx.obj = SimpleNamespace()
-
-    result = validate_doctypes(ctx, None, ("sles/17/en-us",) )
-    assert result
-    assert ctx.obj.doctypes == [Doctype.from_str("sles/17/en-us")]
-
-
 def test_validate_doctypes_with_empty_doctypes():
     cmd = Command("dummy_build")
     ctx = Context(cmd)
@@ -115,15 +108,30 @@ def test_validate_doctypes_with_empty_doctypes():
 
 
 def test_validate_doctypes_valid():
-    cmd = Command("dummy_build")
-    ctx = Context(cmd)
+    ctx = Context(Command("dummy_build"))
     ctx.obj = SimpleNamespace()
 
     with pytest.raises(Abort, match="is not a valid Product"):
         validate_doctypes(ctx, None, ("wrong/1/en-us",))
 
 
-def test_validate_doctypes_called_from_build(runner):
-    result = runner.invoke(cli, ["build", "sles/17/en-us"])
+def test_validate_doctypes_called_from_build(monkeypatch, runner):
+
+    # Mock the config/environment loader to avoid file I/O
+    def fake_process_envconfig_and_role(env_config, role=None):
+        # Return whatever your CLI expects (envfile, envconfig)
+        return Path("fake_envfile"), {"doctypes": ["sles/17/en-us"], "other": "values"}
+
+    monkeypatch.setattr("docbuild.cli.cli.process_envconfig_and_role",
+                        fake_process_envconfig_and_role)
+
+    context = DocBuildContext()
+    result = runner.invoke(
+        cli, ["--role=production", "build", "sles/17/en-us"],
+        obj=context
+    )
+
     assert result.exit_code == 0
     assert "Got sles/17@supported/en-us" in result.output
+    assert context.doctypes == [Doctype.from_str("sles/17/en-us")]
+    assert context.role == "production"

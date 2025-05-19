@@ -241,6 +241,6 @@ def build(ctx, doctypes):
     ctx.ensure_object(DocBuildContext)
     context: DocBuildContext = ctx.obj
 
-    click.echo(f"[BUILD] Verbosity: {context.verbosity}")
+    click.echo(f"[BUILD] Verbosity: {context.verbose}")
     click.echo(f"{context=}")
     click.echo(f"{context.appconfigfiles=}")

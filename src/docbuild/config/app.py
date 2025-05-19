@@ -7,28 +7,23 @@ from typing import Any, TypedDict
 import tomllib as toml
 
 from ..constants import (
-    APP_CONFIG_PATHS,
+    CONFIG_PATHS,
     APP_CONFIG_FILENAME,
     PLACEHOLDER_PATTERN
 )
 from .merge import deep_merge
 
-
-# Type aliases
-Container = dict[str, Any] | list[Any]
-StackItem = tuple[Container, str | int, Container]
 # class StackItem(TypedDict):
 #     container: Container
 #     section_key: str
 #     parent: Container | Sequence[Any] | None
 
+# Type aliases
+Container = dict[str, Any] | list[Any]
+StackItem = tuple[Container, str | int, Container]
+
 #: Maximum recursion depth for placeholder replacement
 MAX_RECURSION_DEPTH: int = 10
-
-
-#: Maximum recursion depth for placeholder replacement
-MAX_RECURSION_DEPTH: int = 10
-
 
 
 def replace_placeholders(config: Container,
@@ -45,7 +40,7 @@ def replace_placeholders(config: Container,
     :raises KeyError: If a placeholder cannot be resolved.
     """
 
-    def lookup_placeholder(path: str, context: dict[str, Any], container_name: str) -> Any:
+    def lookup_placeholder(path: str, context: Container, container_name: str) -> Any:
         parts = path.split(".")
         value: Any = context
         resolved_path = []
