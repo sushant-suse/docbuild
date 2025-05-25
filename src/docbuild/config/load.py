@@ -13,7 +13,8 @@ from ..models.env.serverroles import ServerRole
 
 
 def process_envconfig_and_role(
-    envconfigfile: Path | None, role: str | None
+    envconfigfile: Path | None,
+    role: str | None
 ) -> tuple[Path, Container]:
     """Process the env config and role options.
 
@@ -24,26 +25,27 @@ def process_envconfig_and_role(
     """
     if role:
         # Normalize the role with the ServerRole enum:
-        serverrole = ServerRole[role]
-        envconfigfile = Path(ENV_CONFIG_FILENAME.format(role=serverrole.value))
+        try:
+            serverrole = ServerRole[role]
+            envconfigfile = Path(ENV_CONFIG_FILENAME.format(role=serverrole.value))
+        except KeyError:
+            raise ValueError(f"Unknown server role {role!r}.")
+
     elif envconfigfile:
         envconfigfile = Path(envconfigfile)
+
+    # If we don't have a role nor a envconfigfile, we need to find the default one.
+    # We will look for the default env config file in the current directory.
+
+    elif (rfile := Path(DEFAULT_ENV_CONFIG_FILENAME)).exists():
+        envconfigfile = rfile
+
     else:
-        # If we don't have a role nor a envconfigfile, we need to find the default one.
-        # We will look for the default env config file in the current directory.
+        raise ValueError(
+            "Could not find default ENV configuration file."
+        )
 
-        if (rfile := Path(DEFAULT_ENV_CONFIG_FILENAME)).exists():
-            envconfigfile = rfile
-            click.echo(f"Using env config file: {envconfigfile}")
-        else:
-            raise click.UsageError(
-                f"Could not find default ENV configuration file {rfile}."
-            )
-
-    with envconfigfile.open("rb") as f:
-        rawconfig = toml.load(f)
-        # ctx.obj.envconfig = replace_placeholders(rawconfig)
-
+    rawconfig = load_single_config(envconfigfile)
     return envconfigfile, replace_placeholders(rawconfig)
 
 
