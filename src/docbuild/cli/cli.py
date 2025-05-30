@@ -19,7 +19,7 @@ from ..models.serverroles import ServerRole
 from .build import build
 from .c14n import c14n
 from .context import DocBuildContext
-from .showconfig import showconfig
+from .config import config
 
 
 class DocbuildGroup(click.Group):
@@ -154,7 +154,7 @@ def cli(ctx: click.Context,
 
 cli.add_command(build)
 cli.add_command(c14n)
-cli.add_command(showconfig)
+cli.add_command(config)
 
 
 if __name__ == "__main__":

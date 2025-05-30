@@ -4,8 +4,6 @@ import click
 
 from docbuild.cli.cli import cli
 
-from ...common import changedir
-
 
 # Define a throwaway command just for testing context mutation
 @cli.command('capture-context')
@@ -46,7 +44,7 @@ def test_showconfig_env_config_option(
         cli,
         [
             "--env-config", str(configfile),
-            "showconfig", "env",
+            "config", "env",
         ],
         obj=context,
     )
@@ -76,7 +74,7 @@ def test_showconfig_env_role_option(
 
     result = runner.invoke(
         cli,
-        ["--role=production", "showconfig", "env"],
+        ["--role=production", "config", "env"],
         obj=context,
     )
 
@@ -96,7 +94,7 @@ def test_env_no_config_no_role(
         "No such file or directory: 'env.production.toml'",
     )
     result = runner.invoke(
-        cli, ["--role=production", "showconfig", "env"],
+        cli, ["--role=production", "config", "env"],
         obj=context,
     )
 
