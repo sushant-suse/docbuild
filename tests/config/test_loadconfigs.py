@@ -1,10 +1,8 @@
-from pathlib import Path
 
 import pytest
 
 from docbuild.config.load import load_and_merge_configs
 from docbuild.constants import APP_CONFIG_FILENAME, APP_NAME
-
 
 
 def test_load_app_single_config(tmp_path):
@@ -14,7 +12,7 @@ def test_load_app_single_config(tmp_path):
     """[server]
 name = "localhost"
 port = 1234
-"""
+""",
     )
 
     cfgfiles, config = load_and_merge_configs([APP_CONFIG_FILENAME], configpath)
@@ -35,13 +33,13 @@ def test_load_app_multiple_configs(tmp_path):
         """[server]
 name = "localhost"
 port = 1234
-"""
+""",
     )
     (user_path / APP_CONFIG_FILENAME).write_text(
         """[server]
 [db]
 name = "mydatabase"
-"""
+""",
     )
     (local_path / APP_CONFIG_FILENAME).write_text(
         """[server]
@@ -50,7 +48,7 @@ port = 4321""",
 
     cfgfiles, config = load_and_merge_configs(
         [APP_CONFIG_FILENAME],
-        system_path, user_path, local_path
+        system_path, user_path, local_path,
     )
     assert cfgfiles == (
         system_path / APP_CONFIG_FILENAME,
@@ -59,7 +57,7 @@ port = 4321""",
     )
     assert config == {
         "server": {"name": "localhost", "port": 4321},
-        "db": {"name": "mydatabase"}
+        "db": {"name": "mydatabase"},
     }
 
 
@@ -78,7 +76,7 @@ port = 1234
     )
 
     cfgfiles, config = load_and_merge_configs(
-        [APP_CONFIG_FILENAME], system_path, missing_path
+        [APP_CONFIG_FILENAME], system_path, missing_path,
     )
     assert cfgfiles == (system_path / APP_CONFIG_FILENAME,)
     assert config == {"server": {"name": "localhost", "port": 1234}}
@@ -96,7 +94,7 @@ port = 1234
 """,
     )
     cfgfiles, config = load_and_merge_configs(
-        [APP_CONFIG_FILENAME], system_path
+        [APP_CONFIG_FILENAME], system_path,
     )
     assert cfgfiles == (system_path / APP_CONFIG_FILENAME,)
     assert config == {"server": {"name": "localhost", "port": 1234}}
@@ -104,4 +102,4 @@ port = 1234
 
 def test_load_app_with_empty_paths(tmp_path):
     with pytest.raises(ValueError):
-        load_and_merge_configs([APP_CONFIG_FILENAME],)
+        load_and_merge_configs([APP_CONFIG_FILENAME])

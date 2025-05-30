@@ -13,7 +13,7 @@ def test_valid_lifecycles(lifecycle):
 
 
 def test_unknown_lifecycle():
-    instance = getattr(LifecycleFlag, "unknown")
+    instance = LifecycleFlag.unknown
     assert instance.name == "unknown"
     assert instance.value == 0
     instance = LifecycleFlag(0)

@@ -1,10 +1,7 @@
-import tomllib as toml
-from pathlib import Path
 
-import pytest
 
-from docbuild.constants import APP_CONFIG_FILENAME
 from docbuild.config.load import load_and_merge_configs, load_single_config
+from docbuild.constants import APP_CONFIG_FILENAME
 
 
 def test_load_single_config_file(tmp_path):

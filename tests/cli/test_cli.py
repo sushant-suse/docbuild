@@ -1,13 +1,11 @@
-from pathlib import Path
 from types import SimpleNamespace
+from unittest.mock import MagicMock, patch
 
 import click
 import pytest
 
-from unittest.mock import patch, MagicMock
-
 from docbuild.cli import validate_options
-from docbuild.cli.cli import DocbuildGroup, cli
+from docbuild.cli.cli import DocbuildGroup
 from docbuild.constants import DEFAULT_ENV_CONFIG_FILENAME
 
 
@@ -97,7 +95,8 @@ def test_docbuildgroup_invoke_missing_options():
     ctx.args = []
     ctx.params = {"role": None, "env_config": None}
 
-    with pytest.raises(click.UsageError, match="Must provide one of: --role or --env-config"):
+    with pytest.raises(click.UsageError,
+                       match="Must provide one of: --role or --env-config"):
         group.invoke(ctx)
 
 
@@ -108,7 +107,8 @@ def test_docbuildgroup_invoke_mutually_exclusive():
     ctx.args = []
     ctx.params = {"role": "production", "env_config": "some_path.toml"}
 
-    with pytest.raises(click.UsageError, match="--role and --env-config are mutually exclusive"):
+    with pytest.raises(click.UsageError,
+                       match="--role and --env-config are mutually exclusive"):
         group.invoke(ctx)
 
 

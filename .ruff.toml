@@ -82,3 +82,15 @@ quote-style = "single"
 "src/docbuild/cli/build.py" = [
     "D301"  # Use `r"""` if any backslashes in a docstring
 ]
+"tests/**/test_*.py" = [
+    "ANN001", # Missing type annotation for function argument
+    "ANN002", # Missing type annotation for variable
+    "ANN003", # Missing type annotation for class attribute
+    "ANN201", # Missing return type annotation
+    "ANN202", # Missing return type annotation for private function
+    "ANN204", # Missing return type annotation for special method `__init__`
+    "D100",   # Missing docstring in public module
+    "D101",   # Missing docstring in public class
+    "D103",   # Missing docstring in public function
+    "D105",   # Missing docstring in magic method
+]

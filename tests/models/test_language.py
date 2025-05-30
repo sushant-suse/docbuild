@@ -1,8 +1,8 @@
-import pytest
 from pydantic import ValidationError
+import pytest
 
-from docbuild.models.language import LanguageCode
 from docbuild.constants import ALLOWED_LANGUAGES
+from docbuild.models.language import LanguageCode
 
 
 @pytest.mark.parametrize("language", sorted(ALLOWED_LANGUAGES))

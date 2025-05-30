@@ -1,5 +1,5 @@
-from docbuild.cli.cli import cli
 from docbuild.__about__ import __version__
+from docbuild.cli.cli import cli
 
 
 def test_version_option(runner):

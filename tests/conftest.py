@@ -1,5 +1,7 @@
+"""Pytest fixtures."""
 
 from pathlib import Path
+from typing import Any
 
 from click.testing import CliRunner
 import pytest
@@ -8,14 +10,14 @@ from docbuild.constants import DEFAULT_ENV_CONFIG_FILENAME
 
 
 @pytest.fixture(scope="function")
-def runner():
-    """Provides a CliRunner instance for testing."""
+def runner() -> CliRunner:
+    """Provide a CliRunner instance for testing."""
     return CliRunner()
 
 
 @pytest.fixture(scope="function")
-def default_env_config_filename(tmp_path) -> Path:
-    """Provides a default env config file path."""
+def default_env_config_filename(tmp_path: Path) -> Path:
+    """Provide a default env config file path."""
     envfile = tmp_path / DEFAULT_ENV_CONFIG_FILENAME
     envfile.write_text("")
     return envfile
@@ -23,7 +25,7 @@ def default_env_config_filename(tmp_path) -> Path:
 
 @pytest.fixture(scope="function")
 def env_content(default_env_config_filename: Path) -> Path:
-    """Provides a default content for the env config file."""
+    """Provide a default content for the env config file."""
     content = """# Test file
 [paths]
 config_dir = "/etc/docbuild"
@@ -38,11 +40,14 @@ tmp_path = "{tmp_base_path}/doc-example-com"
     return default_env_config_filename
 
 
-@pytest.fixture
-def ctx():
-    """Provides a dummy context object for testing."""
-    class DummyCtx:
-        def __init__(self, obj):
-            self.obj = obj
+class DummyCtx:
+    """A dummy context class for testing purposes."""
 
+    def __init__(self, obj: Any) -> None:  # noqa: ANN401
+        self.obj = obj
+
+
+@pytest.fixture
+def ctx() -> DummyCtx:
+    """Provide a dummy context object for testing."""
     return DummyCtx

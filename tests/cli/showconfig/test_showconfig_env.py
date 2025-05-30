@@ -1,7 +1,5 @@
 from pathlib import Path
-from unittest.mock import ANY, call, MagicMock
 
-import pytest
 import click
 import click.testing
 
@@ -15,9 +13,9 @@ from ...common import changedir
 @cli.command('capture-context')
 @click.pass_context
 def capture_context(ctx):
-    """
-    Dummy command that simulates work and stores final context
-    for inspection in testing.
+    """Create a dummy command that simulates work.
+
+    Stores final context for inspection in testing.
     """
     # We don't echo anything; we only mutate the context
     # click.echo(ctx.obj)
@@ -46,7 +44,7 @@ def test_showconfig_env_config_option(runner):
             "--env-config", str(configfile),
             "showconfig", "env",
         ],
-        obj=context
+        obj=context,
     )
     assert result.exit_code == 0
     # assert "# ENV Config file " in result.output
@@ -71,7 +69,7 @@ tmp_path = "{tmp_base_path}/doc-example-com"
         result = runner.invoke(
             cli,
             ["--env-config", str(configfile), "showconfig", "env"],
-            obj=context
+            obj=context,
         )
     assert result.exit_code != 0
     # assert "ERROR: Invalid config file" in result.output
@@ -84,7 +82,7 @@ def test_showconfig_env_role_option(
     fakefile = Path("fake_envfile")
     # Mock the config/environment loader to avoid file I/O
     def fake_process_envconfig_and_role(env_config, role=None):
-        print("## fake_process_envconfig_and_role called with",)
+        print("## fake_process_envconfig_and_role called with")
         # Return whatever your CLI expects (envfile, envconfig)
         return fakefile, {
             "paths": {
@@ -92,11 +90,11 @@ def test_showconfig_env_role_option(
                 "repo_dir": "/data/docserv/repos/permanent-full/",
                 "temp_repo_dir": "/data/docserv/repos/temporary-branches/",
                 "tmp": {"tmp_base_path": "/tmp", "tmp_path": "/tmp/doc-example-com"},
-            }
+            },
         }
 
     monkeypatch.setattr(
-        "docbuild.cli.cli.process_envconfig_and_role", fake_process_envconfig_and_role
+        "docbuild.cli.cli.process_envconfig_and_role", fake_process_envconfig_and_role,
     )
 
 
@@ -104,7 +102,7 @@ def test_showconfig_env_role_option(
     result = runner.invoke(
         cli,
         ["--role=production", "showconfig", "env"],
-        obj=context
+        obj=context,
     )
 
     assert result.exit_code == 0
@@ -117,9 +115,9 @@ def test_showconfig_env_role_option(
             "temp_repo_dir": "/data/docserv/repos/temporary-branches/",
             "tmp": {
                 "tmp_base_path": "/tmp",
-                "tmp_path": "/tmp/doc-example-com"
-            }
-        }
+                "tmp_path": "/tmp/doc-example-com",
+            },
+        },
     }
 
 
@@ -129,7 +127,7 @@ def test_env_no_config_no_role(tmp_path, runner):
     with changedir(tmp_path):
         # invoke without --role and --config
         result = runner.invoke(
-            cli, ["--role=production", "showconfig", "env"], obj=context
+            cli, ["--role=production", "showconfig", "env"], obj=context,
         )
 
     assert result.exit_code != 0

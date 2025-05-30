@@ -20,33 +20,36 @@ def test_valid_doctype():
 
 def test_str_in_doctype():
     doctype = Doctype(
-        product="sles", docset="15-SP6", lifecycle="supported", langs=["en-us"]
+        product="sles", docset="15-SP6", lifecycle="supported", langs=["en-us"],
     )
     assert str(doctype) == "sles/15-SP6@supported/en-us"
 
 
 def test_repr_in_doctype():
     doctype = Doctype(
-        product="sles", docset="15-SP6", lifecycle="supported", langs=["en-us"]
+        product="sles", docset="15-SP6", lifecycle="supported", langs=["en-us"],
     )
     assert (
         repr(doctype)
-        == "Doctype(product='sles', docset=[15-SP6], lifecycle='supported', langs=[en-us])"
+        == (
+            "Doctype(product='sles', docset=[15-SP6], lifecycle='supported', "
+            "langs=[en-us])"
+            )
     )
 
 
 def test_string_langs_in_doctype():
     doctype = Doctype(
-        product="sles", docset="15-SP6", lifecycle="supported", langs="en-us"
+        product="sles", docset="15-SP6", lifecycle="supported", langs="en-us",
     )
     assert doctype.langs == [LanguageCode("en-us")]
 
 
 def test_multiplestrings_langs_in_doctype():
     doctype = Doctype(
-        product="sles", docset="15-SP6", lifecycle="supported", langs="en-us,de-de"
+        product="sles", docset="15-SP6", lifecycle="supported", langs="en-us,de-de",
     )
-    assert doctype.langs == [LanguageCode("de-de"), LanguageCode("en-us"), ]
+    assert doctype.langs == [LanguageCode("de-de"), LanguageCode("en-us") ]
 
 
 @pytest.mark.parametrize(
@@ -165,7 +168,7 @@ def test_coerce_lifecycle_to_doctype():
 
 def test_sorted_docsets_in_doctype():
     dt1 = Doctype.from_str("sles/15-SP6,15-SP2,16-SP0/en-us")
-    assert dt1.docset == ["15-SP2", "15-SP6", "16-SP0", ]
+    assert dt1.docset == ["15-SP2", "15-SP6", "16-SP0" ]
 
 
 def test_sorted_langs_in_doctype():

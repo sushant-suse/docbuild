@@ -2,22 +2,19 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import click
+from click import Abort, Command, Context
 import pytest
 
-from click import Abort, Context, Command
-
-from docbuild.cli.context import DocBuildContext
-from docbuild.models.doctype import Doctype
 from docbuild.cli.build import (
-    is_subsumed_by,
     filter_redundant_doctypes,
+    is_subsumed_by,
     merge_doctypes,
     merge_two_doctypes,
     validate_doctypes,
 )
 from docbuild.cli.cli import cli
-
-from ..common import changedir
+from docbuild.cli.context import DocBuildContext
+from docbuild.models.doctype import Doctype
 
 
 @pytest.mark.parametrize(
@@ -26,7 +23,7 @@ from ..common import changedir
         ["sles/15-SP6/en-us", "sles/*/en-us"],
         ["sles/15-SP7/en-us", "*/*/en-us"],
         ["sles/16-SP0/en-us,de-de", "sles/16-SP0/*"],
-        ["sles/15,16/en-us,de-de", "//de-de,en-us"]
+        ["sles/15,16/en-us,de-de", "//de-de,en-us"],
     ],
 )
 def test_is_subsumed_by(doctypes):
@@ -119,7 +116,7 @@ def test_validate_doctypes_abort(monkeypatch):
         return DummyDoctype(s)
 
     monkeypatch.setattr(
-        "docbuild.cli.build.Doctype.from_str", staticmethod(raise_for_invalid)
+        "docbuild.cli.build.Doctype.from_str", staticmethod(raise_for_invalid),
     )
 
     with pytest.raises(Abort, match="is not a valid Product"):
@@ -141,7 +138,7 @@ def test_validate_doctypes_called_from_build(monkeypatch, runner):
     context = DocBuildContext()
     result = runner.invoke(
         cli, ["--role=production", "build", "sles/17/en-us"],
-        obj=context
+        obj=context,
     )
 
     assert result.exit_code == 0
@@ -170,8 +167,8 @@ def patch_doctype(monkeypatch):
                 "from_str": staticmethod(lambda s: DummyDoctype(s)),
                 "model_fields": {
                     "field": type(
-                        "Field", (), {"description": "desc", "examples": ["ex"]}
-                    )()
+                        "Field", (), {"description": "desc", "examples": ["ex"]},
+                    )(),
                 },
             },
         ),
@@ -210,12 +207,12 @@ def test_validate_doctypes_invalid(monkeypatch, ctx):
             (),
             {
                 "from_str": staticmethod(
-                    lambda s: (_ for _ in ()).throw(Abort())
+                    lambda s: (_ for _ in ()).throw(Abort()),
                 ),
                 "model_fields": {
                     "field": type(
-                        "Field", (), {"description": "desc", "examples": ["ex"]}
-                    )()
+                        "Field", (), {"description": "desc", "examples": ["ex"]},
+                    )(),
                 },
             },
         ),
@@ -259,7 +256,7 @@ def test_merge_two_doctypes(dt1_str, dt2_str, expected_strs, monkeypatch):
 
     # Compare attributes rather than string representation for reliable comparison
     assert len(result) == len(expected)
-    for r, e in zip(result, expected):
+    for r, e in zip(result, expected, strict=False):
         assert r.product == e.product
         assert r.docset == e.docset
         assert r.lifecycle == e.lifecycle
@@ -273,12 +270,12 @@ def test_merge_two_doctypes(dt1_str, dt2_str, expected_strs, monkeypatch):
         (("sles/15-SP6/en-us",), [DummyDoctype("sles/15-SP6/en-us")]),
         (
             ("sles/15-SP6/en-us", "suma/4.3/de-de"),
-            [DummyDoctype("sles/15-SP6/en-us"), DummyDoctype("suma/4.3/de-de")]
+            [DummyDoctype("sles/15-SP6/en-us"), DummyDoctype("suma/4.3/de-de")],
         ),
     ],
 )
 def test_validate_doctypes_with_doctypes(ctx, doctypes, expected):
-    """Test validate_doctypes with different doctype inputs"""
+    """Test validate_doctypes with different doctype inputs."""
     context = ctx(SimpleNamespace(doctypes=[]))
 
     result = validate_doctypes(context, None, doctypes)
@@ -287,7 +284,7 @@ def test_validate_doctypes_with_doctypes(ctx, doctypes, expected):
 
 
 def test_validate_doctypes_validation_error(monkeypatch, ctx, capsys):
-    """Test that validation errors are properly formatted and displayed"""
+    """Test that validation errors are properly formatted and displayed."""
     context = ctx(SimpleNamespace(doctypes=[]))
 
     # Create a mock ValidationError with the structure expected in validate_doctypes
@@ -296,7 +293,7 @@ def test_validate_doctypes_validation_error(monkeypatch, ctx, capsys):
             return [
                 {"loc": ["product"],
                  "msg": "Invalid product name",
-                 "type": "value_error",}
+                 "type": "value_error"},
             ]
 
     def mock_from_str(s: str):
@@ -306,12 +303,13 @@ def test_validate_doctypes_validation_error(monkeypatch, ctx, capsys):
 
     # Patch necessary methods
     monkeypatch.setattr("docbuild.cli.build.ValidationError", MockValidationError)
-    monkeypatch.setattr("docbuild.cli.build.Doctype.from_str", staticmethod(mock_from_str))
+    monkeypatch.setattr("docbuild.cli.build.Doctype.from_str",
+                        staticmethod(mock_from_str))
     monkeypatch.setattr("docbuild.cli.build.Doctype.model_fields", {
         "product": type("Field", (), {
             "description": "Product name must be alphanumeric",
-            "examples": ["sles", "suma"]
-        })()
+            "examples": ["sles", "suma"],
+        })(),
     })
 
     # Test that the function properly aborts and formats error messages
@@ -325,7 +323,7 @@ def test_validate_doctypes_validation_error(monkeypatch, ctx, capsys):
 
 
 def test_validate_doctypes_merge_called(monkeypatch, ctx):
-    """Test that merge_doctypes is called with the correct arguments"""
+    """Test that merge_doctypes is called with the correct arguments."""
     context = ctx(SimpleNamespace())
     doctypes = ("sles/15/en-us", "suma/4.3/de-de")
 
@@ -339,16 +337,18 @@ def test_validate_doctypes_merge_called(monkeypatch, ctx):
 
     monkeypatch.setattr("docbuild.cli.build.merge_doctypes", mock_merge)
 
-    result = validate_doctypes(context, None, doctypes)
+    validate_doctypes(context, None, doctypes)
 
     # Verify merge_doctypes was called with both doctypes
     assert len(mock_merge_called_with) == 2
     assert all(isinstance(dt, DummyDoctype) for dt in mock_merge_called_with)
-    assert [dt.value for dt in mock_merge_called_with] == ["sles/15/en-us", "suma/4.3/de-de"]
+    assert [dt.value for dt in mock_merge_called_with] == [
+        "sles/15/en-us", "suma/4.3/de-de",
+    ]
 
 
 def test_validate_doctypes_echo_outputs(ctx, capsys):
-    """Test the echo statements in validate_doctypes"""
+    """Test the echo statements in validate_doctypes."""
     context = ctx(SimpleNamespace())
     validate_doctypes(context, None, ("sles/15/en-us",))
 

@@ -1,7 +1,7 @@
 import pytest
 
-from docbuild.models.env.serverroles import ServerRole
 from docbuild.constants import SERVER_ROLES
+from docbuild.models.env.serverroles import ServerRole
 
 
 @pytest.mark.parametrize("role", SERVER_ROLES)
