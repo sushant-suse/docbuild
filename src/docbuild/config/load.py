@@ -7,7 +7,7 @@ import tomllib as toml
 from typing import Any
 
 from ..constants import DEFAULT_ENV_CONFIG_FILENAME, ENV_CONFIG_FILENAME
-from ..models.env.serverroles import ServerRole
+from ..models.serverroles import ServerRole
 from .app import Container, replace_placeholders
 from .merge import deep_merge
 

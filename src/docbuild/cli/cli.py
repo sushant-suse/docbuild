@@ -15,7 +15,7 @@ from ..constants import (
     SERVER_ROLES,
     SHARE_ENV_CONFIG_FILENAME,
 )
-from ..models.env.serverroles import ServerRole
+from ..models.serverroles import ServerRole
 from .build import build
 from .c14n import c14n
 from .context import DocBuildContext

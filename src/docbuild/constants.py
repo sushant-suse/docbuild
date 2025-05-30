@@ -2,7 +2,7 @@
 
 import re
 
-from .models.env.serverroles import ServerRole
+from .models.serverroles import ServerRole
 
 APP_NAME = "docbuild"
 

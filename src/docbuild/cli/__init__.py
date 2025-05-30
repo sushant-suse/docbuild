@@ -5,7 +5,7 @@ import click
 from ..config.app import replace_placeholders
 from ..config.load import load_and_merge_configs, load_single_config
 from ..constants import CONFIG_PATHS, ENV_CONFIG_FILENAME, SHARE_ENV_CONFIG_FILENAME
-from ..models.env.serverroles import ServerRole
+from ..models.serverroles import ServerRole
 
 
 def validate_options(ctx: click.Context) -> None:
