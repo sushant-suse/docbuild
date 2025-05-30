@@ -141,7 +141,7 @@ def merge_doctypes(*doctypes: Doctype) -> list[Doctype]:
 
 
 def merge_two_doctypes(dt1: Doctype, dt2: Doctype
-                       ) -> list[Doctype] | list[Doctype, Doctype]:
+                       ) -> list[Doctype]:
     if (dt1.product != dt2.product or
         dt1.lifecycle != dt2.lifecycle or
         dt1.langs != dt2.langs
@@ -189,9 +189,11 @@ def validate_doctypes(ctx: click.Context,
         except ValidationError as err:
             for error in err.errors():
                 field = error["loc"][0]
+                # Convert to string to ensure it works as dictionary key
+                field_name = str(field)
                 msg = error["msg"]
-                hint = Doctype.model_fields[field].description
-                example = Doctype.model_fields[field].examples
+                hint = Doctype.model_fields[field_name].description
+                example = Doctype.model_fields[field_name].examples
                 click.secho(
                     f"ERROR in '{field}': {msg}",
                     fg="red",
@@ -202,7 +204,6 @@ def validate_doctypes(ctx: click.Context,
                 if example:
                     click.echo(f"  → Examples: {', '.join(example)}")
                 click.echo()
-
             #for idx, err in enumerate(e.errors(), 1):
             #    loc = " → ".join(str(p) for p in err["loc"])
             #    msg = err["msg"]

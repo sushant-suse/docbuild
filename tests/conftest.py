@@ -36,3 +36,13 @@ tmp_path = "{tmp_base_path}/doc-example-com"
 """
     default_env_config_filename.write_text(content)
     return default_env_config_filename
+
+
+@pytest.fixture
+def ctx():
+    """Provides a dummy context object for testing."""
+    class DummyCtx:
+        def __init__(self, obj):
+            self.obj = obj
+
+    return DummyCtx
