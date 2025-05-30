@@ -18,8 +18,8 @@ from ..constants import (
 from ..models.serverroles import ServerRole
 from .build import build
 from .c14n import c14n
-from .context import DocBuildContext
 from .config import config
+from .context import DocBuildContext
 
 
 class DocbuildGroup(click.Group):
@@ -58,7 +58,6 @@ class DocbuildGroup(click.Group):
                 context.envconfigfiles = (DEFAULT_ENV_CONFIG_FILENAME,)
             if env_config:
                 context.envconfigfiles = (env_config,)
-            print(f"DocbuildGroup.invoke: {context=}")
 
         return super().invoke(ctx)
 

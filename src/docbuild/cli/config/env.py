@@ -1,4 +1,4 @@
-"""Shows the configuration of the application."""
+"""Shows the configuration of the environment files."""
 
 
 import click
@@ -14,4 +14,3 @@ def env(ctx: click.Context) -> None:
     """Show the ENV configuration."""
     click.secho(f"# ENV Config file '{ctx.obj.envconfigfiles}'", fg="blue")
     print(Pretty(ctx.obj.envconfig, expand_all=True))
-    # print(">>>", ctx.obj)

@@ -3,10 +3,11 @@
 import click
 
 from .env import env
+from .app import app
 
 
 @click.group(
-    name="showconfig",
+    name="config",
     help=__doc__,
 )
 @click.pass_context
@@ -15,5 +16,6 @@ def config(ctx: click.Context) -> None:
     pass
 
 
-# showconfig.add_command(app)
+# Register the subcommands for the config group
 config.add_command(env)
+config.add_command(app)
