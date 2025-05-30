@@ -1,19 +1,20 @@
+"""Define the Doctype model."""
+
 import re
-from typing import Annotated, ClassVar, Pattern, Self
+from re import Pattern
+from typing import Annotated, ClassVar, Self
 
-
-from pydantic import BaseModel, field_validator, Field
+from pydantic import BaseModel, Field, field_validator
 
 from .language import LanguageCode
-from .lifecycle import LifecycleFlag
+from .lifecycle import BaseLifecycleFlag, LifecycleFlag
 from .product import Product
 
 
 #--- Models
 class Doctype(BaseModel):
-    """A "doctype" that comprises of a product, docset,
-    lifecycle, and language.
-    """
+    """A "doctype" that comprises of a product, docset, lifecycle, and language."""
+
     product: Annotated[
         Product,
         Field(
@@ -55,7 +56,7 @@ class Doctype(BaseModel):
                 "After validation, docsets are sorted"
             ),
             examples=["en-us", "de-de"],
-        )
+        ),
     ]
 
     # Pre-compile regex for efficiency
@@ -66,7 +67,7 @@ class Doctype(BaseModel):
         r"(?:([^/@]+|\*))?"  # optional product (group 1)
         r"/(?:([^/@]+|\*))?"  # optional docset (group 2)
         r"(?:@([a-z]+(?:[,|][a-z]+)*))?"  # optional lifecycle (group 3)
-        r"/(\*|[\w-]+(?:,[\w-]+)*)$"  # required langs (group 4)
+        r"/(\*|[\w-]+(?:,[\w-]+)*)$",  # required langs (group 4)
     )
 
     # dunder methods
@@ -83,6 +84,7 @@ class Doctype(BaseModel):
         )
 
     def __lt__(self, other: object) -> bool:
+        """Check if this Doctype is less than another Doctype."""
         if not isinstance(other, Doctype):
             return NotImplemented
 
@@ -95,12 +97,13 @@ class Doctype(BaseModel):
         ) < (other.product, other.lifecycle, other.docset, other.langs)
 
     def __str__(self) -> str:
+        """Implement str(self)."""
         langs_str = ",".join(lang.language for lang in self.langs)
         docset_str = ",".join(self.docset)
         return f"{self.product.value}/{docset_str}@{self.lifecycle.name}/{langs_str}"
 
     def __repr__(self) -> str:
-        """Implement repr(self)"""
+        """Implement repr(self)."""
         langs_str = ",".join(lang.language for lang in self.langs)
         docset_str = ",".join(self.docset)
         return (
@@ -112,7 +115,7 @@ class Doctype(BaseModel):
         )
 
     def __contains__(self, other: "Doctype") -> bool:
-        """Returns if bool(other in self)
+        """Return if bool(other in self).
 
         Every part of a Doctype is compared element-wise.
         """
@@ -125,33 +128,37 @@ class Doctype(BaseModel):
                 set(other.docset).issubset(self.docset) or "*" in self.docset,
                 other.lifecycle in self.lifecycle,
                 set(other.langs).issubset(self.langs) or "*" in self.langs,
-            ]
+            ],
         )
 
     def __hash__(self) -> int:
-        """Implement hash(self)"""
+        """Implement hash(self)."""
         return hash(
             (
                 self.product,
                 tuple(self.docset),
                 tuple(self.langs),
-            )
+            ),
         )
 
     # Validators
     @field_validator("product", mode="before")
-    def coerce_product(cls, value: str|Product):
-        """Converts a string into a valid Product"""
+    @classmethod
+    def coerce_product(cls, value: str|Product) -> Product:
+        """Convert a string into a valid Product."""
         return value if isinstance(value, Product) else Product(value)
 
     @field_validator("docset", mode="before")
+    @classmethod
     def coerce_docset(cls, value: str | list[str]) -> list[str]:
-        """Converts a string into a list"""
+        """Convert a string into a list."""
         return sorted(value.split(",")) if isinstance(value, str) else sorted(value)
 
     @field_validator("lifecycle", mode="before")
-    def coerce_lifecycle(cls, value: str | LifecycleFlag):
-        """Converts a string into a LifecycleFlag"""
+    @classmethod
+    def coerce_lifecycle(
+        cls, value: str | LifecycleFlag) -> BaseLifecycleFlag:
+        """Convert a string into a LifecycleFlag."""
         if isinstance(value, str):
             # Delegate it to the LifecycleFlag to deal with
             # the correct parsing and validation
@@ -161,8 +168,9 @@ class Doctype(BaseModel):
             return value
 
     @field_validator("langs", mode="before")
-    def coerce_langs(cls, value: str|list[str|LanguageCode]):
-        """Converts a comma-separated string or a list of strings into LanguageCode"""
+    @classmethod
+    def coerce_langs(cls, value: str|list[str|LanguageCode]) -> list[LanguageCode]:
+        """Convert a comma-separated string or a list of strings into LanguageCode."""
         # Allow list of strings or Language enums
         if isinstance(value, str):
             value = sorted(value.split(","))
@@ -195,5 +203,5 @@ class Doctype(BaseModel):
         return cls(product=product,
                    docset=docset,
                    lifecycle=lifecycle,
-                   langs=langs
+                   langs=langs,
         )

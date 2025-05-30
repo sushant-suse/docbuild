@@ -1,3 +1,5 @@
+"""Lifecycle model for docbuild."""
+
 from enum import Flag
 import re
 
@@ -7,9 +9,11 @@ SEPARATOR = re.compile(r"[|,]")
 
 
 class BaseLifecycleFlag(Flag):
+    """Base class for LifecycleFlag."""
+
     @classmethod
     def from_str(cls, value: str) -> "BaseLifecycleFlag":
-        """From a string create a LifecycleFlag object
+        """Convert a string to a LifecycleFlag object.
 
         The string is either a comma or pipe separated list.
 
@@ -27,14 +31,14 @@ class BaseLifecycleFlag(Flag):
 
             return flag
 
-        except KeyError as e:
+        except KeyError as err:
             allowed = ", ".join(cls.__members__.keys())
             raise ValueError(
-                f"Invalid lifecycle name: {e.args[0]!r}. Allowed values: {allowed}"
-            )
+                f"Invalid lifecycle name: {err.args[0]!r}. Allowed values: {allowed}",
+            ) from err
 
     def __contains__(self, other: str|Flag) -> bool:
-        """Returns True if self has at least one of same flags set as other.
+        """Return True if self has at least one of same flags set as other.
 
         >>> "supported" in Lifecycle.beta
         False

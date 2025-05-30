@@ -1,13 +1,14 @@
+"""Language model for representing language codes."""
+
 from functools import total_ordering
 import re
-from typing import Annotated, ClassVar
+from typing import Annotated, Any, ClassVar
 
-from pydantic import BaseModel, computed_field, Field
+from pydantic import BaseModel, Field, computed_field
 from pydantic.config import ConfigDict
 from pydantic.functional_validators import field_validator
 
 from ..constants import ALLOWED_LANGUAGES
-
 
 # Old definition:
 # Language allows all the definied languages, but also "*" (=ALL).
@@ -21,7 +22,7 @@ from ..constants import ALLOWED_LANGUAGES
 
 @total_ordering
 class LanguageCode(BaseModel):
-    """The language in the format language-country (all lowercase)
+    """The language in the format language-country (all lowercase).
 
     It accepts also an underscore as a separator instead of a dash.
     Use "*" to denote "ALL" languages
@@ -42,26 +43,26 @@ class LanguageCode(BaseModel):
     model_config = ConfigDict(frozen=True)
 
     ALLOWED_LANGS: ClassVar[frozenset] = frozenset(
-        {"*"} | ALLOWED_LANGUAGES
+        {"*"} | ALLOWED_LANGUAGES,
     )
 
-    def __init__(self, language, **kwargs):
+    def __init__(self, language: str, **kwargs: dict[Any, Any]) -> None:
         super().__init__(language=language.replace("_", "-"), **kwargs)
         if language == "*":
             self._lang, self._country = ("*", "*")
         else:
             self._lang, self._country = re.split(r"[_-]", language)
 
-    def __str__(self):
-        """Implement str(self)"""
+    def __str__(self) -> str:
+        """Implement str(self)."""
         return f"{self.language}"
 
-    def __repr__(self):
-        """Implement repr(self)"""
+    def __repr__(self) -> str:
+        """Implement repr(self)."""
         return f"{self.__class__.__name__}(language={str(self)!r})"
 
     def __eq__(self, other: "object|str|LanguageCode") -> bool:
-        """Implement self == other
+        """Implement self == other.
 
         The comparison does NOT break the principle of equality:
         * Reflexive: a == b
@@ -77,7 +78,7 @@ class LanguageCode(BaseModel):
         return NotImplemented
 
     def __lt__(self, other: "object|str|LanguageCode") -> bool:
-        """Implement self < other
+        """Implement self < other.
 
         Special properties:
         - "*" is always the "smallest" language
@@ -101,13 +102,14 @@ class LanguageCode(BaseModel):
         return self.language < other_value
 
     def __hash__(self) -> int:
-        """Implement hash(self)
+        """Implement hash(self).
 
-        For using 'in sets' or as dict keys"""
+        For using 'in sets' or as dict keys
+        """
         return hash(self.language)
 
     def matches(self, other: "LanguageCode | str") -> bool:
-        """Returns True if this LanguageCode matches the other, considering wildcards.
+        """Return True if this LanguageCode matches the other, considering wildcards.
 
         '*' matches any language
 
@@ -123,8 +125,8 @@ class LanguageCode(BaseModel):
 
     @field_validator("language")
     @classmethod
-    def validate_language(cls, value):
-        """Check if the passed language adheres to the allowed language"""
+    def validate_language(cls, value: str) -> str:
+        """Check if the passed language adheres to the allowed language."""
         # value = value.replace("_", "-")
         if value not in cls.ALLOWED_LANGS:
             raise ValueError(
@@ -136,12 +138,10 @@ class LanguageCode(BaseModel):
     @computed_field(
         repr=False,
         title="The language part of the language code",
-        examples=["en", "de", "ja"]
+        examples=["en", "de", "ja"],
     )
     def lang(self) -> str:
-        """Extracts the language part of the language code
-        (property)
-        """
+        """Extract the language part of the language code (property)."""
         return self._lang
 
     @computed_field(
@@ -150,7 +150,5 @@ class LanguageCode(BaseModel):
         examples=["us", "de", "jp"],
     )
     def country(self) -> str:
-        """Extracts the country part of the language code
-        (property)
-        """
+        """Extract the country part of the language code (property)."""
         return self._country

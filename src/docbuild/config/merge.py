@@ -1,4 +1,4 @@
-
+"""Merge multiple dictionaries into a new one without modifying inputs."""
 
 from collections.abc import Mapping
 from typing import Any
@@ -8,13 +8,13 @@ def deep_merge(
     # dct1: ,
     *dcts: dict[str, Any],
 ) -> dict[str, Any]:
-    """
-    Merge multiple dictionaries into a new one without modifying inputs.
+    """Merge multiple dictionaries into a new one without modifying inputs.
 
     Make a deep copy of the first dictionary and then update it with the
     subsequent dictionaries:
 
-    * If a key exists in both dictionaries, the value from the last dictionary will overwrite the previous one.
+    * If a key exists in both dictionaries, the value from the last dictionary
+      qwill overwrite the previous one.
     * If the value is a list, it will concatenate the lists.
     * If the value is a primitive type, it will overwrite the value.
     * If a key exists in multiple dictionaries, the last one will take precedence.
@@ -26,7 +26,6 @@ def deep_merge(
     :return: A new dictionary containing the merged values
             (does not change the passed dictionaries).
     """
-
     if not dcts:
         return {}
 
@@ -41,8 +40,8 @@ def deep_merge(
             for key, value in d2.items():
                 if (
                     key in merged
-                    and isinstance(d1[key], (dict, Mapping))
-                    and isinstance(value, (dict, Mapping))
+                    and isinstance(d1[key], dict | Mapping)
+                    and isinstance(value, dict | Mapping)
                 ):
                     stack.append((d1[key], value))
                 else:

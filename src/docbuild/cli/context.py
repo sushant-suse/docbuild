@@ -1,14 +1,17 @@
+"""Context for the docbuild CLI commands."""
+
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any
+
 from ..models.doctype import Doctype
 from ..models.env.serverroles import ServerRole
 
 
 @dataclass
 class DocBuildContext:
-    """The CLI context shared between different subcommands
-    """
+    """The CLI context shared between different subcommands."""
+
     # --dry-run
     dry_run: bool = False
 

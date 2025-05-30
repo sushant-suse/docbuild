@@ -1,13 +1,16 @@
+"""Products for the docbuild application."""
+
 from enum import EnumMeta, StrEnum
-from typing import Any
+from typing import Never
 
 # from pydantic import BaseModel, computed_field
-
 from ..constants import ALLOWED_PRODUCTS
 
 
 class StrEnumMeta(EnumMeta):
-    def __getitem__(cls, key: str) -> Any:
+    """Custom metaclass for StrEnum to allow attribute-style access."""
+
+    def __getitem__(cls, key: str) -> "StrEnumMeta":
         """Access enum members using attribute-style names with underscores."""
         candidate = key.replace("-", "_")
         try:
@@ -16,27 +19,21 @@ class StrEnumMeta(EnumMeta):
             allowed = ", ".join(repr(member.value) for member in cls)
             raise KeyError(
                 f"{key!r} is not a valid member name or value for {cls.__name__}. "
-                f"Allowed (values): {allowed}"
-            )
+                f"Allowed (values): {allowed}",
+            ) from None
 
 class BaseProductEnum(StrEnum, metaclass=StrEnumMeta):
+    """Base class for product enums with custom error handling."""
+
     @classmethod
-    def _missing_(cls, value: Any):
-        """Custom error for unknown values."""
+    def _missing_(cls, value: "Product") -> Never:
+        """Raise custom error for unknown values."""
         allowed = ", ".join(repr(v.value) for v in cls)
         raise ValueError(
             f"{value!r} is not a valid {cls.__name__}. "
-            f"Allowed values are: {allowed}"
+            f"Allowed values are: {allowed}",
         )
 
-    # @classmethod
-    # def attr(cls, name: str):
-    #     """Access enum members using attribute-style names with underscores."""
-    #     normalized = name.replace("-", "_")
-    #     for member in cls:
-    #         if member.value == normalized:
-    #             return member
-    #     return cls._missing_(name)
 
 # Products allows all our SUSE product names, but also "*" (=ALL).
 # We only define "ALL" as uppercase to denote a constant, the rest is lowercase.

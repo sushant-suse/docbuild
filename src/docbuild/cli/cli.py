@@ -1,31 +1,32 @@
+"""Main CLI tool for document operations."""
+
 from pathlib import Path
-import sys
-from typing import cast
 
 import click
-from click_option_group import optgroup, MutuallyExclusiveOptionGroup
-
-
+from click_option_group import MutuallyExclusiveOptionGroup, optgroup
 
 from ..__about__ import __version__
 from ..config.load import load_and_merge_configs, process_envconfig_and_role
 from ..constants import (
     APP_CONFIG_FILENAME,
-    DEFAULT_ENV_CONFIG_FILENAME,
     CONFIG_PATHS,
+    DEFAULT_ENV_CONFIG_FILENAME,
     ENV_CONFIG_FILENAME,
     SERVER_ROLES,
     SHARE_ENV_CONFIG_FILENAME,
 )
 from ..models.env.serverroles import ServerRole
-from .context import DocBuildContext
 from .build import build
 from .c14n import c14n
+from .context import DocBuildContext
 from .showconfig import showconfig
 
 
 class DocbuildGroup(click.Group):
-    def invoke(self, ctx):
+    """Custom click group to handle the docbuild CLI commands."""
+
+    def invoke(self, ctx: click.Context):  # noqa: ANN201
+        """Override the invoke method to handle command-line options."""
         # click.echo(
         #      f"DocbuildGroup.invoke: {ctx=} {ctx.parent=} "
         #      f"{ctx.invoked_subcommand=} {ctx.args=} "
@@ -37,11 +38,11 @@ class DocbuildGroup(click.Group):
             env_config = ctx.params.get("env_config")
             if not role and not env_config:
                     raise click.UsageError(
-                         "Must provide one of: --role or --env-config"
+                         "Must provide one of: --role or --env-config",
                     )
             if role and env_config:
                 raise click.UsageError(
-                         "--role and --env-config are mutually exclusive"
+                         "--role and --env-config are mutually exclusive",
                     )
 
             # Ensure ctx.obj exists
@@ -113,14 +114,14 @@ class DocbuildGroup(click.Group):
 )
 # @pass_docbuild
 @click.pass_context
-def cli(ctx,
+def cli(ctx: click.Context,
         verbose: int,
         env_config: Path,
         role: str,
         dry_run: bool,
         debug: bool,
-):
-    """Main CLI tool for document operations."""
+) -> None:
+    """Acts as a main entry point for CLI tool."""
     # ctx.ensure_object(DocBuildContext)
     if ctx.obj is None:
         click.echo("Creating new DocBuildContext object")

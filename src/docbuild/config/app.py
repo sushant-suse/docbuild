@@ -1,17 +1,12 @@
-from collections.abc import Sequence
-from pathlib import Path
+"""Application configuration handling."""
+
 import re
-from typing import Any, TypedDict
+from typing import Any
 
 # import tomlkit as toml
-import tomllib as toml
-
 from ..constants import (
-    CONFIG_PATHS,
-    APP_CONFIG_FILENAME,
-    PLACEHOLDER_PATTERN
+    PLACEHOLDER_PATTERN,
 )
-from .merge import deep_merge
 
 # class StackItem(TypedDict):
 #     container: Container
@@ -26,10 +21,9 @@ StackItem = tuple[Container, str | int, Container]
 MAX_RECURSION_DEPTH: int = 10
 
 
-def replace_placeholders(config: Container,
+def replace_placeholders(config: Container,  # noqa: C901
                          max_recursion_depth: int = MAX_RECURSION_DEPTH) -> Container:
-    """
-    Replace placeholder values in a nested dictionary structure, e.g., from a TOML config.
+    """Replace placeholder values in a nested dictionary structure.
 
     - `{foo}` resolves from the current section.
     - `{a.b.c}` resolves deeply from the config.
@@ -40,9 +34,10 @@ def replace_placeholders(config: Container,
     :raises KeyError: If a placeholder cannot be resolved.
     """
 
-    def lookup_placeholder(path: str, context: Container, container_name: str) -> Any:
+    def lookup_placeholder(path: str, context: Container, container_name: str,
+                           ) -> Container:
         parts = path.split(".")
-        value: Any = context
+        value = context
         resolved_path = []
 
         for part in parts:
@@ -52,13 +47,13 @@ def replace_placeholders(config: Container,
                 raise KeyError(
                     f"While resolving '{{{path}}}' in '{container_name}': "
                     f"'{full_path}' is not a dictionary "
-                    f"(got type {type(value).__name__})."
+                    f"(got type {type(value).__name__}).",
                 )
             if part not in value:
                 full_path = ".".join(resolved_path)
                 raise KeyError(
                     f"While resolving '{{{path}}}' in '{container_name}': "
-                    f"missing key '{part}' in path '{full_path}'."
+                    f"missing key '{part}' in path '{full_path}'.",
                 )
             value = value[part]
 
@@ -66,7 +61,8 @@ def replace_placeholders(config: Container,
 
     def replacement(match: re.Match, container: Container, key: str | int) -> str:
         inner = match.group(1)
-        container_name = str(key) if isinstance(key, str) else f"list item at index {key}"
+        container_name = str(key) if isinstance(key, str) \
+                         else f"list item at index {key}"
 
         if "." in inner:
             return str(lookup_placeholder(inner, config, container_name))
@@ -74,7 +70,8 @@ def replace_placeholders(config: Container,
             return str(container[inner])
         else:
             raise KeyError(
-                f"While resolving '{{{inner}}}' in '{container_name}': key '{inner}' not found in current section."
+                f"While resolving '{{{inner}}}' in '{container_name}': "
+                f"key '{inner}' not found in current section.",
             )
 
     def resolve_string(s: str, container: Container, key: str | int) -> str:
@@ -101,7 +98,7 @@ def replace_placeholders(config: Container,
 
         elif isinstance(value, list):
             for i, item in enumerate(value):
-                if isinstance(item, (dict, list, str)):
+                if isinstance(item, dict | list | str):
                     stack.append((value, i, context))
 
         elif isinstance(value, dict):

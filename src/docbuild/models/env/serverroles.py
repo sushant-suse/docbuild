@@ -1,4 +1,7 @@
+"""Server roles for the docbuild application."""
+
 from enum import StrEnum
+
 # from typing import Literal, Type
 
 # from pydantic import BaseModel, field_validator, Field
@@ -14,6 +17,8 @@ from enum import StrEnum
 # )
 
 class ServerRole(StrEnum):
+    """The server role."""
+
     # production
     PRODUCTION = "production"
     PROD = PRODUCTION

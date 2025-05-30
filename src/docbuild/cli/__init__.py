@@ -1,4 +1,4 @@
-
+"""docbuild - A tool for building documentation from source files."""
 
 import click
 
@@ -9,7 +9,7 @@ from ..models.env.serverroles import ServerRole
 
 
 def validate_options(ctx: click.Context) -> None:
-    # Check for mutually exclusive options only when a command is executed
+    """Check for mutually exclusive options only when a command is executed."""
     if not (ctx.obj.role or ctx.obj.envconfig):
         raise click.UsageError("You must provide either --role or --env-config.")
 
@@ -30,4 +30,4 @@ def validate_options(ctx: click.Context) -> None:
                 fg="red",
                 err=True,
             )
-            raise click.Abort()
+            raise click.Abort() from e

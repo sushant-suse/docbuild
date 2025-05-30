@@ -1,13 +1,16 @@
+"""Constants for docbuild application."""
+
 import re
 
 from .models.env.serverroles import ServerRole
-
 
 APP_NAME = "docbuild"
 
 DEFAULT_LANGS = ("en-us",)
 #: All languages supported by the documentation portal
-ALLOWED_LANGUAGES = frozenset("de-de en-us es-es fr-fr ja-jp ko-kr pt-br zh-cn".split(" "))
+ALLOWED_LANGUAGES = frozenset(
+    "de-de en-us es-es fr-fr ja-jp ko-kr pt-br zh-cn".split(" "),
+)
 
 #: The different server roles, including long and short spelling
 #: see docbuild.models.env.serverrole.ServerRole
@@ -32,7 +35,8 @@ DEFAULT_LIFECYCLE = "supported"
 #: - value: /product/name
 #
 # Use the following command to create the output below:
-# xmlstarlet sel -t -v '/product/@productid' -o ' ' -v '/product/name' -nl config.d/[a-z]*.xml
+# xmlstarlet sel -t -v '/product/@productid' -o ' '\
+#   -v '/product/name' -nl config.d/[a-z]*.xml
 VALID_PRODUCTS: dict[str, str] = {
     key.strip(): value.strip()
     for key, value in (line.split(" ", 1)
@@ -74,7 +78,7 @@ ALLOWED_PRODUCTS = tuple([item for item in VALID_PRODUCTS])
 SINGLE_LANG_REGEX = re.compile(r"[a-z]{2}-[a-z]{2}")
 MULTIPLE_LANG_REGEX = re.compile(
     rf"^({SINGLE_LANG_REGEX.pattern},)*"
-    rf"{SINGLE_LANG_REGEX.pattern}"
+    rf"{SINGLE_LANG_REGEX.pattern}",
 )
 
 #: Regex for splitting a path into its components
@@ -100,7 +104,7 @@ CONFIG_PATHS = (
     # The user config path:
     f"~/.config/{APP_NAME}",
     # The current working/project directory:
-    "./"
+    "./",
 )
 
 #: The filename of the app's config file without any paths

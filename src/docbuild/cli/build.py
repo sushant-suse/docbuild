@@ -1,4 +1,4 @@
-"""Build a document
+"""Build a document.
 
 A document (or "doctype") consists of "[PRODUCT]/[DOCSET][@LIFECYCLES]/LANGS"
 with the following properties:
@@ -29,34 +29,31 @@ Examples of the doctypes syntax:
     Same as the previous one, but with comma as the separator between
     the lifecycle states.
 """
-from collections import defaultdict
-from itertools import chain
 
 import click
 from pydantic import ValidationError
 
-from .context import DocBuildContext
 from ..models.doctype import Doctype
-from ..models.language import LanguageCode
+from .context import DocBuildContext
 
 
 def is_subsumed_by(existing: Doctype, candidate: Doctype) -> bool:
-    """
-    Checks if the candidate Doctype can be considered a more general version
-    of the existing Doctype.
-    """
-    # Implement logic to check subsumption between two doctypes
+    """Check if candidate is more general than existing doctype."""
+    return (
+        (candidate.product in ["*", existing.product] and "*" in candidate.docset) or
+        (set(candidate.docset).issubset(existing.docset) and "*" in candidate.langs)
+    )
     # This could compare `product`, `docset`, `langs`, etc.
     return (
-        (candidate.product == "*" or existing.product == candidate.product)
-        and "*" in candidate.docset
-        or set(candidate.docset).issubset(existing.docset)
-        and "*" in candidate.langs
+        ((candidate.product == "*" or existing.product == candidate.product)
+        and "*" in candidate.docset)
+        or (set(candidate.docset).issubset(existing.docset)
+        and "*" in candidate.langs)
     )
 
 
 def filter_redundant_doctypes(doctypes: list[Doctype]) -> list[Doctype]:
-    """Filter redundant Doctype entries
+    """Filter redundant Doctype entries.
 
     For example, if you have sles/15-SP6/en-us and sles/*/en-us, then
     the first would be redundant as it is already included in the second.
@@ -73,26 +70,27 @@ def filter_redundant_doctypes(doctypes: list[Doctype]) -> list[Doctype]:
 
 
 def merge_doctypes(*doctypes: Doctype) -> list[Doctype]:
-    """
-    Merge a list of Doctype instances into a minimal set of non-redundant entries.
+    """Merge a list of Doctype instances into a minimal set of non-redundant entries.
 
     Strategy:
     - For each incoming Doctype `dt`, compare it to the existing `result` list.
     - If any existing Doctype can absorb `dt`, extend its docset/langs as needed.
     - If `dt` can absorb an existing one, replace it.
     - Otherwise, keep both.
-    - Wildcards ("*") are treated as "contains all" and will cause merging if overlap exists.
+    - Wildcards ("*") are treated as "contains all" and will cause merging
+      if overlap exists.
     - `docset` and `langs` are always sorted lists.
 
     Examples:
         'foo/1,2/en-us' + 'foo/*/en-us' => 'foo/*/en-us'
         'foo/1,2/*' + 'foo/1/en-us' => 'foo/1,2/*'
+
     """
     result: list[Doctype] = []
-    merged: bool = False
+    # merged: bool = False
 
     for dt in doctypes:
-        merged = False
+        # merged = False
         new_result = []
 
         for existing in result:
@@ -130,7 +128,7 @@ def merge_doctypes(*doctypes: Doctype) -> list[Doctype]:
                     langs=langs,
                     lifecycle=dt.lifecycle,  # assuming same lifecycle
                 )
-                merged = True
+                # merged = True
             else:
                 new_result.append(existing)
 
@@ -140,8 +138,9 @@ def merge_doctypes(*doctypes: Doctype) -> list[Doctype]:
     return result
 
 
-def merge_two_doctypes(dt1: Doctype, dt2: Doctype
+def merge_two_doctypes(dt1: Doctype, dt2: Doctype,
                        ) -> list[Doctype]:
+    """Merge two Doctype instances into a minimal set of non-redundant entries."""
     if (dt1.product != dt2.product or
         dt1.lifecycle != dt2.lifecycle or
         dt1.langs != dt2.langs
@@ -154,21 +153,21 @@ def merge_two_doctypes(dt1: Doctype, dt2: Doctype
         product=dt1.product,
         docset=list(set(dt1.docset + dt2.docset)),
         lifecycle=dt1.lifecycle,
-        langs=dt1.langs
-        )
+        langs=dt1.langs,
+        ),
     ]
 
 
 # --- Callback Function ---
 def validate_doctypes(ctx: click.Context,
     param: click.Parameter|None,
-    doctypes: tuple[str, ...]
+    doctypes: tuple[str, ...],
 ) -> list[Doctype]:
-    """
-    Click callback function to validate a list of doctype strings.
+    """Click callback function to validate a list of doctype strings.
 
     Each string must conform to the format: PRODUCT/DOCSET@LIFECYCLE/LANGS
-    LANGS can be a single language code, a comma-separated list (no spaces), or '*' for all.
+    LANGS can be a single language code, a comma-separated list (no spaces),
+    or '*' for all.
     Defaults and wildcards (*) are handled.
     """
     processed_data = []  # Store successfully parsed/validated data
@@ -208,7 +207,7 @@ def validate_doctypes(ctx: click.Context,
             #    loc = " → ".join(str(p) for p in err["loc"])
             #    msg = err["msg"]
             #    click.echo(f"  [{idx}] {loc}: {msg}", err=True)
-            raise click.Abort(err)
+            raise click.Abort(err) from err
 
         #except ValueError as e:
         #    click.secho(
@@ -229,7 +228,7 @@ def validate_doctypes(ctx: click.Context,
 
 
 @click.command(
-    help=__doc__
+    help=__doc__,
 )
 @click.argument(
     "doctypes",
@@ -237,8 +236,8 @@ def validate_doctypes(ctx: click.Context,
     callback=validate_doctypes,
 )
 @click.pass_context
-def build(ctx, doctypes):
-    """Subcommand build"""
+def build(ctx: click.Context, doctypes: tuple[str, ...]) -> None:
+    """Subcommand build."""
     ctx.ensure_object(DocBuildContext)
     context: DocBuildContext = ctx.obj
 

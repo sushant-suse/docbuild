@@ -1,10 +1,8 @@
-"""Shows config files how docbuild sees it.
-"""
+"""Shows config files how docbuild sees it."""
 
 import click
 
 from .env import env
-from ...cli.context import DocBuildContext
 
 
 @click.group(
@@ -12,7 +10,8 @@ from ...cli.context import DocBuildContext
     help=__doc__,
 )
 @click.pass_context
-def showconfig(ctx):
+def showconfig(ctx: click.Context) -> None:
+    """Show the configuration files and their content."""
     pass
 
 

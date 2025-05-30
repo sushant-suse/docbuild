@@ -11,5 +11,5 @@
         ".ruff_cache/": true,
         ".venv*/": true,
         "**/*.egg-info/": true
-    }
+    },
 }
