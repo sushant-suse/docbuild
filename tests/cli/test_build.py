@@ -123,24 +123,14 @@ def test_validate_doctypes_abort(monkeypatch):
         validate_doctypes(ctx, None, ("wrong/1/en-us",))
 
 
-def test_validate_doctypes_called_from_build(monkeypatch, runner):
+def test_validate_doctypes_called_from_build(context, fake_envfile, runner):
 
-    # Mock the config/environment loader to avoid file I/O
-    def fake_process_envconfig_and_role(env_config, role=None):
-        # Return whatever your CLI expects (envfile, envconfig)
-        return Path("fake_envfile"), {
-            "doctypes": [DummyDoctype("sles/17/en-us")],
-        }
-
-    monkeypatch.setattr("docbuild.cli.cli.process_envconfig_and_role",
-                        fake_process_envconfig_and_role)
-
-    context = DocBuildContext()
     result = runner.invoke(
         cli, ["--role=production", "build", "sles/17/en-us"],
         obj=context,
     )
 
+    assert fake_envfile.mock.call_count == 1
     assert result.exit_code == 0
     # assert "Got sles/17@supported/en-us" in result.output
     assert context.doctypes == [DummyDoctype("sles/17/en-us")]
@@ -225,20 +215,23 @@ def test_validate_doctypes_invalid(monkeypatch, ctx):
     "dt1_str, dt2_str, expected_strs",
     [
         # Different products - should stay separate
-        ("sles/15-SP6/en-us", "suma/15-SP6/en-us", ["sles/15-SP6/en-us", "suma/15-SP6/en-us"]),
+        ("sles/15-SP6/en-us", "suma/15-SP6/en-us",
+         ["sles/15-SP6/en-us", "suma/15-SP6/en-us"]),
 
         # Different lifecycle - should stay separate
         ("sles/15-SP6@supported/en-us", "sles/15-SP6@beta/en-us",
             ["sles/15-SP6@supported/en-us", "sles/15-SP6@beta/en-us"]),
 
         # Different langs - should stay separate
-        ("sles/15-SP6/en-us", "sles/15-SP6/de-de", ["sles/15-SP6/en-us", "sles/15-SP6/de-de"]),
+        ("sles/15-SP6/en-us", "sles/15-SP6/de-de",
+         ["sles/15-SP6/en-us", "sles/15-SP6/de-de"]),
 
         # Same everything except docset - should merge
         ("sles/15-SP6/en-us", "sles/15-SP4/en-us", ["sles/15-SP4,15-SP6/en-us"]),
 
         # Overlapping docsets - should merge and deduplicate
-        ("sles/15-SP5,15-SP6/en-us", "sles/15-SP6,16/en-us", ["sles/15-SP5,15-SP6,16/en-us"]),
+        ("sles/15-SP5,15-SP6/en-us", "sles/15-SP6,16/en-us",
+         ["sles/15-SP5,15-SP6,16/en-us"]),
 
         # Same docset - should return single doctype with same docset
         ("sles/15-SP6/en-us", "sles/15-SP6/en-us", ["sles/15-SP6/en-us"]),
@@ -328,7 +321,7 @@ def test_validate_doctypes_merge_called(monkeypatch, ctx):
     doctypes = ("sles/15/en-us", "suma/4.3/de-de")
 
     # Track merge_doctypes calls
-    mock_merge_called_with = None
+    mock_merge_called_with = []
 
     def mock_merge(*args):
         nonlocal mock_merge_called_with

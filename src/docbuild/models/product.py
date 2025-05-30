@@ -26,7 +26,7 @@ class BaseProductEnum(StrEnum, metaclass=StrEnumMeta):
     """Base class for product enums with custom error handling."""
 
     @classmethod
-    def _missing_(cls, value: "Product") -> Never:
+    def _missing_(cls, value: object) -> Never:
         """Raise custom error for unknown values."""
         allowed = ", ".join(repr(v.value) for v in cls)
         raise ValueError(

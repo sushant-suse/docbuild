@@ -1,5 +1,8 @@
 
 
+from unittest.mock import MagicMock
+
+import docbuild.config.load
 from docbuild.config.load import load_and_merge_configs, load_single_config
 from docbuild.constants import APP_CONFIG_FILENAME
 
@@ -72,9 +75,12 @@ def test_load_config_with_default_paths(tmp_path):
     assert config == {"app": {"default_used": True}}
 
 
-def test_when_path_does_not_exist(tmp_path):
-    # Create a non-existing path
-    non_existing_path = tmp_path / "non_existing_dir"
+def test_when_path_does_not_exist(monkeypatch):
+    non_existing_path = "non_existing_dir"
+
+    mock = MagicMock()
+    mock.return_value = (tuple(), {})
+    monkeypatch.setattr(docbuild.config.load, 'load_and_merge_configs', mock)
 
     cfgfiles, config = load_and_merge_configs(
         [APP_CONFIG_FILENAME],

@@ -1,4 +1,5 @@
 import re
+from typing import Any
 
 import pytest
 
@@ -181,7 +182,6 @@ def test_chained_cross_section_placeholders():
     }
 
     result = replace_placeholders(config)
-
     assert result["build"]["output"] == "/tmp/docbuild/doc-example-com/deliverable/"
 
 
