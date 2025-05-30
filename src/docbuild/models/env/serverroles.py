@@ -3,12 +3,9 @@
 from enum import StrEnum
 
 # from typing import Literal, Type
-
 # from pydantic import BaseModel, field_validator, Field
-
 # from ...constants import SERVER_ROLES
-
-
+#
 # ServerRole = StrEnum(
 #     "ServerRole",
 #     # Allow lowercase and uppercase names
