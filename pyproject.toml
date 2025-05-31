@@ -15,7 +15,7 @@ license-files = ["LICENSE"]
 dependencies = [
     "click>=8.1.8",
     "click-option-group>=0.5.7",
-    "jinja2>=3.1.6",
+    "jinja2>=3.1.6,<4.0.0",
     "lxml>=5.4.0",
     "pydantic>=2.11.4",
     "rich>=14.0.0",
@@ -38,6 +38,7 @@ classifiers = [
     # "Development Status :: 5 - Production/Stable",
     # "Development Status :: 6 - Mature",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
     "Topic :: Documentation",
@@ -48,7 +49,7 @@ classifiers = [
 typing = []
 formatting = [
     "docformatter>=1.7.5",
-    "ruff>=0.11.7",
+    "ruff>=0.11.12",
 ]
 tests = [
     "pytest>=8.3.5",
@@ -64,6 +65,7 @@ devel = [
   {include-group = "changelog"},
   # {include-group = "docs"},
   # {include-group = "publish"},
+  "ipython>=9.2.0",
 ]
 
 
