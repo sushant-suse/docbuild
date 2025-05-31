@@ -274,8 +274,15 @@ node_modules/
 
 ## ---- Toms' own rules
 #
-# Ignore files in the project's root:                                                               
-/*.patch                                                                                            
-/*.diff                                                                                             
+# Ignore files in the project's root:
+/*.patch
+/*.diff
 /*.py
 /tmp
+
+# Ignore all of .ipython except startup scripts
+/.ipython/*
+/.ipython/profile_default/history.sqlite
+!/.ipython/profile_default/
+!/.ipython/profile_default/startup/
+!/.ipython/profile_default/startup/*.py
