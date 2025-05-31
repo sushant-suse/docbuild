@@ -1,0 +1,5 @@
+# Allow package upgrades, ignoring pinned versions in any existing output file.
+upgrade = true
+
+# Allow upgrades for a specific package, ignoring pinned versions in any existing output file.
+upgrade-package = ["lxml"]
