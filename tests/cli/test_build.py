@@ -6,50 +6,11 @@ from click import Abort, Command, Context
 import pytest
 
 from docbuild.cli.build import (
-    filter_redundant_doctypes,
-    is_subsumed_by,
     merge_doctypes,
-    merge_two_doctypes,
     validate_doctypes,
 )
 from docbuild.cli.cli import cli
-from docbuild.cli.context import DocBuildContext
 from docbuild.models.doctype import Doctype
-
-
-@pytest.mark.parametrize(
-    "doctypes",
-    [
-        ["sles/15-SP6/en-us", "sles/*/en-us"],
-        ["sles/15-SP7/en-us", "*/*/en-us"],
-        ["sles/16-SP0/en-us,de-de", "sles/16-SP0/*"],
-        ["sles/15,16/en-us,de-de", "//de-de,en-us"],
-    ],
-)
-def test_is_subsumed_by(doctypes):
-    d1, d2 = Doctype.from_str(doctypes[0]), Doctype.from_str(doctypes[1])
-    assert is_subsumed_by(d1, d2)
-    assert not is_subsumed_by(d2, d1)
-
-
-@pytest.mark.skip("Not sure if we still need this function")
-@pytest.mark.parametrize(
-    "doctypes,expected",
-    [
-        # 1
-        (["sles/15-SP6/en-us", "sles/*/en-us"], ["sles/*/en-us"]),
-        # 2
-        (
-            ["sles/15-SP5,15-SP4/de-de", "sles/*@beta,supported/de-de"],
-            ["sles/*@beta,supported/de-de"],
-        ),
-        # 3
-        (["sles/15-SP5,15-SP4/*", "sles/15-SP4/en-us"], ["sles/15-SP5,15-SP4/*"]),
-    ],
-)
-def test_filter_redundant_doctypes(doctypes, expected):
-    result = filter_redundant_doctypes([Doctype.from_str(dt) for dt in doctypes])
-    assert result == [Doctype.from_str(dt) for dt in expected]
 
 
 @pytest.mark.skip("Needs more thought")
@@ -209,51 +170,6 @@ def test_validate_doctypes_invalid(monkeypatch, ctx):
     )
     with pytest.raises(click.Abort):
         validate_doctypes(context, None, ("bad/doctype",))
-
-
-@pytest.mark.parametrize(
-    "dt1_str, dt2_str, expected_strs",
-    [
-        # Different products - should stay separate
-        ("sles/15-SP6/en-us", "suma/15-SP6/en-us",
-         ["sles/15-SP6/en-us", "suma/15-SP6/en-us"]),
-
-        # Different lifecycle - should stay separate
-        ("sles/15-SP6@supported/en-us", "sles/15-SP6@beta/en-us",
-            ["sles/15-SP6@supported/en-us", "sles/15-SP6@beta/en-us"]),
-
-        # Different langs - should stay separate
-        ("sles/15-SP6/en-us", "sles/15-SP6/de-de",
-         ["sles/15-SP6/en-us", "sles/15-SP6/de-de"]),
-
-        # Same everything except docset - should merge
-        ("sles/15-SP6/en-us", "sles/15-SP4/en-us", ["sles/15-SP4,15-SP6/en-us"]),
-
-        # Overlapping docsets - should merge and deduplicate
-        ("sles/15-SP5,15-SP6/en-us", "sles/15-SP6,16/en-us",
-         ["sles/15-SP5,15-SP6,16/en-us"]),
-
-        # Same docset - should return single doctype with same docset
-        ("sles/15-SP6/en-us", "sles/15-SP6/en-us", ["sles/15-SP6/en-us"]),
-    ],
-)
-def test_merge_two_doctypes(dt1_str, dt2_str, expected_strs, monkeypatch):
-    # Remove the autouse patch to use the real Doctype
-    monkeypatch.undo()
-
-    dt1 = Doctype.from_str(dt1_str)
-    dt2 = Doctype.from_str(dt2_str)
-
-    result = merge_two_doctypes(dt1, dt2)
-    expected = [Doctype.from_str(exp_str) for exp_str in expected_strs]
-
-    # Compare attributes rather than string representation for reliable comparison
-    assert len(result) == len(expected)
-    for r, e in zip(result, expected, strict=False):
-        assert r.product == e.product
-        assert r.docset == e.docset
-        assert r.lifecycle == e.lifecycle
-        assert r.langs == e.langs
 
 
 @pytest.mark.parametrize(

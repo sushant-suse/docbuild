@@ -53,7 +53,7 @@ class Doctype(BaseModel):
             title="A language",
             description=(
                 "The natural language containing language and country. "
-                "After validation, docsets are sorted"
+                "After validation, langs are sorted"
             ),
             examples=["en-us", "de-de"],
         ),
