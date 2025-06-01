@@ -26,21 +26,58 @@ def dt(s: str) -> Doctype:
         (['sles/1/en-us', 'sles/1/*'], ['sles/1/*']),
         (['sles/1/*', 'sles/1/en-us'], ['sles/1/*']),
         # No merge for different lifecycle
-        (['sles/1/en-us', 'sles/1@beta/en-us'], ['sles/1/en-us', 'sles/1@beta/en-us']),
+        (['sles/1/en-us', 'sles/1@beta/en-us'],
+         ['sles/1/en-us', 'sles/1@beta/en-us']),
         # No merge for different product
-        (['sles/1/en-us', 'smart/1/en-us'], ['sles/1/en-us', 'smart/1/en-us']),
+        (['sles/1/en-us', 'smart/1/en-us'],
+         ['sles/1/en-us', 'smart/1/en-us']),
         # Idempotent
         (['sles/1/en-us'], ['sles/1/en-us']),
         # Two identical doctypes
         (['sles/1/en-us', 'sles/1/en-us'], ['sles/1/en-us']),
+        # Empty inputs
         ([], []),
+        ## --- Some more realistic scenarios ---
+        # 1
+        (['sles/15-SP6/en-us', 'sles/*/en-us'], ['sles/*/en-us']),
+        # 2
+        (
+            ['sles/15-SP5,15-SP4/*', 'sles/15-SP4/en-us'],
+            ['sles/15-SP4,15-SP5/*'],
+        ),
+        # 3
+        (
+            [
+                'sles/15-SP6,15-SP5/en-us,de-de',
+                'sles/*/en-us',
+                'smart/network,container/en-us',
+            ],
+            [
+                'sles/*/en-us',
+                'sles/15-SP6,15-SP5/de-de',
+                'smart/container,network/en-us',
+            ],
+        ),
+        # 4
+        (
+            [
+                'sles/15-SP6,15-SP5/en-us,de-de',
+                'sles/15-SP4/zh-cn',
+            ],
+            ['sles/15-SP5,15-SP6/de-de,en-us', 'sles/15-SP4/zh-cn'],
+        ),
+        # 5
+        (
+            ['sles/*/en-us', 'sles/*/de-de', 'sles/16-SP0/zh-cn'],
+            ['sles/*/de-de,en-us', 'sles/16-SP0/zh-cn'],
+        ),
     ],
 )
 def test_merge_doctypes(inputs, expected):
     """Test merge_doctypes with various merging and wildcard scenarios."""
-    result = merge_doctypes(*(dt(s) for s in inputs))
-    expected_dt = [dt(s) for s in expected]
-    assert sorted(result, key=str) == sorted(expected_dt, key=str)
+    real_dts = [dt(d) for d in inputs]
+    results = merge_doctypes(*real_dts)
+    assert results == [dt(d) for d in expected]
 
 
 def test_dedup_doctypes_empty():

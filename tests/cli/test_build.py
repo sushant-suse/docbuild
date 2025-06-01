@@ -5,56 +5,9 @@ import click
 from click import Abort, Command, Context
 import pytest
 
-from docbuild.cli.build import (
-    merge_doctypes,
-    validate_doctypes,
-)
+from docbuild.cli.build import validate_doctypes
 from docbuild.cli.cli import cli
 from docbuild.models.doctype import Doctype
-
-
-@pytest.mark.skip("Needs more thought")
-@pytest.mark.parametrize(
-    "doctypes,expected",
-    [
-        # 1 ok
-        (["sles/15-SP6/en-us", "sles/*/en-us"], ["sles/*/en-us"]),
-        # 2 ok
-        (
-            ["sles/15-SP5,15-SP4/*", "sles/15-SP4/en-us"],
-            ["sles/15-SP4,15-SP5/*", "sles/15-SP4/en-us"],
-        ),
-        # 3
-        (
-            [
-                "sles/15-SP6,15-SP5/en-us,de-de",
-                "sles/*/en-us",
-                "smart/network,container/en-us",
-            ],
-            [
-                "sles/15-SP6,15-SP5/de-de",
-                "sles/*/en-us",
-                "smart/container,network/en-us",
-            ],
-        ),
-        # 4
-        (
-            [
-                "sles/15-SP6,15-SP5/en-us,de-de",
-                "sles/15-SP4/zh-cn",
-            ],
-            ["sles/15-SP5,15-SP6/de-de,en-us", "sles/15-SP4/zh-cn"],
-        ),
-        # 5
-        (
-            ["sles/*/en-us", "sles/*/de-de", "sles/16-SP0/zh-cn"],
-            ["sles/*/de-de,en-us", "sles/16-SP0/zh-cn"],
-        ),
-    ],
-)
-def test_merge_doctypes(doctypes, expected):
-    real_dts = [Doctype.from_str(dt) for dt in doctypes]
-    assert merge_doctypes(*real_dts) == [Doctype.from_str(dt) for dt in expected]
 
 
 def test_validate_doctypes_with_empty_doctypes():

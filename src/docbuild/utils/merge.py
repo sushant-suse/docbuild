@@ -1,29 +1,44 @@
 """Utility functions for merging Doctype instances."""
+from collections.abc import Sequence
+from itertools import chain
 
 from ..models.doctype import Doctype
 from ..models.language import LanguageCode
 
 
-def _merge_docsets(ds1: list[str], ds2: list[str]) -> list[str]:
-    if "*" in ds1 or "*" in ds2:
-        return ["*"]
-    return sorted(set(ds1 + ds2))
+def _merge_docsets(ds1: Sequence[str], ds2: Sequence[str]) -> list[str]:
+    """Merge two docset lists, ensuring no duplicates and sorted order.
+
+    :param ds1: First list of docsets.
+    :param ds2: Second list of docsets.
+    :return: Merged list of docsets.
+    """
+    return sorted(set(chain(ds1, ds2)))  # sorted(set(ds1 + ds2))
 
 
 def _merge_langs(
-    langs1: list[LanguageCode],
-    langs2: list[LanguageCode],
+    langs1: Sequence[LanguageCode],
+    langs2: Sequence[LanguageCode],
 ) -> list[LanguageCode]:
-    str_langs1 = [str(lang) for lang in langs1]
-    str_langs2 = [str(lang) for lang in langs2]
-    if "*" in str_langs1 or "*" in str_langs2:
+    """Merge two lists of LanguageCode objects.
+
+    Ensuring no duplicates and sorted order.
+
+    :param langs1: First list of LanguageCode objects.
+    :param langs2: Second list of LanguageCode objects.
+    :return: Merged sorted list of LanguageCode objects.
+    """
+    if "*" in langs1 or "*" in langs2:
         return [LanguageCode("*")]
-    all_langs = set(str_langs1 + str_langs2)
-    return [LanguageCode(lang) for lang in sorted(all_langs)]
+    return sorted(set(chain(langs1, langs2)))  # sorted(set(langs1 + langs2))
 
 
-def _dedup_doctypes(doctypes: list[Doctype]) -> list[Doctype]:
-    """Remove duplicate Doctype objects from a list, preserving order."""
+def _dedup_doctypes(doctypes: Sequence[Doctype]) -> list[Doctype]:
+    """Remove duplicate Doctype objects from a list, preserving order.
+
+    :param doctypes: List of Doctype objects to deduplicate.
+    :return: Deduplicated list of Doctype objects or an empty list if input is empty.
+    """
     # Use explicit equality to force coverage tool to see this branch
     if doctypes == []:
         return []
@@ -34,7 +49,47 @@ def _dedup_doctypes(doctypes: list[Doctype]) -> list[Doctype]:
     return deduped
 
 
-def merge_doctypes(*doctypes: Doctype) -> list[Doctype]:
+def _split_wildcard_docset(dt1: Doctype, dt2: Doctype) -> list[Doctype] | None:
+    """Merge a wildcard docset with a specific docset if product and lifecycle match.
+
+    Returns a list of merged Doctypes if applicable, otherwise None.
+
+    :param dt1: First Doctype instance.
+    :param dt2: Second Doctype instance.
+    :return: List of merged Doctypes or None if no merging is possible.
+    """
+    if (
+        ("*" in dt1.docset and "*" not in dt2.docset) or
+        ("*" in dt2.docset and "*" not in dt1.docset)
+       ):
+        wildcard, specific = (dt1, dt2) if "*" in dt1.docset else (dt2, dt1)
+        wildcard_langs = set(wildcard.langs)
+        specific_langs = set(specific.langs)
+        common_langs = wildcard_langs & specific_langs
+        extra_langs = specific_langs - wildcard_langs
+        if common_langs:
+            merged = [
+                Doctype(
+                    product=wildcard.product,
+                    docset=["*"],
+                    lifecycle=wildcard.lifecycle,
+                    langs=sorted(common_langs),
+                ),
+            ]
+            if extra_langs:
+                merged.append(
+                    Doctype(
+                        product=specific.product,
+                        docset=[d for d in specific.docset if d != "*"],
+                        lifecycle=specific.lifecycle,
+                        langs=sorted(extra_langs),
+                    ),
+                )
+            return merged
+    return None
+
+
+def merge_doctypes(*doctypes: Doctype) -> list[Doctype]:  # noqa: C901
     """Merge a list of Doctype instances into a minimal set of non-redundant entries.
 
     Strategy:
@@ -52,6 +107,7 @@ def merge_doctypes(*doctypes: Doctype) -> list[Doctype]:
         - 'foo/1,2/en-us' + 'bar/1,2/en-us' => 'foo/1,2/en-us', 'bar/1,2/en-us'
         - 'foo/1/en-us' + 'foo/2/*' => 'foo/1/en-us', 'foo/2/*'
         - 'foo/1/en-us,de-de' + 'foo/2/*' => 'foo/1/en-us,de-de', 'foo/2/*'
+
     """
     result: list[Doctype] = []
     for dt in doctypes:
@@ -59,7 +115,13 @@ def merge_doctypes(*doctypes: Doctype) -> list[Doctype]:
         new_result = []
         for existing in result:
             if dt.product == existing.product and dt.lifecycle == existing.lifecycle:
-                # Use __eq__ for docset/langs equality, __contains__ for absorption
+                # Use helper for wildcard/specific docset split
+                split = _split_wildcard_docset(existing, dt)
+                if split is not None:
+                    new_result.extend(split)
+                    merged = True
+                    continue
+
                 if existing == dt:
                     # Exact match, keep only one
                     new_result.append(existing)
