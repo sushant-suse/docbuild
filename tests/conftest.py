@@ -9,8 +9,9 @@ Naming conventions:
 - `fake_*`: Fixtures that patch specific functions or methods.
 """
 
+from collections.abc import Generator
 from pathlib import Path
-from typing import Any, Generator, NamedTuple
+from typing import Any, NamedTuple
 from unittest.mock import MagicMock
 
 from click.testing import CliRunner
