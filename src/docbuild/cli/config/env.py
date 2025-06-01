@@ -12,5 +12,6 @@ from rich.pretty import Pretty
 @click.pass_context
 def env(ctx: click.Context) -> None:
     """Show the ENV configuration."""
-    click.secho(f"# ENV Config file '{ctx.obj.envconfigfiles}'", fg="blue")
+    path = ", ".join(str(path) for path in ctx.obj.envconfigfiles)
+    click.secho(f"# ENV Config file '{path}'", fg="blue")
     print(Pretty(ctx.obj.envconfig, expand_all=True))

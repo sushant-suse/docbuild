@@ -20,6 +20,7 @@ import pytest
 import docbuild.cli as cli_module
 import docbuild.cli.cli as cli
 from docbuild.cli.context import DocBuildContext
+from docbuild.config import load as load_mod
 from docbuild.constants import DEFAULT_ENV_CONFIG_FILENAME
 from tests.common import changedir
 
@@ -100,7 +101,7 @@ def fake_envfile(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
 ) -> Generator[MockEnvConfig, None, None]:
-    """Patch the `docbuild.cli.cli.process_envconfig_and_role` function."""
+    """Patch the `docbuild.cli.cli.process_envconfig` function."""
     fakefile = Path('fake_envfile')
 
     mock = MagicMock(
@@ -115,7 +116,7 @@ def fake_envfile(
     )
 
     monkeypatch.setattr(
-        cli, "process_envconfig_and_role", mock,
+        load_mod, "process_envconfig", mock,
     )
 
     with changedir(tmp_path):
@@ -161,12 +162,12 @@ def fake_validate_options(
         mock = MagicMock(
             return_value=None,  # This function does not return anything
         )
-        monkeypatch.setattr(
-            cli_module, 'validate_options', mock,
-        )
+        #monkeypatch.setattr(
+        #    cli_module, 'validate_options', mock,
+        #)
 
         mock_load_and_merge_configs = MagicMock(
-            return_value=([fakefile], {'fake_key': 'fake_value'})
+            return_value=([fakefile], {'fake_key': 'fake_value'}),
         )
         monkeypatch.setattr(
             cli_module, 'load_and_merge_configs', mock_load_and_merge_configs,

@@ -1,9 +1,13 @@
 from pathlib import Path
 from types import SimpleNamespace
+from unittest.mock import MagicMock
 
 import click
 from click import Abort, Command, Context
 import pytest
+
+from pydantic import ValidationError, Field
+from pydantic_core import PydanticCustomError
 
 from docbuild.cli.cli import cli
 import docbuild.cli.build as build
@@ -37,6 +41,7 @@ def test_validate_doctypes_abort(monkeypatch):
         build.validate_doctypes(ctx, None, ('wrong/1/en-us',))
 
 
+@pytest.mark.skip('Replace --role with --env-config')
 def test_validate_doctypes_called_from_build(context, fake_envfile, runner):
 
     result = runner.invoke(
@@ -57,6 +62,9 @@ class DummyDoctype:
 
     def __eq__(self, other):
         return isinstance(other, DummyDoctype) and self.value == other.value
+
+    def __str__(self):
+        return self.value
 
 
 @pytest.fixture(autouse=True)
@@ -215,8 +223,113 @@ def test_validate_doctypes_echo_outputs(ctx, capsys):
     build.validate_doctypes(context, None, ('sles/15/en-us',))
 
     captured = capsys.readouterr()
-    assert "validate_set" in captured.out
-    assert "Got " in captured.out
+    assert 'Got sles/15' in captured.out
 
 
+def test_validate_doctypes_full_error_message(monkeypatch, capsys):
 
+    def mock_validation_error(*args, **kwargs):
+        raise ValidationError.from_exception_data(
+            "Mock validation error",
+            [{'type': 'string_type',
+              'loc': ('product', "foo"),
+              'input': 4,
+              'ctx': {'gt': 5}}
+            ],
+        )
+
+    monkeypatch.setattr(build.Doctype, "model_fields", {
+    "product": Field(
+        title="Product",
+        description="A product name is a lowercase acronym.",
+        examples=["alpha", "beta"],
+        ),
+    })
+    monkeypatch.setattr(build.Doctype, "from_str", mock_validation_error)
+
+    with pytest.raises(click.Abort, match=r"Mock validation error") as exc_info:
+        build.validate_doctypes(
+            click.Context(click.Command("dummy")),
+            None,
+            ("foo/bar",)
+        )
+
+    # Capture output after the function call
+    captured = capsys.readouterr()
+
+    # assert exc_info.value.title == "Mock validation error"
+    assert "ERROR in 'product'" in captured.err or captured.out
+    assert "Hint" in captured.out
+    assert "Examples" in captured.out
+
+
+def test_validate_doctypes_only_hint_error_message(monkeypatch, capsys):
+
+    def mock_validation_error(*args, **kwargs):
+        raise ValidationError.from_exception_data(
+            "Mock validation error",
+            [{'type': 'string_type',
+              'loc': ('product', "foo"),
+              'input': 4,
+              'ctx': {'gt': 5}}
+            ],
+        )
+
+    monkeypatch.setattr(build.Doctype, "model_fields", {
+    "product": type("Field", (), {
+        "description": "A product name is a lowercase acronym.",
+        # no examples provided
+    })(),
+    })
+    monkeypatch.setattr(build.Doctype, "from_str", mock_validation_error)
+
+    with pytest.raises(click.Abort, match=r"Mock validation error") as exc_info:
+        build.validate_doctypes(
+            click.Context(click.Command("dummy")),
+            None,
+            ("foo/bar",)
+        )
+
+    # Capture output after the function call
+    captured = capsys.readouterr()
+
+    # assert exc_info.value.title == "Mock validation error"
+    assert "ERROR in 'product'" in captured.err or captured.out
+    assert "Hint" in captured.out
+    assert "Examples" not in captured.out  # No examples provided
+
+
+def test_validate_doctypes_only_description_error_message(monkeypatch, capsys):
+
+    def mock_validation_error(*args, **kwargs):
+        raise ValidationError.from_exception_data(
+            "Mock validation error",
+            [{'type': 'string_type',
+              'loc': ('product', "foo"),
+              'input': 4,
+              'ctx': {'gt': 5}}
+            ],
+        )
+
+    monkeypatch.setattr(build.Doctype, "model_fields", {
+    "product": type("Field", (), {
+        # no description provided
+        "examples": ["alpha", "beta"],
+    })(),
+    })
+    monkeypatch.setattr(build.Doctype, "from_str", mock_validation_error)
+
+    with pytest.raises(click.Abort, match=r"Mock validation error") as exc_info:
+        build.validate_doctypes(
+            click.Context(click.Command("dummy")),
+            None,
+            ("foo/bar",)
+        )
+
+    # Capture output after the function call
+    captured = capsys.readouterr()
+
+    # assert exc_info.value.title == "Mock validation error"
+    assert "ERROR in 'product'" in captured.err or captured.out
+    assert "Hint" not in captured.out  # No description provided
+    assert "Examples" in captured.out

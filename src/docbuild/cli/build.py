@@ -31,7 +31,7 @@ Examples of the doctypes syntax:
 """
 
 import click
-from pydantic import ValidationError
+from pydantic import ValidationError, Field
 
 from ..models.doctype import Doctype
 from ..utils.merge import merge_doctypes
@@ -52,8 +52,6 @@ def validate_doctypes(ctx: click.Context,
     """
     processed_data = []  # Store successfully parsed/validated data
 
-    click.echo("validate_set")
-
     if not doctypes:
         return []
 
@@ -71,8 +69,19 @@ def validate_doctypes(ctx: click.Context,
                 # Convert to string to ensure it works as dictionary key
                 field_name = str(field)
                 msg = error["msg"]
-                hint = Doctype.model_fields[field_name].description
-                example = Doctype.model_fields[field_name].examples
+                # Make accessing of .description and .examples safe(r) if
+                # the definition in Doctype is not present
+                safe_field = Field(description=None, examples=None)
+                hint = getattr(
+                    Doctype.model_fields.get(field_name, safe_field),
+                    "description",
+                    None
+                )
+                examples = getattr(
+                    Doctype.model_fields.get(field_name, safe_field),
+                    "examples",
+                    None
+                )
                 click.secho(
                     f"ERROR in '{field}': {msg}",
                     fg="red",
@@ -80,21 +89,10 @@ def validate_doctypes(ctx: click.Context,
                 )
                 if hint:
                     click.echo(f"  → Hint: {hint}")
-                if example:
-                    click.echo(f"  → Examples: {', '.join(example)}")
+                if examples:
+                    click.echo(f"  → Examples: {', '.join(examples)}")
                 click.echo()
-            #for idx, err in enumerate(e.errors(), 1):
-            #    loc = " → ".join(str(p) for p in err["loc"])
-            #    msg = err["msg"]
-            #    click.echo(f"  [{idx}] {loc}: {msg}", err=True)
             raise click.Abort(err) from err
-
-        #except ValueError as e:
-        #    click.secho(
-        #        f"ERROR: Invalid input for {doctype_str!r}:", fg="red", err=True
-        #    )
-        #    click.echo(e, err=True)
-        #    raise click.Abort()
 
     # --- Optional: Post-validation checks across all inputs ---
     # This part becomes more complex if you need to merge/check '*' against lists.
@@ -115,7 +113,7 @@ def validate_doctypes(ctx: click.Context,
     callback=validate_doctypes,
 )
 @click.pass_context
-def build(ctx: click.Context, doctypes: tuple[str, ...]) -> None:
+def build(ctx: click.Context, doctypes: tuple[str]) -> None:
     """Subcommand build."""
     ctx.ensure_object(DocBuildContext)
     context: DocBuildContext = ctx.obj

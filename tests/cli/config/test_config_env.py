@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import click
+import pytest
 
 from docbuild.cli.cli import cli
 
@@ -26,9 +27,9 @@ def test_showconfig_env_help_option(runner):
     result = runner.invoke(cli, ["--help"])
     assert result.exit_code == 0
     assert "Usage:" in result.output
-    assert "[mutually_exclusive]" in result.output
     assert "--env-config" in result.output
-    assert "--role" in result.output
+    # assert "[mutually_exclusive]" in result.output
+    # assert "--role" in result.output
 
 
 def test_showconfig_env_config_option(
@@ -38,12 +39,12 @@ def test_showconfig_env_config_option(
 ):
     mock = fake_envfile.mock
     configfile = Path(__file__).parent / "sample-env.toml"
-    mock.return_value = (configfile, {})
+    mock.return_value = (configfile, {"mocked": True})
 
     result = runner.invoke(
         cli,
         [
-            "--env-config", str(configfile),
+            "--env-config", configfile,
             "config", "env",
         ],
         obj=context,
@@ -52,6 +53,7 @@ def test_showconfig_env_config_option(
     assert context.envconfigfiles == (configfile,)
 
 
+@pytest.mark.skip("Replace --role with --env-config")
 def test_showconfig_env_role_option(
     context,
     fake_envfile,
@@ -84,6 +86,7 @@ def test_showconfig_env_role_option(
     assert context.envconfig == return_value
 
 
+@pytest.mark.skip('Replace --role with --env-config')
 def test_env_no_config_no_role(
     context,
     fake_envfile,

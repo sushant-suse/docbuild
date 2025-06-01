@@ -1,5 +1,6 @@
-"""Constants for docbuild application."""
+"""Constants for CLI application."""
 
+from pathlib import Path
 import re
 
 from .models.serverroles import ServerRole
@@ -95,16 +96,29 @@ LIFECYCLES_STR = "|".join(ALLOWED_LIFECYCLES)
 SEPARATORS = r"[ :;]+"
 RE_SEPARATORS = re.compile(SEPARATORS)
 
+# --- PATHS AND CONFIGURATION CONSTANTS ---
 #: Paths to the app's config
+PROJECT_DIR = Path.cwd()
+USER_CONFIG_DIR = Path.home() / '.config' / APP_NAME
+SYSTEM_CONFIG_DIR = Path('/etc') / APP_NAME
+
 #: The order is important here!
 #: The paths are in the order of system path, user path, and current working directory.
 CONFIG_PATHS = (
     # The system-wide config path:
-    f"/etc/{APP_NAME}",
+    SYSTEM_CONFIG_DIR,
     # The user config path:
-    f"~/.config/{APP_NAME}",
+    USER_CONFIG_DIR,
     # The current working/project directory:
-    "./",
+    PROJECT_DIR,
+)
+
+#: Filenames starting with a dot are considered higher priority than those without.
+APP_CONFIG_BASENAMES = ('.config.toml', 'config.toml')
+PROJECT_LEVEL_APP_CONFIG_FILENAMES = (
+    f'.{APP_NAME}.config.toml',
+    f'{APP_NAME}.config.toml',
+    # 'app.config.toml',
 )
 
 #: The filename of the app's config file without any paths

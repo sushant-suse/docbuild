@@ -1,42 +1,28 @@
 """Load and process configuration files for the application."""""
 
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
 from itertools import product
 from pathlib import Path
 import tomllib as toml
 from typing import Any
 
-from ..constants import DEFAULT_ENV_CONFIG_FILENAME, ENV_CONFIG_FILENAME
-from ..models.serverroles import ServerRole
+from ..constants import DEFAULT_ENV_CONFIG_FILENAME
 from .app import Container, replace_placeholders
 from .merge import deep_merge
 
 
-def process_envconfig_and_role(
-    envconfigfile: Path | None,
-    role: str | None,
-) -> tuple[Path, Container]:
-    """Process the env config and role options.
+def process_envconfig(envconfigfile: str | Path | None) -> tuple[Path, Container]:
+    """Process the env config.
 
-    :param envconfigfile: Path to the env config file.
-    :param role: Role of the server.
+    :param envconfigfile: Path to the env TOML config file.
     :return: Tuple of the env config file path and the config object.
     :raise ValueError: If neither envconfigfile nor role is provided.
     """
-    if role:
-        # Normalize the role with the ServerRole enum:
-        try:
-            serverrole = ServerRole[role]
-            envconfigfile = Path(ENV_CONFIG_FILENAME.format(role=serverrole.value))
-        except KeyError:
-            raise ValueError(f"Unknown server role {role!r}.") from None
-
-    elif envconfigfile:
+    if envconfigfile:
         envconfigfile = Path(envconfigfile)
 
-    # If we don't have a role nor a envconfigfile, we need to find the default one.
+    # If we don't have a envconfigfile, we need to find the default one.
     # We will look for the default env config file in the current directory.
-
     elif (rfile := Path(DEFAULT_ENV_CONFIG_FILENAME)).exists():
         envconfigfile = rfile
 
@@ -50,23 +36,28 @@ def process_envconfig_and_role(
 
 
 def load_single_config(configfile: str | Path) -> dict[str, Any]:
-    """Load a single config file and return its content.
+    """Load a single TOML config file and return its content.
 
     :param configfile: Path to the config file.
     :return: The loaded config as a dictionary.
+    :raise FileNotFoundError: If the config file does not exist.
+    :raise tomllib.TOMLDecodeError: If the config file is not a valid TOML file
+        or cannot be decoded.
     """
     with Path(configfile).open("rb") as f:
         return toml.load(f)
 
 
-def load_and_merge_configs(defaults: Sequence[str | Path], *paths: str | Path,
+def load_and_merge_configs(
+    defaults: Sequence[str | Path],
+    *paths: str | Path,
 ) -> tuple[tuple[str | Path, ...], dict[str, Any]]:
     """Load config files and merge all content regardless of the nesting level.
 
     The order of defaults and paths is important. The paths are in the order of
     system path, user path, and current working directory.
     The defaults are in the order of common config file names followed by more
-    specific ones.
+    specific ones. The later ones will override data from the earlier ones.
 
     :param defaults: a sequence of base filenames (without path!) to look for
                      in the paths
@@ -95,20 +86,26 @@ def load_and_merge_configs(defaults: Sequence[str | Path], *paths: str | Path,
     return tuple(configfiles), deep_merge(*configs)
 
 
-def search_config_files(
-    search_dirs: Sequence[Path|str],
-    search_basenames: Sequence[str],
-) -> list[Path]:
-    """Search for config files in the given directories and basenames.
+def handle_config(
+    user_path: Path | str | None,
+    search_dirs: Iterable[str | Path],
+    basenames: Iterable[str] | None,
+    default_filename: str | None = None,
+    default_config: object | None = None,
+) -> tuple[tuple[Path, ...] | None, object|dict, bool]:
+    """Return (config_files, config, from_defaults) for config file handling."""
+    if user_path:
+        return (Path(user_path),), load_single_config(user_path), False
 
-    :param search_dirs: Directories to search for config files.
-    :param search_basenames: Basenames of config files to search for.
-    :return: List of found config files as strings.
-    """
-    config_files: list[Path] = []
-    for d in search_dirs:
-        for b in search_basenames:
-            candidate = Path(d) / b
-            if candidate.exists() and candidate.is_file():
-                config_files.append(candidate)
-    return config_files
+    for search_dir in search_dirs:
+        if basenames:
+            for basename in basenames:
+                candidate = Path(search_dir) / basename
+                if candidate.exists():
+                    return (candidate,), load_single_config(candidate), False
+        elif default_filename:
+            candidate = Path(search_dir) / default_filename
+            if candidate.exists():
+                return (candidate,), load_single_config(candidate), False
+    # Not found, use defaults
+    return None, default_config, True

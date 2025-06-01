@@ -1,7 +1,5 @@
 from unittest.mock import MagicMock
 
-import click
-
 from docbuild.cli.cli import cli
 from docbuild.cli.config import config
 from docbuild.cli.context import DocBuildContext

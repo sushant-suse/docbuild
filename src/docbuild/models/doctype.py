@@ -164,8 +164,7 @@ class Doctype(BaseModel):
             # the correct parsing and validation
             lifecycles = LifecycleFlag.from_str(value)
             return lifecycles
-        elif isinstance(value, LifecycleFlag):
-            return value
+        return LifecycleFlag(value)
 
     @field_validator("langs", mode="before")
     @classmethod
