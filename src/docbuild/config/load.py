@@ -93,3 +93,22 @@ def load_and_merge_configs(defaults: Sequence[str | Path], *paths: str | Path,
         # Silently ignore files that do not exist:
 
     return tuple(configfiles), deep_merge(*configs)
+
+
+def search_config_files(
+    search_dirs: Sequence[Path|str],
+    search_basenames: Sequence[str],
+) -> list[Path]:
+    """Search for config files in the given directories and basenames.
+
+    :param search_dirs: Directories to search for config files.
+    :param search_basenames: Basenames of config files to search for.
+    :return: List of found config files as strings.
+    """
+    config_files: list[Path] = []
+    for d in search_dirs:
+        for b in search_basenames:
+            candidate = Path(d) / b
+            if candidate.exists() and candidate.is_file():
+                config_files.append(candidate)
+    return config_files
