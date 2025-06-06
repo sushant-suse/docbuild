@@ -2,8 +2,8 @@
 
 import click
 
-from .app import app
-from .env import env
+from .application import app
+from .environment import env
 
 
 @click.group(

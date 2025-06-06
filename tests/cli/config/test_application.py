@@ -1,6 +1,6 @@
 import ast
 
-from docbuild.cli.config.app import app
+from docbuild.cli.config.application import app
 
 
 def test_config_app(context, runner):
