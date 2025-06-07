@@ -76,7 +76,7 @@ docbuild = "docbuild.cli.cli:cli"
 # --- Setuptools configuration ---
 [tool.setuptools]
 package-dir = {"" = "src"}
-package-data = { "semver" = ["py.typed"] }
+package-data = { "docbuild" = ["py.typed"] }
 include-package-data = true
 
 [tool.setuptools.dynamic]
