@@ -59,12 +59,25 @@ tests = [
 changelog = [
     "towncrier>=24.8.0",
 ]
+docs = [
+    "pydata-sphinx-theme>=0.16.1",
+    "sphinx>=8.2.3",
+    "sphinx-autoapi>=3.6.0",
+    "sphinx-autodoc-typehints>=3.2.0",
+    "sphinx-click>=6.0.0",
+    "sphinx-copybutton>=0.5.2",
+    "sphobjinv>=2.3.1.3",
+]
+repl = [
+    "ipython>=9.3.0",
+]
 devel = [
   {include-group = "typing"},
   {include-group = "formatting"},
   {include-group = "tests"},
   {include-group = "changelog"},
-  # {include-group = "docs"},
+  {include-group = "docs"},
+  {include-group = "repl"},
   # {include-group = "publish"},
 ]
 

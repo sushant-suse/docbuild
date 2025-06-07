@@ -1,12 +1,12 @@
-""" """
+"""Convert utility functions."""
 
 
 
 def convert2bool(value: str | bool) -> bool:
     """Convert a string or bool into a boolean.
 
-    :param value: The value to convert to a boolean
-        Valid values are:
+    :param value: The value to convert to a boolean. Valid values are:
+
         * True, "yes", "true", "1", "on" for True and
         * False, "no", "false", "0", "off" for False.
     :return: The boolean value

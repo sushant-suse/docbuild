@@ -14,8 +14,12 @@ from .metadata import Metadata
 
 @dataclass
 class Deliverable:
-    """
-    A class to represent a deliverable
+    """A class to represent a deliverable.
+
+    Usually called with a ``<deliverable>`` node from the XML
+    configuration file. It contains information about the product,
+    docset, language, branch, and other metadata related to the
+    deliverable.
     """
     _node: etree._Element = field(repr=False) # deliverable node
     _metafile: str|None = field(repr=False, default=None)

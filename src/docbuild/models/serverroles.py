@@ -18,6 +18,7 @@ class ServerRole(StrEnum):
 
     # production
     PRODUCTION = "production"
+    """Server is in production mode, serving live traffic."""
     PROD = PRODUCTION
     P = PRODUCTION
     production = PRODUCTION
@@ -25,6 +26,7 @@ class ServerRole(StrEnum):
     p = PRODUCTION
     # staging
     STAGING = "staging"
+    """Server is in staging mode, used for testing before production."""
     STAGE = STAGING
     S = STAGING
     staging = STAGING
@@ -32,6 +34,7 @@ class ServerRole(StrEnum):
     s = STAGING
     # testing
     TESTING = "testing"
+    """Server is in testing mode, used for development and QA."""
     TEST = TESTING
     T = TESTING
     testing = TESTING

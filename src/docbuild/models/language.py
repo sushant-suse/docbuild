@@ -28,7 +28,7 @@ class LanguageCode(BaseModel):
     Use "*" to denote "ALL" languages
     """
 
-    language: Annotated[str, Field(
+    language: str = Field(
         title="The natural language",
         description=(
             "A natural language in the format ll-cc, "
@@ -38,15 +38,20 @@ class LanguageCode(BaseModel):
             ),
         examples=["en-us", "de-de"],
         frozen=True,
-    )]
+    )
+    """The natural language in the format ll-cc, where 'll' is the language and 'cc' the country."""
 
     model_config = ConfigDict(frozen=True)
+    """Configuration for the model, should be a dictionary
+    conforming to Pydantic's :class:`~pydantic.config.ConfigDict`."""
 
     ALLOWED_LANGS: ClassVar[frozenset] = frozenset(
         {"*"} | ALLOWED_LANGUAGES,
     )
+    """Class variable containing all allowed languages."""
 
     def __init__(self, language: str, **kwargs: dict[Any, Any]) -> None:
+        """Initialize the LanguageCode instance."""
         super().__init__(language=language.replace("_", "-"), **kwargs)
         if language == "*":
             self._lang, self._country = ("*", "*")
@@ -111,7 +116,7 @@ class LanguageCode(BaseModel):
     def matches(self, other: "LanguageCode | str") -> bool:
         """Return True if this LanguageCode matches the other, considering wildcards.
 
-        '*' matches any language
+        The string '*' matches any language:
 
         >>> LanguageCode("*").matches("de-de")
         True

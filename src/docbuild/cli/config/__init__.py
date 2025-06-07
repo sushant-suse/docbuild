@@ -1,4 +1,4 @@
-"""Shows config files how docbuild sees it."""
+"""CLI interface to shows config files how docbuild sees it."""
 
 import click
 
@@ -12,7 +12,7 @@ from .environment import env
 )
 @click.pass_context
 def config(ctx: click.Context) -> None:
-    """Show the configuration files and their content."""
+    """Subcommand to show the configuration files and their content."""
     pass
 
 

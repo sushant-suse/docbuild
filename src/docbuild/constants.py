@@ -1,4 +1,4 @@
-"""Constants for CLI application."""
+"""Constants for the CLI application."""
 
 from pathlib import Path
 import re
@@ -6,34 +6,36 @@ import re
 from .models.serverroles import ServerRole
 
 APP_NAME = "docbuild"
+"""The name of the application, used in paths and config files."""
 
 DEFAULT_LANGS = ("en-us",)
-#: All languages supported by the documentation portal
+"""The default languages used by the application."""
+
 ALLOWED_LANGUAGES = frozenset(
     "de-de en-us es-es fr-fr ja-jp ko-kr pt-br zh-cn".split(" "),
 )
+"""The languages supported by the documentation portal."""
 
-#: The different server roles, including long and short spelling
-#: see docbuild.models.env.serverrole.ServerRole
+
 # SERVER_ROLES = (
 #     "production", "prod", "p",
 #     "testing", "test", "t",
 #     "staging", "stage", "s",
 # )
 SERVER_ROLES = tuple([role.value for role in ServerRole])
+"""The different server roles, including long and short spelling."""
 
-#: Group every 3 items from the SERVER_ROLES tuple into tuples of 3:
-SERVER_GROUP_ROLES = tuple(
-    SERVER_ROLES[i : i + 3] for i in range(0, len(SERVER_ROLES), 3)
-)
-
-#: The different lifecycle states of a docset
-ALLOWED_LIFECYCLES = ("supported", "beta", "hidden", "unsupported")
 DEFAULT_LIFECYCLE = "supported"
+"""The default lifecycle state for a docset."""
 
-#: All product acronyms and their names
-#: - key: /product/@productid
-#: - value: /product/name
+ALLOWED_LIFECYCLES = ("supported", "beta", "hidden", "unsupported")
+"""The available lifecycle states for a docset."""
+
+
+
+# All product acronyms and their names
+# - key: /product/@productid
+# - value: /product/name
 #
 # Use the following command to create the output below:
 # xmlstarlet sel -t -v '/product/@productid' -o ' '\
@@ -41,6 +43,7 @@ DEFAULT_LIFECYCLE = "supported"
 VALID_PRODUCTS: dict[str, str] = {
     key.strip(): value.strip()
     for key, value in (line.split(" ", 1)
+    # Syntax acronym <SPACE> full name:
     for line in """appliance Appliance building
 cloudnative Cloud Native
 compliance Compliance Documentation
@@ -72,38 +75,45 @@ suse-edge SUSE Edge
 trd Technical Reference Documentation""".strip().splitlines()
 )
 }
+"""A dictionary of valid products acronyms and their full names."""
+
 ALLOWED_PRODUCTS = tuple([item for item in VALID_PRODUCTS])
+"""A tuple of valid product acronyms."""
 
-
-#: Regex for one or more languages, separated by comma:
 SINGLE_LANG_REGEX = re.compile(r"[a-z]{2}-[a-z]{2}")
+"""Regex for a single language code in the format 'xx-XX' (e.g., 'en-us')."""
+
 MULTIPLE_LANG_REGEX = re.compile(
     rf"^({SINGLE_LANG_REGEX.pattern},)*"
     rf"{SINGLE_LANG_REGEX.pattern}",
 )
+"""Regex for multiple languages, separated by commas."""
 
-#: Regex for splitting a path into its components
 LIFECYCLES_STR = "|".join(ALLOWED_LIFECYCLES)
+"""Regex for lifecycle states, separated by pipe (|)."""
 
-
-
-#: Syntax for a single doctype
-#:
-#: <product-value|*>/<docset-value|*>@<lifecycle-value>/<lang-value1,lang-value2,...|*>
-#:
-#:
-
+# Syntax for a single doctype
+#
+# <product-value|*>/<docset-value|*>@<lifecycle-value>/<lang-value1,lang-value2,...|*>
+#
 SEPARATORS = r"[ :;]+"
+"""Regex string for separators used in doctype strings."""
+
+
 RE_SEPARATORS = re.compile(SEPARATORS)
+"""Compiled regex for separators used in doctype strings."""
+
 
 # --- PATHS AND CONFIGURATION CONSTANTS ---
-#: Paths to the app's config
 PROJECT_DIR = Path.cwd()
-USER_CONFIG_DIR = Path.home() / '.config' / APP_NAME
-SYSTEM_CONFIG_DIR = Path('/etc') / APP_NAME
+"""The current working directory, used as the project directory."""
 
-#: The order is important here!
-#: The paths are in the order of system path, user path, and current working directory.
+USER_CONFIG_DIR = Path.home() / '.config' / APP_NAME
+"""The user-specific configuration directory, typically located at ~/.config/docbuild."""
+
+SYSTEM_CONFIG_DIR = Path('/etc') / APP_NAME
+"""The system-wide configuration directory, typically located at /etc/docbuild."""
+
 CONFIG_PATHS = (
     # The system-wide config path:
     SYSTEM_CONFIG_DIR,
@@ -112,26 +122,26 @@ CONFIG_PATHS = (
     # The current working/project directory:
     PROJECT_DIR,
 )
+"""The paths where the application will look for configuration files."""
 
-#: Filenames starting with a dot are considered higher priority than those without.
 APP_CONFIG_BASENAMES = ('.config.toml', 'config.toml')
+"""The base filenames for the application configuration files, in order of priority."""
+
 PROJECT_LEVEL_APP_CONFIG_FILENAMES = (
     f'.{APP_NAME}.config.toml',
     f'{APP_NAME}.config.toml',
     # 'app.config.toml',
 )
+"""Additional configuration filenames at the project level."""
 
-#: The filename of the app's config file without any paths
 APP_CONFIG_FILENAME = "config.toml"
+"""The filename of the application's config file without any paths."""
 
-#: The filename of the env's config file without any paths
 ENV_CONFIG_FILENAME = "env.{role}.toml"
+"""The filename of the environment's config file without any paths."""
 
-#: The default filename of the env config file
 DEFAULT_ENV_CONFIG_FILENAME = ENV_CONFIG_FILENAME.format(role="production")
+"""The default filename for the environment's config file, typically used in production."""
 
-#: The filename for shared configuration for the env:
-SHARE_ENV_CONFIG_FILENAME = ENV_CONFIG_FILENAME.format(role="share")
-
-#: Compiled regex for standard placeholders like {name}
 PLACEHOLDER_PATTERN: re.Pattern[str] = re.compile(r"(?<!\{)\{([^{}]+)\}(?!\})")
+"""Compiled regex for standard placeholders in configuration files (like ``{placeholder}``)."""

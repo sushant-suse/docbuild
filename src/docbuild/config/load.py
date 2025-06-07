@@ -1,4 +1,4 @@
-"""Load and process configuration files for the application."""""
+"""Load and process configuration files."""""
 
 from collections.abc import Iterable, Sequence
 from itertools import product
@@ -93,7 +93,20 @@ def handle_config(
     default_filename: str | None = None,
     default_config: object | None = None,
 ) -> tuple[tuple[Path, ...] | None, object|dict, bool]:
-    """Return (config_files, config, from_defaults) for config file handling."""
+    """Return (config_files, config, from_defaults) for config file handling.
+
+    :param user_path: Path to the user-defined config file, if any.
+    :param search_dirs: Iterable of directories to search for config files.
+    :param basenames: Iterable of base filenames to search for.
+    :param default_filename: Default filename to use if no config file is found.
+    :param default_config: Default configuration to return if no config file is found.
+    :return: A tuple containing:
+
+        * A tuple of found config file paths or None if no config file is found.
+        * The loaded configuration as a dictionary or the default configuration.
+        * A boolean indicating if the default configuration was used.
+    :raises ValueError: If no config file is found and no default configuration is provided.
+    """
     if user_path:
         return (Path(user_path),), load_single_config(user_path), False
 

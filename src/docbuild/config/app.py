@@ -15,19 +15,22 @@ from ..constants import (
 
 # Type aliases
 Container = dict[str, Any] | list[Any]
-StackItem = tuple[Container, str | int, Container]
+"""A dictionary or list container for any configuration data."""
 
-#: Maximum recursion depth for placeholder replacement
+StackItem = tuple[Container, str | int, Container]
+"""A tuple representing a stack item for placeholder resolution."""
+
 MAX_RECURSION_DEPTH: int = 10
+"""The maximum recursion depth for placeholder replacement."""
 
 
 def replace_placeholders(config: Container,  # noqa: C901
                          max_recursion_depth: int = MAX_RECURSION_DEPTH) -> Container:
     """Replace placeholder values in a nested dictionary structure.
 
-    - `{foo}` resolves from the current section.
-    - `{a.b.c}` resolves deeply from the config.
-    - `{{foo}}` escapes to literal `{foo}`.
+    * ``{foo}`` resolves from the current section.
+    * ``{a.b.c}`` resolves deeply from the config.
+    * ``{{foo}}`` escapes to literal ``{foo}``.
 
     :param config: The loaded configuration dictionary.
     :return: A new dictionary with placeholders replaced.

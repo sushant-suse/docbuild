@@ -1,4 +1,4 @@
-"""Define the Doctype model."""
+"""Module for defining the Doctype model."""
 
 import re
 from re import Pattern
@@ -13,19 +13,20 @@ from .product import Product
 
 #--- Models
 class Doctype(BaseModel):
-    """A "doctype" that comprises of a product, docset, lifecycle, and language."""
+    """A "doctype" that comprises of a product, docset, lifecycle, and language.
 
-    product: Annotated[
-        Product,
-        Field(
+    >>> Doctype.from_str("sles/15-SP6@supported/en-us,de-de")
+    Doctype(product=<Product.SLES: 'sles'>, docset=['15-SP6'], lifecycle=<LifecycleFlag.SUPPORTED: 'supported'>, langs=[LanguageCode(language='en-us'), LanguageCode(language='de-de')])
+    """
+
+    product: Product = Field(
             title="A SUSE product",
             description="A SUSE product is a lowercase acronym.",
             examples=["sles", "smart"],
-        ),
-    ]
-    docset: Annotated[
-        list[str],
-        Field(
+    )
+    """A SUSE product is a lowercase acronym"""
+
+    docset: list[str] = Field(
             title="A specific 'docset' of a product",
             description=(
                 "A specific release or version of a product. "
@@ -33,11 +34,10 @@ class Doctype(BaseModel):
                 "After validation, docsets are sorted."
             ),
             examples=["15-SP6", "systems-management"],
-        ),
-    ]
-    lifecycle: Annotated[
-        LifecycleFlag,
-        Field(
+    )
+    """A specific 'docset' of a product (usually a release or version)"""
+
+    lifecycle: LifecycleFlag = Field(
             title="The state of the Doctype",
             description=(
                 "One or more lifecycle states that indicate the "
@@ -45,19 +45,18 @@ class Doctype(BaseModel):
                 "Values can be combined using commas or pipes."
             ),
             examples=["supported", "beta", "unsupported"],
-        ),
-    ]
-    langs: Annotated[
-        list[LanguageCode],
-        Field(
-            title="A language",
+    )
+    """The state  (supported, beta, etc.) of the Doctype"""
+
+    langs: list[LanguageCode] = Field(
+            title="A natural language",
             description=(
                 "The natural language containing language and country. "
                 "After validation, langs are sorted"
             ),
             examples=["en-us", "de-de"],
-        ),
-    ]
+    )
+    """A natural language containing language and country"""
 
     # Pre-compile regex for efficiency
     # The regex contains non-capturing groups on purpose
@@ -185,9 +184,11 @@ class Doctype(BaseModel):
             [PRODUCT]/[DOCSETS][@LIFECYCLES]/LANGS
 
         Plural means you can have one or more items:
-        * DOCSETS: separated by comma
-        * LIFECYCLES: separated by comma or pipe
-        * LANGS: separated by comma
+
+        * ``PRODUCT``: a lowercase acronym of a SUSE product, e.g. ``sles``
+        * ``DOCSETS``: separated by comma
+        * ``LIFECYCLES``: separated by comma or pipe
+        * ``LANGS``: separated by comma
         """
         match = cls._DOCTYPE_REGEX.match(doctype_str)
 

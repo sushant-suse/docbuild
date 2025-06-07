@@ -22,6 +22,7 @@ class StrEnumMeta(EnumMeta):
                 f"Allowed (values): {allowed}",
             ) from None
 
+
 class BaseProductEnum(StrEnum, metaclass=StrEnumMeta):
     """Base class for product enums with custom error handling."""
 
@@ -43,3 +44,4 @@ Product = BaseProductEnum(
     "Product",
     {"ALL": "*"} | {item.replace("-", "_"): item for item in ALLOWED_PRODUCTS},
 )
+"""A :py:class:`~enum.StrEnum` for the products of the docbuild application."""

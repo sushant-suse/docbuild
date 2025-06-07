@@ -5,7 +5,8 @@ import re
 
 from ..constants import ALLOWED_LIFECYCLES
 
-SEPARATOR = re.compile(r"[|,]")
+
+_SEPARATOR = re.compile(r"[|,]")
 
 
 class BaseLifecycleFlag(Flag):
@@ -17,12 +18,12 @@ class BaseLifecycleFlag(Flag):
 
         The string is either a comma or pipe separated list.
 
-        * "supported" => <LifecycleFlag.supported: 2>
-        * "supported|beta" => <LifecycleFlag.supported|beta: 6>
+        * ``"supported"`` => ``<LifecycleFlag.supported: 2>``
+        * ``"supported|beta"`` => ``<LifecycleFlag.supported|beta: 6>``
         """
         try:
             flag = cls(0)  # Start with an empty flag
-            parts = [v.strip() for v in SEPARATOR.split(value) if v.strip()]
+            parts = [v.strip() for v in _SEPARATOR.split(value) if v.strip()]
             if not parts:
                 return cls(0)
 
@@ -66,4 +67,4 @@ LifecycleFlag = BaseLifecycleFlag(
     {"unknown": 0, "UNKNOWN": 0}
     | {item: (2 << index) for index, item in enumerate(ALLOWED_LIFECYCLES, 0)},
 )
-
+"""LifecycleFlag is a Flag that represents the lifecycle of a product."""

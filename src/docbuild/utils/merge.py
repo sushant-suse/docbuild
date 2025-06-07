@@ -99,14 +99,14 @@ def merge_doctypes(*doctypes: Doctype) -> list[Doctype]:  # noqa: C901
         - Otherwise, keep both.
         - Wildcards ("*") are treated as "contains all" and will cause merging
           if overlap exists.
-        - `docset` and `langs` are always sorted lists.
+        - ``docset`` and ``langs`` are always sorted lists.
 
     Examples:
-        - 'foo/1,2/en-us' + 'foo/*/en-us' => 'foo/*/en-us'
-        - 'foo/1,2/*' + 'foo/1/en-us' => 'foo/1,2/*'
-        - 'foo/1,2/en-us' + 'bar/1,2/en-us' => 'foo/1,2/en-us', 'bar/1,2/en-us'
-        - 'foo/1/en-us' + 'foo/2/*' => 'foo/1/en-us', 'foo/2/*'
-        - 'foo/1/en-us,de-de' + 'foo/2/*' => 'foo/1/en-us,de-de', 'foo/2/*'
+        - ``foo/1,2/en-us + foo/*/en-us`` => ``foo/*/en-us``
+        - ``foo/1,2/* + foo/1/en-us`` => ``foo/1,2/*``
+        - ``foo/1,2/en-us + bar/1,2/en-us`` => ``foo/1,2/en-us, bar/1,2/en-us``
+        - ``foo/1/en-us + foo/2/*`` => ``foo/1/en-us', 'foo/2/*``
+        - ``foo/1/en-us,de-de + foo/2/*`` => ``foo/1/en-us,de-de, foo/2/*``
 
     """
     result: list[Doctype] = []

@@ -12,35 +12,32 @@ from ..models.serverroles import ServerRole
 class DocBuildContext:
     """The CLI context shared between different subcommands."""
 
-    # --dry-run
     dry_run: bool = False
+    """If set, just pretend to run the command without making any changes"""
 
-    # -v: verbosity level
     verbose: int = 0
+    """verbosity level"""
 
-    # --role: obsolete
-    # role: ServerRole | None = None  # ServerRole.production
-
-    # --configfile: The app's config files
     appconfigfiles: tuple[str | Path, ...] | None = None
+    """The app's config files to load, if any"""
 
-    # Internal flag to indicate if the app's config was loaded from defaults
     appconfig_from_defaults: bool = False
+    """If set, the app's config was loaded from defaults"""
 
-    # --config: The accumulated content of all config files ()
     appconfig: dict[str, Any] | None = None
+    """The accumulated content of all app config files"""
 
-    # --envconfigfiles: The env's config files
     envconfigfiles: tuple[str | Path, ...] | None = None
+    """The env's config files to load, if any"""
 
-    # Internal flag to indicate if the env's config was loaded from defaults
     envconfig_from_defaults: bool = False
+    """Internal flag to indicate if the env's config was loaded from defaults"""
 
-    # --envconfig: The accumulated content of all env config files
     envconfig: dict[str, Any] | None = None
+    """The accumulated content of all env config files"""
 
-    # --doctypes
     doctypes: list[Doctype] | None = None
+    """The doctypes to process, if any"""
 
-    # --debug
     debug: bool = False
+    """If set, enable debug mode"""

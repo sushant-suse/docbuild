@@ -1,7 +1,10 @@
 """Defaults for the CLI and environment configuration.
 
-* `DEFAULT_APP_CONFIG`: Default configuration for the application.
-* `DEFAULT_ENV_CONFIG`: Default configuration for the environment.
+These are hardcoded defaults for the application and environment configurations.
+They are used when no configuration files are provided or when the configuration
+files do not contain the necessary settings.
+
+They can be overridden by the user through configuration files or command-line options.
 """
 
 from ..constants import APP_NAME
@@ -19,6 +22,7 @@ DEFAULT_APP_CONFIG = {
         "tmp_path": "{tmp_base_path}/doc-example-com",
     },
 }
+"""Default configuration for the application."""
 
 DEFAULT_ENV_CONFIG = {
     "role": "production",
@@ -32,3 +36,5 @@ DEFAULT_ENV_CONFIG = {
         "tmp_path": "{tmp_base_path}/doc-example-com",
     },
 }
+"""Default configuration for the environment."""
+

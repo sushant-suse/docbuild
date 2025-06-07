@@ -1,0 +1,29 @@
+docbuild.cli.c14n
+=================
+
+.. py:module:: docbuild.cli.c14n
+
+.. autoapi-nested-parse::
+
+   CLI interface to apply canonicals.
+
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   docbuild.cli.c14n.c14n
+
+
+Module Contents
+---------------
+
+.. py:function:: c14n(ctx: click.Context) -> None
+
+   Subcommand to apply canonicals (canonicalization = c14n).
+
+   :param ctx: The Click context object.
+
+
