@@ -83,12 +83,6 @@ include-package-data = true
 version = {attr = "docbuild.__about__.__version__"}
 
 
-[tool.setuptools.packages.find]
-# Is that still necessary?
-# list of folders that contain the packages (["."] by default)
-where = ["src"]
-
-
 [tool.docformatter]
 wrap-summaries = 80
 close-quotes-on-newline = true
