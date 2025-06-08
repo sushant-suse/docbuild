@@ -24,3 +24,9 @@ name = "Improved Documentation"
 
 [tool.towncrier.fragment.feature]
 name = "Features"
+
+[tool.towncrier.fragment.removal]
+name = "Removed Features"
+
+[tool.towncrier.fragment.infra]
+name = "Infrastructure"

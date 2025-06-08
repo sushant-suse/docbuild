@@ -30,18 +30,21 @@ We recommend to follow the steps to make a smooth integration of your changes:
    In case you have no issue but a pull request, prefix your number with ``pr``.
    ``<TYPE>`` is one of:
 
+   * ``breaking``: describes a change that breaks backward compatibility.
    * ``bugfix``: fixes a reported bug.
-   * ``deprecation``: informs about deprecation warnings
+   * ``deprecation``: informs about deprecation or removed features.
    * ``doc``: improves documentation.
    * ``feature``: adds new user facing features.
    * ``removal``: removes obsolete or deprecated features.
-   * ``trivial``: fixes a small typo or internal change that might be noteworthy.
+   * ``infra``: improves the infrastructure, e.g. build or test system.
 
    For example: ``123.feature.rst``, ``pr233.removal.rst``, ``456.bugfix.rst`` etc.
+   If you have changes that are not associated with an issue or pull request,
+   start with a "+" sign and a short description, for example, ``+add-json.feature.rst``. 
+   
+   Create the new file with the command::
 
-#. Create the new file with the command::
-
-     tox -e changelog -- create 123.feature.rst
+     uv run towncrier create -c "Description" 123.feature.rst
 
    The file is created int the :file:`changelog.d/` directory.
 
@@ -53,11 +56,11 @@ We recommend to follow the steps to make a smooth integration of your changes:
 
 #. Check your changes with::
 
-     tox -e changelog -- check
+     uv run towncrier check
 
 #. Optionally, build a draft version of the changelog file with the command::
 
-    tox -e changelog
+    uv run towncrier build --draft
 
 #. Commit all your changes and push it.
 
@@ -66,7 +69,7 @@ This finishes your steps.
 
 On release, the maintainer compiles a new :file:`CHANGELOG.rst` file by running::
 
-   tox -e changelog -- build
+   uv run towncrier build
 
 This will remove all newsfragments inside the :file:`changelog.d` directory,
 making it ready for the next release.
