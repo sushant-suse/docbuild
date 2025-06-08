@@ -53,7 +53,7 @@ def node() -> etree._ElementTree:
                 </language>
             </builddocs>
         </docset>
-    </product>""")
+    </product>""", parser=None)
     return node.getroottree()  # .getiterator("deliverable")
 
 

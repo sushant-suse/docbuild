@@ -18,5 +18,6 @@ Submodules
    /reference/_autoapi/docbuild/config/app/index
    /reference/_autoapi/docbuild/config/load/index
    /reference/_autoapi/docbuild/config/merge/index
+   /reference/_autoapi/docbuild/config/xml/index
 
 
