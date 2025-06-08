@@ -20,6 +20,12 @@ Attributes
 Classes
 -------
 
+.. toctree::
+   :hidden:
+
+   /reference/_autoapi/docbuild/models/product/StrEnumMeta
+   /reference/_autoapi/docbuild/models/product/BaseProductEnum
+
 .. autoapisummary::
 
    docbuild.models.product.StrEnumMeta
@@ -28,22 +34,6 @@ Classes
 
 Module Contents
 ---------------
-
-.. py:class:: StrEnumMeta
-
-   Bases: :py:obj:`enum.EnumMeta`
-
-
-   Custom metaclass for StrEnum to allow attribute-style access.
-
-
-.. py:class:: BaseProductEnum
-
-   Bases: :py:obj:`enum.StrEnum`
-
-
-   Base class for product enums with custom error handling.
-
 
 .. py:data:: Product
 

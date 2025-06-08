@@ -17,4 +17,5 @@ This is the documentation for the |project| project, hosted at |gh_repo|.
    user/index
    developer/index
    reference/index
+   changelog
    glossary
