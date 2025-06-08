@@ -12,19 +12,6 @@ docbuild.models.lifecycle.BaseLifecycleFlag
    Base class for LifecycleFlag.
 
 
-   .. py:method:: from_str(value: str) -> BaseLifecycleFlag
-      :classmethod:
-
-
-      Convert a string to a LifecycleFlag object.
-
-      The string is either a comma or pipe separated list.
-
-      * ``"supported"`` => ``<LifecycleFlag.supported: 2>``
-      * ``"supported|beta"`` => ``<LifecycleFlag.supported|beta: 6>``
-
-
-
    .. py:method:: __contains__(other: str | enum.Flag) -> bool
 
       Return True if self has at least one of same flags set as other.

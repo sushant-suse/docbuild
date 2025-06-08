@@ -35,6 +35,6 @@ Module Contents
 
 .. py:data:: LifecycleFlag
 
-   LifecycleFlag is a Flag that represents the lifecycle of a product.
+   LifecycleFlag represents the lifecycle of a product.
 
 

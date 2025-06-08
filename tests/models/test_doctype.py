@@ -60,7 +60,7 @@ def test_multiplestrings_langs_in_doctype():
             (
                 Product.sles,
                 ["15-SP6"],
-                LifecycleFlag.supported,
+                LifecycleFlag.unknown,
                 [LanguageCode("en-us")],
             ),
         ),
@@ -69,25 +69,25 @@ def test_multiplestrings_langs_in_doctype():
             (
                 Product.sles,
                 ["15-SP5", "15-SP6"],
-                LifecycleFlag.supported,
+                LifecycleFlag.unknown,
                 [LanguageCode("en-us")],
             ),
         ),
         (
             "//en-us",
-            (Product.ALL, ["*"], LifecycleFlag.supported, [LanguageCode("en-us")]),
+            (Product.ALL, ["*"], LifecycleFlag.unknown, [LanguageCode("en-us")]),
         ),
         (
             "*//en-us",
-            (Product.ALL, ["*"], LifecycleFlag.supported, [LanguageCode("en-us")]),
+            (Product.ALL, ["*"], LifecycleFlag.unknown, [LanguageCode("en-us")]),
         ),
         (
             "/*/en-us",
-            (Product.ALL, ["*"], LifecycleFlag.supported, [LanguageCode("en-us")]),
+            (Product.ALL, ["*"], LifecycleFlag.unknown, [LanguageCode("en-us")]),
         ),
         (
             "*/*/en-us",
-            (Product.ALL, ["*"], LifecycleFlag.supported, [LanguageCode("en-us")]),
+            (Product.ALL, ["*"], LifecycleFlag.unknown, [LanguageCode("en-us")]),
         ),
         (
             "*/@beta/en-us",

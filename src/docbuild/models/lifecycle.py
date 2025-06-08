@@ -14,12 +14,22 @@ class BaseLifecycleFlag(Flag):
 
     @classmethod
     def from_str(cls, value: str) -> "BaseLifecycleFlag":
-        """Convert a string to a LifecycleFlag object.
+        f"""Convert a string to a LifecycleFlag object.
 
-        The string is either a comma or pipe separated list.
+        The string accepts the values {', '.join(repr(x) for x in ALLOWED_LIFECYCLES)}
+        or a combination of them separated by a comma or pipe.
+        Addtionally, the class knows the values "UNKNOWN" and "unknown".
+        An empty string, "", is equivalent to "UNKNOWN".
 
-        * ``"supported"`` => ``<LifecycleFlag.supported: 2>``
-        * ``"supported|beta"`` => ``<LifecycleFlag.supported|beta: 6>``
+        Examples:
+        >>> LifecycleFlag.from_str("supported")
+        <LifecycleFlag.supported: 2>
+        >>> LifecycleFlag.from_str("supported|beta")
+        <LifecycleFlag.supported|beta: 6>
+        >>> LifecycleFlag.from_str("beta,supported|beta")
+        <LifecycleFlag.supported|beta: 6>
+        >>> LifecycleFlag.from_str("")
+        <LifecycleFlag.unknown: 0>
         """
         try:
             flag = cls(0)  # Start with an empty flag
@@ -67,4 +77,4 @@ LifecycleFlag = BaseLifecycleFlag(
     {"unknown": 0, "UNKNOWN": 0}
     | {item: (2 << index) for index, item in enumerate(ALLOWED_LIFECYCLES, 0)},
 )
-"""LifecycleFlag is a Flag that represents the lifecycle of a product."""
+"""LifecycleFlag represents the lifecycle of a product."""

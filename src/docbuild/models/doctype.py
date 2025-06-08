@@ -19,6 +19,16 @@ class Doctype(BaseModel):
     Doctype(product=<Product.SLES: 'sles'>, docset=['15-SP6'], lifecycle=<LifecycleFlag.SUPPORTED: 'supported'>, langs=[LanguageCode(language='en-us'), LanguageCode(language='de-de')])
     """
 
+    # __init__.__doc__ = """Create a new Doctype instance.
+
+    # :param product: A SUSE product, e.g. 'sles', 'smart'.
+    # :param docset: A specific release or version of a product.
+    # :param lifecycle: The state of the Doctype, e.g. 'supported', 'beta'.
+    # :param langs: A natural language, e.g. 'en-us', 'de-de'.
+
+    # :raises pydantic_core.ValidationError: if the input values are invalid.
+    # """   # type: ignore
+
     product: Product = Field(
             title="A SUSE product",
             description="A SUSE product is a lowercase acronym.",
@@ -158,6 +168,7 @@ class Doctype(BaseModel):
     def coerce_lifecycle(
         cls, value: str | LifecycleFlag) -> BaseLifecycleFlag:
         """Convert a string into a LifecycleFlag."""
+        # value = "" if value is None else value
         if isinstance(value, str):
             # Delegate it to the LifecycleFlag to deal with
             # the correct parsing and validation
@@ -198,7 +209,7 @@ class Doctype(BaseModel):
         product, docset, lifecycle, langs = match.groups()
         product = "*" if not product else product
         docset = "*" if not docset else docset
-        lifecycle = "supported" if lifecycle is None else lifecycle
+        lifecycle = "unknown" if lifecycle is None else lifecycle
         langs = "en-us" if langs is None else langs
         return cls(product=product,
                    docset=docset,
