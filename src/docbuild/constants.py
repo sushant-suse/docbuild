@@ -5,6 +5,7 @@ import re
 
 from .models.serverroles import ServerRole
 
+
 APP_NAME = "docbuild"
 """The name of the application, used in paths and config files."""
 
@@ -145,3 +146,7 @@ DEFAULT_ENV_CONFIG_FILENAME = ENV_CONFIG_FILENAME.format(role="production")
 
 PLACEHOLDER_PATTERN: re.Pattern[str] = re.compile(r"(?<!\{)\{([^{}]+)\}(?!\})")
 """Compiled regex for standard placeholders in configuration files (like ``{placeholder}``)."""
+
+# --- Logging constants ---
+BASE_LOG_DIR = Path.home() / '.local' / 'state' / APP_NAME / 'logs'
+"""The directory where log files will be stored, typically at :file:`~/.local/state/docbuild/logs` as recommended by the XDG Base Directory Specification."""
