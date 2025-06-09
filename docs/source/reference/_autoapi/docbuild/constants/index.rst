@@ -37,6 +37,7 @@ Attributes
    docbuild.constants.ENV_CONFIG_FILENAME
    docbuild.constants.DEFAULT_ENV_CONFIG_FILENAME
    docbuild.constants.PLACEHOLDER_PATTERN
+   docbuild.constants.BASE_LOG_DIR
 
 
 Module Contents
@@ -177,5 +178,10 @@ Module Contents
    :type:  re.Pattern[str]
 
    Compiled regex for standard placeholders in configuration files (like ``{placeholder}``).
+
+
+.. py:data:: BASE_LOG_DIR
+
+   The directory where log files will be stored, typically at :file:`~/.local/state/docbuild/logs` as recommended by the XDG Base Directory Specification.
 
 

@@ -19,6 +19,7 @@ Submodules
    /reference/_autoapi/docbuild/cli/index
    /reference/_autoapi/docbuild/config/index
    /reference/_autoapi/docbuild/constants/index
+   /reference/_autoapi/docbuild/logging/index
    /reference/_autoapi/docbuild/models/index
    /reference/_autoapi/docbuild/utils/index
 

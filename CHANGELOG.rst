@@ -20,6 +20,37 @@ Changes for the upcoming release can be found in the
 
 .. towncrier release notes start
 
+Version 0.8.0
+=============
+
+Breaking Changes
+----------------
+
+- Change default of lifecycle in :meth:`~docbuild.models.doctype.Doctype.from_str`
+
+  When you called :meth:`~docbuild.models.doctype.Doctype.from_str` with a string that did not contain a lifecycle, it would default to ``supported``.
+  This may prevent XPaths were you want *all* lifecycles.
+  This is now changed to ``unknown``.
+
+
+Features
+--------
+
+- Add new list_all_deliverables for XML files
+
+  Generator to yield all deliverables in XML format.
+- Implement logging
+
+  Add new functions:
+
+  * :func:`~docbuild.logging.create_base_log_dir`: Create the base log directory if it doesn't exist.
+  * :func:`~docbuild.logging.setup_logging`: Set up logging for the application.
+  * :func:`~docbuild.logging.get_effective_level`: Return a valid log level, clamped safely.
+
+  The `setup_logging` sets different loggers for the app itself, for Jinja,
+  XPath, and Git.
+
+
 Version 0.7.0
 =============
 
@@ -72,3 +103,5 @@ Removed Features
 ----------------
 
 - Remove tool.setuptools.packages.find
+
+----
