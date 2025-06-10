@@ -1,6 +1,6 @@
 import pytest
 
-from docbuild.cli.cli import cli
+from docbuild.cli.cmd_cli import cli
 
 
 @pytest.mark.skip('Replace --role with --env-config')

@@ -83,7 +83,7 @@ devel = [
 
 
 [project.scripts]
-docbuild = "docbuild.cli.cli:cli"
+docbuild = "docbuild.cli.cmd_cli:cli"
 
 
 # --- Setuptools configuration ---

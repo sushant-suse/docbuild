@@ -1,7 +1,7 @@
 from pathlib import Path
 import click
 
-import docbuild.cli.cli as cli_mod
+import docbuild.cli.cmd_cli as cli_mod
 from docbuild.cli.context import DocBuildContext
 
 cli = cli_mod.cli

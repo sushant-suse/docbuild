@@ -14,8 +14,8 @@ from ..constants import (
     PROJECT_DIR,
     PROJECT_LEVEL_APP_CONFIG_FILENAMES,
 )
-from .build import build
-from .c14n import c14n
+from .cmd_build import build
+from .cmd_c14n import c14n
 from .config import config
 from .context import DocBuildContext
 from .defaults import DEFAULT_APP_CONFIG, DEFAULT_ENV_CONFIG

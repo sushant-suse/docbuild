@@ -3,7 +3,7 @@ from pathlib import Path
 import click
 import pytest
 
-from docbuild.cli.cli import cli
+from docbuild.cli.cmd_cli import cli
 
 
 # Define a throwaway command just for testing context mutation

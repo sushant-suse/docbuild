@@ -1,6 +1,6 @@
 import pytest
 
-from docbuild.cli.cli import cli
+from docbuild.cli.cmd_cli import cli
 
 from ..common import changedir
 

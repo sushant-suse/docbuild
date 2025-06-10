@@ -18,7 +18,7 @@ from click.testing import CliRunner
 import pytest
 
 import docbuild.cli as cli_module
-import docbuild.cli.cli as cli
+import docbuild.cli.cmd_cli as cli
 from docbuild.cli.context import DocBuildContext
 from docbuild.config import load as load_mod
 from docbuild.constants import DEFAULT_ENV_CONFIG_FILENAME

@@ -1,0 +1,2620 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="file:/home/toms/repos/GH/opensuse/docserv/share/validate-product-config/product-config-schema.rnc" type="application/relax-ng-compact-syntax"?>
+<product productid="sles" schemaversion="6.0">
+  <name>SUSE Linux Enterprise Server</name>
+  <acronym>SLES</acronym>
+  <maintainers>
+    <contact>taroth@suse.de</contact>
+    <contact>toms@suse.de</contact>
+  </maintainers>
+
+  <xi:include href="_categories.xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/*/*)" />
+
+  <desc default="1" lang="en-us">
+    <title>THE platform for your business-critical apps in any environment</title>
+    <p>
+      A multimodal operating system that paves the way for IT transformation in the
+      software-defined era.
+    </p>
+    <p>
+      The modern and modular OS helps simplify multimodal IT, makes traditional IT
+      infrastructure efficient and provides an engaging platform for developers.
+      As a result, you can easily deploy and transition business-critical workloads
+      across on-premise and public cloud environments.
+    </p>
+    <p>
+      SUSE Linux Enterprise Server, based on latest SUSE Linux Enterprise, is another
+      example of our open approach helping you optimize and modernize your multimodal
+      IT infrastructure.
+    </p>
+  </desc>
+  <desc lang="de-de">
+    <title>DIE Plattform für Ihre geschäftskritischen Anwendungen in jeder Umgebung</title>
+    <p>
+      Ein multimodales Betriebssystem, das als Wegbereiter für die IT-Transformation
+      im softwaredefinierten Zeitalter fungiert.
+    </p>
+    <p>
+      Das moderne, modulare Betriebssystem trägt zur Vereinfachung multimodaler IT bei,
+      verbessert die Effizienz der herkömmlichen IT-Infrastruktur und bietet eine
+      interessante Plattform für Entwickler. In Folge dessen können Sie geschäftskritische
+      Workloads über lokale und Public Cloud-Umgebungen hinweg einfach bereitstellen
+      und übertragen.
+    </p>
+    <p>
+      SUSE Linux Enterprise Server basiert auf dem neuesten SUSE Linux Enterprise
+      und ist ein weiteres Beispiel für unseren offenen Ansatz zur Optimierung und
+      Modernisierung Ihrer multimodalen IT-Infrastruktur.
+    </p>
+  </desc>
+  <desc lang="fr-fr">
+    <title>LA plate-forme pour vos applications stratégiques dans tout environnement</title>
+    <p>
+      Un système d’exploitation multimodal qui offre une base idéale pour faire évoluer
+      les systèmes informatiques à l’ère du software-defined.
+    </p>
+    <p>
+      Grâce à une architecture moderne et modulaire, le système d’exploitation simplifie
+      l’informatique multimodale, optimise l’infrastructure informatique traditionnelle
+      et fournit une plate-forme attractive pour les développeurs. Il vous est ainsi
+      possible de facilement déployer et assurer la transition des workloads stratégiques
+      dans des environnements de cloud public et sur site.
+    </p>
+    <p>
+      SUSE Linux Enterprise Server repose sur la distribution SUSE Linux Enterprise
+      et constitue un autre exemple de notre approche ouverte qui vous permet d’optimiser
+      et de moderniser votre infrastructure informatique multimodale.
+    </p>
+  </desc>
+  <desc lang="pt-br">
+    <title>A plataforma para seus aplicativos comerciais críticos em qualquer ambiente</title>
+    <p>
+      Um sistema operacional multimodal que abre caminho para a transformação de TI
+      na era definida por software.
+    </p>
+    <p>
+      O sistema operacional moderno e modular ajuda a simplificar a TI multimodal, torna
+      a infraestrutura de TI tradicional eficiente e fornece uma plataforma envolvente
+      para desenvolvedores. Como resultado, você pode facilmente implantar e fazer a
+      transição de cargas de trabalho essenciais em ambientes de nuvem pública e no local.
+    </p>
+    <p>
+      O SUSE Linux Enterprise Server, baseado no SUSE Linux Enterprise mais recente,
+      é outro exemplo de nossa abordagem aberta que ajuda a otimizar e a modernizar sua
+      infraestrutura de TI multimodal.
+    </p>
+  </desc>
+  <desc lang="ja-jp">
+    <title>あらゆる環境におけるビジネスクリティカルなアプリのためのプラットフォーム</title>
+    <p>
+      Software-Defined時代のITトランスフォーメーションの道を拓く、マルチモーダルなOSです。
+    </p>
+    <p>
+      最新のモジュラー型OSがマルチモーダルITのシンプル化をサポートし、従来のITインフラストラクチャを効率化し、
+      開発者にとって魅力あるプラットフォームを提供します。これにより、オンプレミス環境でもパブリッククラウド環境でも、
+      ビジネスクリティカルなワークロードを容易にデプロイ、移行することが可能になります。
+    </p>
+    <p>
+      最新のSUSE Linux EnterpriseベースのSUSE Linux Enterprise Serverは、マルチモーダルIT
+      インフラストラクチャの最適化および最新化を支援する、オープンなSUSEのオープンアプローチの1つの例です。
+    </p>
+  </desc>
+  <desc lang="zh-cn">
+    <title>适用于任何环境中的业务关键型应用程序的平台</title>
+    <p>
+      一种多模式操作系统，为软件定义时代的 IT 转型奠定了坚实的基础。
+    </p>
+    <p>
+      利用这种现代的模块化操作系统，可以简化多模式 IT，使传统 IT 基础设施高效运营，并为开发人员提供一
+      个有吸引力的平台。因此，您可以跨本地环境和公共云环境轻松地部署和迁移业务关键型工作负载。
+    </p>
+    <p>
+      SUSE Linux Enterprise Server 基于最新的 SUSE Linux Enterprise 开发而成，
+      是我们开放源代码的又一个典范，可帮助您实现多模式 IT 基础设施的优化和现代化。
+    </p>
+  </desc>
+  <desc lang="es-es">
+    <title>LA plataforma para aplicaciones fundamentales de empresa en cualquier entorno</title>
+    <p>
+      Un sistema operativo multimodo que facilita la transformación de TI en la era
+      definida por software.
+    </p>
+    <p>
+      El sistema operativo moderno y modular ayuda a simplificar la TI multimodo para
+      permitir que la infraestructura de TI tradicional sea eficaz y proporcionar una
+      plataforma atractiva para los desarrolladores. Como resultado, puede implantar y
+      transferir fácilmente las cargas de trabajo esenciales para el negocio en los
+      entornos locales y de nube pública.
+    </p>
+    <p>
+      SUSE Linux Enterprise Server, basado en la versión más reciente de SUSE Linux
+      Enterprise, es otro ejemplo de nuestro enfoque abierto que le ayuda a optimizar
+      y modernizar su infraestructura de TI multimodo.
+    </p>
+  </desc>
+
+  <docset lifecycle="supported" setid="15-SP6">
+    <version>15 SP6</version>
+    <!-- <canonical>sles/15-SP6</canonical> -->
+    <builddocs>
+      <git remote="https://github.com/SUSE/doc-sle.git"/>
+      <language default="1" lang="en-us">
+        <branch>maintenance/SLE15SP6</branch>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <format epub="0" html="1" pdf="0" single-html="0"/>
+          <subdeliverable category="administration">book-rmt</subdeliverable>
+          <subdeliverable category="administration">book-administration</subdeliverable>
+          <subdeliverable category="administration">book-tuning</subdeliverable>
+          <subdeliverable category="administration">book-storage</subdeliverable>
+          <subdeliverable category="installation-upgrade">book-upgrade</subdeliverable>
+          <subdeliverable category="installation-upgrade">book-autoyast</subdeliverable>
+          <subdeliverable category="security">book-security</subdeliverable>
+          <subdeliverable category="end-user">book-gnome-user</subdeliverable>
+          <subdeliverable category="installation-upgrade">book-deployment</subdeliverable>
+          <subdeliverable category="installation-upgrade">article-installation</subdeliverable>
+          <subdeliverable category="installation-upgrade">article-modules</subdeliverable>
+          <!--<subdeliverable category="container-virtualization">article-minimal-vm</subdeliverable>-->
+          <subdeliverable category="installation-upgrade">article-raspberry-pi</subdeliverable>
+          <subdeliverable category="container-virtualization">book-virtualization</subdeliverable>
+          <subdeliverable category="container-virtualization">article-virtualization-best-practices</subdeliverable>
+          <subdeliverable category="container-virtualization">article-nvidia-vgpu</subdeliverable>
+          <subdeliverable category="container-virtualization">article-kubevirt</subdeliverable>
+          <subdeliverable category="container-virtualization">article-amd-sev</subdeliverable>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-administration</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-autoyast</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-deployment</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="end-user">
+          <dc>DC-SLES-gnome-user</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-installation</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-modules</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-nvidia-vgpu</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLE-kubevirt</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-rmt</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="security">
+          <dc>DC-SLES-security</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-storage</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-tuning</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-upgrade</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-virtualization</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-virtualization-best-practices</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-amd-sev</dc>
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-raspberry-pi</dc>
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </deliverable>
+      </language>
+      <language lang="de-de" translation-type="list">
+        <branch>maintenance/SLE15SP6</branch>
+        <subdir>l10n/sles/de-de</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-deployment</subdeliverable>
+          <subdeliverable>book-upgrade</subdeliverable>
+          <subdeliverable>article-installation</subdeliverable>
+          <subdeliverable>book-administration</subdeliverable>
+          <subdeliverable>book-gnome-user</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installation</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-administration</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-gnome-user</dc>
+        </deliverable>
+      </language>
+      <language lang="es-es" translation-type="list">
+        <branch>maintenance/SLE15SP6</branch>
+        <subdir>l10n/sles/es-es</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-deployment</subdeliverable>
+          <subdeliverable>book-upgrade</subdeliverable>
+          <subdeliverable>article-installation</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installation</dc>
+        </deliverable>
+      </language>
+      <language lang="fr-fr" translation-type="list">
+        <branch>maintenance/SLE15SP6</branch>
+        <subdir>l10n/sles/fr-fr</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-deployment</subdeliverable>
+          <subdeliverable>book-upgrade</subdeliverable>
+          <subdeliverable>article-installation</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installation</dc>
+        </deliverable>
+      </language>
+      <language lang="ja-jp" translation-type="list">
+        <branch>maintenance/SLE15SP6</branch>
+        <subdir>l10n/sles/ja-jp</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-deployment</subdeliverable>
+          <subdeliverable>book-upgrade</subdeliverable>
+          <subdeliverable>article-installation</subdeliverable>
+          <subdeliverable>book-administration</subdeliverable>
+          <subdeliverable>book-gnome-user</subdeliverable>
+          <subdeliverable>book-storage</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installation</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-administration</dc>
+        </deliverable>
+       <deliverable>
+        <dc>DC-SLES-gnome-user</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-storage</dc>
+        </deliverable>
+      </language>
+      <language lang="ko-kr" translation-type="list">
+        <branch>maintenance/SLE15SP6</branch>
+        <subdir>l10n/sles/ko-kr</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-deployment</subdeliverable>
+          <subdeliverable>book-upgrade</subdeliverable>
+          <subdeliverable>article-installation</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installation</dc>
+        </deliverable>
+      </language>
+      <language lang="pt-br" translation-type="list">
+        <branch>maintenance/SLE15SP6</branch>
+        <subdir>l10n/sles/pt-br</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-deployment</subdeliverable>
+          <subdeliverable>book-upgrade</subdeliverable>
+          <subdeliverable>article-installation</subdeliverable>
+          <subdeliverable>book-gnome-user</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installation</dc>
+        </deliverable>
+        <deliverable>
+         <dc>DC-SLES-gnome-user</dc>
+        </deliverable>
+      </language>
+      <language lang="zh-cn" translation-type="list">
+        <branch>maintenance/SLE15SP6</branch>
+        <subdir>l10n/sles/zh-cn</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-deployment</subdeliverable>
+          <subdeliverable>book-upgrade</subdeliverable>
+          <subdeliverable>article-installation</subdeliverable>
+          <subdeliverable>book-autoyast</subdeliverable>
+          <subdeliverable>book-rmt</subdeliverable>
+          <subdeliverable>book-administration</subdeliverable>
+          <subdeliverable>book-tuning</subdeliverable>
+          <subdeliverable>book-storage</subdeliverable>
+          <subdeliverable>book-security</subdeliverable>
+          <subdeliverable>book-gnome-user</subdeliverable>
+          <subdeliverable>article-modules</subdeliverable>
+          <subdeliverable>article-raspberry-pi</subdeliverable>
+          <subdeliverable>book-virtualization</subdeliverable>
+          <subdeliverable>article-virtualization-best-practices</subdeliverable>
+          <subdeliverable>article-amd-sev</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installation</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-autoyast</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-administration</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-gnome-user</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-modules</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-rmt</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-security</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-storage</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-tuning</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-virtualization</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-virtualization-best-practices</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-amd-sev</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-raspberry-pi</dc>
+        </deliverable>
+        <!--<deliverable>
+          <dc>DC-SLES-minimal-vm</dc>
+        </deliverable>-->
+      </language>
+    </builddocs>
+    <internal>
+      <ref product="sle-hpc" docset="15-SP6" dc="DC-hpc-guide" category="administration" titleformat="title subtitle"/>
+      <ref product="sle-public-cloud" docset="all" dc="DC-public-cloud" category="public-cloud" titleformat="title subtitle"/>
+      <ref product="suse-distribution-migration-system" docset="15" dc="DC-distribution-migration-system" category="public-cloud"/>
+      <ref product="smart" docset="virtualization-cloud" dc="DC-minimal-vm"  category="administration"/>
+      <ref product="smart" docset="deploy-upgrade" dc="DC-SLES-NVIDIA-jetson" category="deploy-upgrade"/>
+      <ref product="appliance" docset="keg-2" dc="DC-keg" category="appliance-building"/>
+      <ref product="appliance" docset="kiwi-9" dc="DC-kiwi" category="appliance-building"/>
+      <ref product="sbp" docset="systems-management" dc="DC-SBP-KMP-Manual-SLE12SP2" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="third-party" dc="DC-SBP-intelsupport" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="systems-management" dc="DC-SBP-SLE15-Custom-Installation-Medium" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="systems-management" dc="DC-SBP-SLE-OffLine-Upgrade-Local-Boot" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="security" dc="DC-SBP-Spectre-Meltdown-L1TF" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="tuning-performance" dc="DC-SBP-performance-tuning" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="tuning-performance" dc="DC-SBP-AMD-EPYC-2-SLES15SP1" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="tuning-performance" dc="DC-SBP-AMD-EPYC-3-SLES15SP2" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="tuning-performance" dc="DC-SBP-AMD-EPYC-4-SLES15SP4" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="devel-tools" dc="DC-SBP-GCC-11" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="security" dc="DC-SBP-SUSE-security-report-2023" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="security" dc="DC-SBP-SLSA4" category="best-practice" titleformat="title subtitle"/>
+<!--      <ref product="sbp" docset="tuning-performance" dc="DC-SBP-AMD-EPYC-4-SLES15SP4" category="best-practice" titleformat="title subtitle"/>-->
+      <ref product="trd" docset="wordpress" dc="DC-linux_gs_wordpress-lamp-sles" category="best-practice" titleformat="title subtitle"/>
+      <ref product="compliance" docset="all" dc="DC-SLES-openscap" category="security" titleformat="title subtitle"/>
+      <ref product="compliance" docset="all" dc="DC-SLES-pci-dss" category="security" titleformat="title subtitle"/>
+      <ref product="container" docset="all" dc="DC-Container-guide" category="container-virtualization" titleformat="title subtitle"/>
+    </internal>
+    <external>
+      <link category="release-notes">
+        <language lang="en-us" default="1" title="Release Notes">
+          <url format="html" href="https://www.suse.com/releasenotes/x86_64/SUSE-SLES/15-SP6"/>
+        </language>
+      </link>
+      <link category="release-notes">
+        <language lang="en-us" default="1" title="Release Notes for HPC">
+          <url format="html" href="https://www.suse.com/releasenotes/x86_64/SLE-HPC/15-SP6/"/>
+        </language>
+      </link>
+    </external>
+  </docset>
+
+  <docset lifecycle="supported" setid="15-SP5">
+    <version>15 SP5</version>
+    <canonical>sles/15-SP6/</canonical>
+    <builddocs>
+      <git remote="https://github.com/SUSE/doc-sle.git"/>
+      <language default="1" lang="en-us">
+        <branch>maintenance/SLE15SP5</branch>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <format epub="0" html="1" pdf="0" single-html="0"/>
+          <subdeliverable category="administration">book-rmt</subdeliverable>
+          <subdeliverable category="administration">book-administration</subdeliverable>
+          <subdeliverable category="administration">book-tuning</subdeliverable>
+          <subdeliverable category="administration">book-storage</subdeliverable>
+          <subdeliverable category="installation-upgrade">book-upgrade</subdeliverable>
+          <subdeliverable category="installation-upgrade">book-autoyast</subdeliverable>
+          <subdeliverable category="security">book-security</subdeliverable>
+          <subdeliverable category="end-user">book-gnome-user</subdeliverable>
+          <subdeliverable category="installation-upgrade">book-deployment</subdeliverable>
+          <subdeliverable category="installation-upgrade">article-installation</subdeliverable>
+          <subdeliverable category="installation-upgrade">article-modules</subdeliverable>
+          <subdeliverable category="container-virtualization">article-minimal-vm</subdeliverable>
+          <subdeliverable category="installation-upgrade">article-raspberry-pi</subdeliverable>
+          <subdeliverable category="container-virtualization">book-virtualization</subdeliverable>
+          <subdeliverable category="container-virtualization">article-virtualization-best-practices</subdeliverable>
+          <subdeliverable category="container-virtualization">article-nvidia-vgpu</subdeliverable>
+          <subdeliverable category="container-virtualization">article-kubevirt</subdeliverable>
+          <subdeliverable category="container-virtualization">article-amd-sev</subdeliverable>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-administration</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-autoyast</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-deployment</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="end-user">
+          <dc>DC-SLES-gnome-user</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-installation</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-modules</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-nvidia-vgpu</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLE-kubevirt</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-rmt</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="security">
+          <dc>DC-SLES-security</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-storage</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-tuning</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-upgrade</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-virtualization</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-virtualization-best-practices</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-amd-sev</dc>
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-raspberry-pi</dc>
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-minimal-vm</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+      </language>
+      <language lang="de-de" translation-type="list">
+        <branch>maintenance/SLE15SP5</branch>
+        <subdir>l10n/sles/de-de</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-deployment</subdeliverable>
+          <subdeliverable>book-upgrade</subdeliverable>
+          <subdeliverable>article-installation</subdeliverable>
+          <subdeliverable>book-administration</subdeliverable>
+          <subdeliverable>book-gnome-user</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installation</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-administration</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-gnome-user</dc>
+        </deliverable>
+      </language>
+      <language lang="es-es" translation-type="list">
+        <branch>maintenance/SLE15SP5</branch>
+        <subdir>l10n/sles/es-es</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-deployment</subdeliverable>
+          <subdeliverable>book-upgrade</subdeliverable>
+          <subdeliverable>article-installation</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installation</dc>
+        </deliverable>
+      </language>
+      <language lang="fr-fr" translation-type="list">
+        <branch>maintenance/SLE15SP5</branch>
+        <subdir>l10n/sles/fr-fr</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-deployment</subdeliverable>
+          <subdeliverable>book-upgrade</subdeliverable>
+          <subdeliverable>article-installation</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installation</dc>
+        </deliverable>
+      </language>
+      <language lang="ja-jp" translation-type="list">
+        <branch>maintenance/SLE15SP5</branch>
+        <subdir>l10n/sles/ja-jp</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-deployment</subdeliverable>
+          <subdeliverable>book-upgrade</subdeliverable>
+          <subdeliverable>article-installation</subdeliverable>
+          <subdeliverable>book-administration</subdeliverable>
+          <subdeliverable>book-gnome-user</subdeliverable>
+          <subdeliverable>book-storage</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installation</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-administration</dc>
+        </deliverable>
+       <deliverable>
+        <dc>DC-SLES-gnome-user</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-storage</dc>
+        </deliverable>
+      </language>
+      <language lang="ko-kr" translation-type="list">
+        <branch>maintenance/SLE15SP5</branch>
+        <subdir>l10n/sles/ko-kr</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-deployment</subdeliverable>
+          <subdeliverable>book-upgrade</subdeliverable>
+          <subdeliverable>article-installation</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installation</dc>
+        </deliverable>
+      </language>
+      <language lang="pt-br" translation-type="list">
+        <branch>maintenance/SLE15SP5</branch>
+        <subdir>l10n/sles/pt-br</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-deployment</subdeliverable>
+          <subdeliverable>book-upgrade</subdeliverable>
+          <subdeliverable>article-installation</subdeliverable>
+          <subdeliverable>book-gnome-user</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installation</dc>
+        </deliverable>
+        <deliverable>
+         <dc>DC-SLES-gnome-user</dc>
+        </deliverable>
+      </language>
+      <language lang="zh-cn" translation-type="list">
+        <branch>maintenance/SLE15SP5</branch>
+        <subdir>l10n/sles/zh-cn</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-deployment</subdeliverable>
+          <subdeliverable>book-upgrade</subdeliverable>
+          <subdeliverable>article-installation</subdeliverable>
+          <subdeliverable>book-autoyast</subdeliverable>
+          <subdeliverable>book-rmt</subdeliverable>
+          <subdeliverable>book-administration</subdeliverable>
+          <subdeliverable>book-tuning</subdeliverable>
+          <subdeliverable>book-storage</subdeliverable>
+          <subdeliverable>book-security</subdeliverable>
+          <subdeliverable>book-gnome-user</subdeliverable>
+          <subdeliverable>article-modules</subdeliverable>
+          <subdeliverable>article-raspberry-pi</subdeliverable>
+          <subdeliverable>book-virtualization</subdeliverable>
+          <subdeliverable>article-virtualization-best-practices</subdeliverable>
+          <subdeliverable>article-amd-sev</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installation</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-autoyast</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-administration</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-gnome-user</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-modules</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-rmt</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-security</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-storage</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-tuning</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-virtualization</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-virtualization-best-practices</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-amd-sev</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-raspberry-pi</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-minimal-vm</dc>
+        </deliverable>
+      </language>
+    </builddocs>
+    <internal>
+      <ref product="sle-public-cloud" docset="all" dc="DC-public-cloud" category="public-cloud" titleformat="title subtitle"/>
+      <ref product="suse-distribution-migration-system" docset="15" dc="DC-distribution-migration-system" category="public-cloud"/>
+      <ref product="appliance" docset="keg-2" dc="DC-keg" category="appliance-building"/>
+      <ref product="appliance" docset="kiwi-9" dc="DC-kiwi" category="appliance-building"/>
+      <ref product="sbp" docset="systems-management" dc="DC-SBP-KMP-Manual-SLE12SP2" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="third-party" dc="DC-SBP-intelsupport" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="systems-management" dc="DC-SBP-SLE15-Custom-Installation-Medium" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="systems-management" dc="DC-SBP-SLE-OffLine-Upgrade-Local-Boot" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="security" dc="DC-SBP-Spectre-Meltdown-L1TF" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="tuning-performance" dc="DC-SBP-performance-tuning" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="tuning-performance" dc="DC-SBP-AMD-EPYC-2-SLES15SP1" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="tuning-performance" dc="DC-SBP-AMD-EPYC-3-SLES15SP2" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="tuning-performance" dc="DC-SBP-AMD-EPYC-4-SLES15SP4" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="devel-tools" dc="DC-SBP-GCC-11" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="security" dc="DC-SBP-SUSE-security-report-2023" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="security" dc="DC-SBP-SLSA4" category="best-practice" titleformat="title subtitle"/>
+<!--      <ref product="sbp" docset="tuning-performance" dc="DC-SBP-AMD-EPYC-4-SLES15SP4" category="best-practice" titleformat="title subtitle"/>-->
+      <ref product="trd" docset="wordpress" dc="DC-linux_gs_wordpress-lamp-sles" category="best-practice" titleformat="title subtitle"/>
+      <ref product="compliance" docset="all" dc="DC-SLES-openscap" category="security" titleformat="title subtitle"/>
+      <ref product="compliance" docset="all" dc="DC-SLES-pci-dss" category="security" titleformat="title subtitle"/>
+      <ref product="container" docset="all" dc="DC-Container-guide" category="container-virtualization" titleformat="title subtitle"/>
+    </internal>
+    <external>
+      <link category="release-notes">
+        <language lang="en-us" default="1" title="Release Notes">
+          <url format="html" href="https://www.suse.com/releasenotes/x86_64/SUSE-SLES/15-SP5"/>
+        </language>
+      </link>
+    </external>
+  </docset>
+
+  <docset lifecycle="supported" setid="15-SP4">
+    <version>15 SP4</version>
+    <canonical>sles/15-SP6/</canonical>
+    <builddocs>
+      <git remote="https://github.com/SUSE/doc-sle.git"/>
+      <language default="1" lang="en-us">
+        <branch>maintenance/SLE15SP4</branch>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <format epub="0" html="1" pdf="0" single-html="0"/>
+          <subdeliverable category="administration">book-rmt</subdeliverable>
+          <subdeliverable category="administration">book-administration</subdeliverable>
+          <subdeliverable category="administration">book-tuning</subdeliverable>
+          <subdeliverable category="administration">book-storage</subdeliverable>
+          <subdeliverable category="installation-upgrade">book-upgrade</subdeliverable>
+          <subdeliverable category="installation-upgrade">book-autoyast</subdeliverable>
+          <subdeliverable category="security">book-security</subdeliverable>
+          <subdeliverable category="end-user">book-gnome-user</subdeliverable>
+          <subdeliverable category="installation-upgrade">book-deployment</subdeliverable>
+          <subdeliverable category="installation-upgrade">article-installation</subdeliverable>
+          <subdeliverable category="installation-upgrade">article-modules</subdeliverable>
+          <subdeliverable category="installation-upgrade">article-minimal-vm</subdeliverable>
+          <subdeliverable category="container-virtualization">book-virtualization</subdeliverable>
+          <subdeliverable category="container-virtualization">article-virtualization-best-practices</subdeliverable>
+          <subdeliverable category="container-virtualization">article-nvidia-vgpu</subdeliverable>
+          <subdeliverable category="container-virtualization">article-kubevirt</subdeliverable>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-administration</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-autoyast</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-deployment</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="end-user">
+          <dc>DC-SLES-gnome-user</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-installation</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-modules</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-nvidia-vgpu</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-rmt</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="security">
+          <dc>DC-SLES-security</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-storage</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-tuning</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-upgrade</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-virtualization</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-virtualization-best-practices</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-amd-sev</dc>
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-raspberry-pi</dc>
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-minimal-vm</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+      </language>
+      <language lang="de-de" translation-type="list">
+        <branch>maintenance/SLE15SP4</branch>
+        <subdir>l10n/sles/de-de</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-administration</subdeliverable>
+          <subdeliverable>book-deployment</subdeliverable>
+          <subdeliverable>book-upgrade</subdeliverable>
+          <subdeliverable>book-gnome-user</subdeliverable>
+          <subdeliverable>article-installation</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-administration</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-gnome-user</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installation</dc>
+        </deliverable>
+      </language>
+      <language lang="es-es" translation-type="list">
+        <branch>maintenance/SLE15SP4</branch>
+        <subdir>l10n/sles/es-es</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-deployment</subdeliverable>
+          <subdeliverable>book-upgrade</subdeliverable>
+          <subdeliverable>article-installation</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installation</dc>
+        </deliverable>
+      </language>
+      <language lang="fr-fr" translation-type="list">
+        <branch>maintenance/SLE15SP4</branch>
+        <subdir>l10n/sles/fr-fr</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-deployment</subdeliverable>
+          <subdeliverable>book-upgrade</subdeliverable>
+          <subdeliverable>article-installation</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installation</dc>
+        </deliverable>
+      </language>
+      <language lang="ja-jp" translation-type="list">
+        <branch>maintenance/SLE15SP4</branch>
+        <subdir>l10n/sles/ja-jp</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-administration</subdeliverable>
+          <subdeliverable>book-deployment</subdeliverable>
+          <subdeliverable>book-upgrade</subdeliverable>
+          <subdeliverable>book-gnome-user</subdeliverable>
+          <subdeliverable>book-storage</subdeliverable>
+          <subdeliverable>article-installation</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-administration</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+       <deliverable>
+        <dc>DC-SLES-gnome-user</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-storage</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installation</dc>
+        </deliverable>
+      </language>
+      <language lang="ko-kr" translation-type="list">
+        <branch>maintenance/SLE15SP4</branch>
+        <subdir>l10n/sles/ko-kr</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-deployment</subdeliverable>
+          <subdeliverable>book-upgrade</subdeliverable>
+          <subdeliverable>article-installation</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installation</dc>
+        </deliverable>
+      </language>
+      <language lang="pt-br" translation-type="list">
+        <branch>maintenance/SLE15SP4</branch>
+        <subdir>l10n/sles/pt-br</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-deployment</subdeliverable>
+          <subdeliverable>book-upgrade</subdeliverable>
+          <subdeliverable>book-gnome-user</subdeliverable>
+          <subdeliverable>article-installation</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+         <dc>DC-SLES-gnome-user</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installation</dc>
+        </deliverable>
+      </language>
+      <language lang="zh-cn" translation-type="list">
+        <branch>maintenance/SLE15SP4</branch>
+        <subdir>l10n/sles/zh-cn</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-rmt</subdeliverable>
+          <subdeliverable>book-administration</subdeliverable>
+          <subdeliverable>book-tuning</subdeliverable>
+          <subdeliverable>book-storage</subdeliverable>
+          <subdeliverable>book-upgrade</subdeliverable>
+          <subdeliverable>book-autoyast</subdeliverable>
+          <subdeliverable>book-security</subdeliverable>
+          <subdeliverable>book-gnome-user</subdeliverable>
+          <subdeliverable>book-deployment</subdeliverable>
+          <subdeliverable>article-installation</subdeliverable>
+          <subdeliverable>article-modules</subdeliverable>
+          <subdeliverable>article-minimal-vm</subdeliverable>
+          <subdeliverable>book-virtualization</subdeliverable>
+          <subdeliverable>article-virtualization-best-practices</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-administration</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-autoyast</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-gnome-user</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installation</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-modules</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-rmt</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-security</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-storage</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-tuning</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-virtualization</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-virtualization-best-practices</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-amd-sev</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-raspberry-pi</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-minimal-vm</dc>
+        </deliverable>
+      </language>
+    </builddocs>
+    <internal>
+      <ref product="sle-public-cloud" docset="all" dc="DC-public-cloud" category="public-cloud" titleformat="title subtitle"/>
+      <ref product="suse-distribution-migration-system" docset="15" dc="DC-distribution-migration-system" category="public-cloud"/>
+      <ref product="appliance" docset="keg-2" dc="DC-keg" category="appliance-building"/>
+      <ref product="appliance" docset="kiwi-9" dc="DC-kiwi" category="appliance-building"/>
+      <ref product="sbp" docset="systems-management" dc="DC-SBP-KMP-Manual-SLE12SP2" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="third-party" dc="DC-SBP-intelsupport" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="systems-management" dc="DC-SBP-SLE15-Custom-Installation-Medium" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="systems-management" dc="DC-SBP-SLE-OffLine-Upgrade-Local-Boot" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="security" dc="DC-SBP-Spectre-Meltdown-L1TF" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="tuning-performance" dc="DC-SBP-performance-tuning" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="tuning-performance" dc="DC-SBP-AMD-EPYC-2-SLES15SP1" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="tuning-performance" dc="DC-SBP-AMD-EPYC-3-SLES15SP2" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="devel-tools" dc="DC-SBP-GCC-11" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="security" dc="DC-SBP-SUSE-security-report-2022" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="security" dc="DC-SBP-SLSA4" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="tuning-performance" dc="DC-SBP-AMD-EPYC-4-SLES15SP4" category="best-practice" titleformat="title subtitle"/>
+      <ref product="trd" docset="wordpress" dc="DC-linux_gs_wordpress-lamp-sles" category="best-practice" titleformat="title subtitle"/>
+      <ref product="compliance" docset="all" dc="DC-SLES-openscap" category="security" titleformat="title subtitle"/>
+      <ref product="compliance" docset="all" dc="DC-SLES-pci-dss" category="security" titleformat="title subtitle"/>
+      <ref product="container" docset="all" dc="DC-Container-guide" category="container-virtualization" titleformat="title subtitle"/>
+    </internal>
+    <external>
+      <link category="release-notes">
+        <language lang="en-us" default="1" title="Release Notes">
+          <url format="html" href="https://www.suse.com/releasenotes/x86_64/SUSE-SLES/15-SP4"/>
+        </language>
+      </link>
+    </external>
+  </docset>
+
+  <docset lifecycle="supported" setid="15-SP3">
+    <version>15 SP3</version>
+    <canonical>sles/15-SP6/</canonical>
+    <builddocs>
+      <git remote="https://github.com/SUSE/doc-sle.git"/>
+      <language default="1" lang="en-us">
+        <branch>maintenance/SLE15SP3</branch>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <format epub="0" html="1" pdf="0" single-html="0"/>
+          <subdeliverable category="administration">book-rmt</subdeliverable>
+          <subdeliverable category="administration">book-administration</subdeliverable>
+          <subdeliverable category="administration">book-tuning</subdeliverable>
+          <subdeliverable category="administration">book-storage</subdeliverable>
+          <subdeliverable category="installation-upgrade">book-upgrade</subdeliverable>
+          <subdeliverable category="installation-upgrade">book-autoyast</subdeliverable>
+          <subdeliverable category="security">book-security</subdeliverable>
+          <subdeliverable category="end-user">book-gnome-user</subdeliverable>
+          <subdeliverable category="installation-upgrade">book-deployment</subdeliverable>
+          <subdeliverable category="installation-upgrade">article-installation</subdeliverable>
+          <subdeliverable category="installation-upgrade">article-modules</subdeliverable>
+          <subdeliverable category="installation-upgrade">article-jeos</subdeliverable>
+          <subdeliverable category="container-virtualization">book-virtualization</subdeliverable>
+          <subdeliverable category="container-virtualization">article-virtualization-best-practices</subdeliverable>
+          <subdeliverable category="container-virtualization">article-nvidia-vgpu</subdeliverable>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-administration</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-autoyast</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-deployment</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="end-user">
+          <dc>DC-SLES-gnome-user</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-installation</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-modules</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-nvidia-vgpu</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-rmt</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="security">
+          <dc>DC-SLES-security</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-storage</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-tuning</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-upgrade</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-virtualization</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-virtualization-best-practices</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-amd-sev</dc>
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-raspberry-pi</dc>
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-jeos</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+      </language>
+      <language lang="de-de" translation-type="list">
+        <branch>maintenance/SLE15SP3</branch>
+        <subdir>l10n/sles/de-de</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-administration</subdeliverable>
+          <subdeliverable>book-deployment</subdeliverable>
+          <subdeliverable>book-upgrade</subdeliverable>
+         <subdeliverable>book-gnome-user</subdeliverable>
+          <subdeliverable>article-installation</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-administration</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-gnome-user</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installation</dc>
+        </deliverable>
+      </language>
+      <language lang="es-es" translation-type="list">
+        <branch>maintenance/SLE15SP3</branch>
+        <subdir>l10n/sles/es-es</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-deployment</subdeliverable>
+          <subdeliverable>book-upgrade</subdeliverable>
+          <subdeliverable>article-installation</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installation</dc>
+        </deliverable>
+      </language>
+      <language lang="fr-fr" translation-type="list">
+        <branch>maintenance/SLE15SP3</branch>
+        <subdir>l10n/sles/fr-fr</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-deployment</subdeliverable>
+          <subdeliverable>book-upgrade</subdeliverable>
+          <subdeliverable>article-installation</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installation</dc>
+        </deliverable>
+      </language>
+      <language lang="ja-jp" translation-type="list">
+        <branch>maintenance/SLE15SP3</branch>
+        <subdir>l10n/sles/ja-jp</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-administration</subdeliverable>
+          <subdeliverable>book-deployment</subdeliverable>
+          <subdeliverable>book-upgrade</subdeliverable>
+          <subdeliverable>book-gnome-user</subdeliverable>
+          <subdeliverable>book-storage</subdeliverable>
+          <subdeliverable>article-installation</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-administration</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+        <dc>DC-SLES-gnome-user</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-storage</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installation</dc>
+        </deliverable>
+      </language>
+      <language lang="ko-kr" translation-type="list">
+        <branch>maintenance/SLE15SP3</branch>
+        <subdir>l10n/sles/ko-kr</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-deployment</subdeliverable>
+          <subdeliverable>book-upgrade</subdeliverable>
+          <subdeliverable>article-installation</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installation</dc>
+        </deliverable>
+      </language>
+      <language lang="pt-br" translation-type="list">
+        <branch>maintenance/SLE15SP3</branch>
+        <subdir>l10n/sles/pt-br</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-deployment</subdeliverable>
+          <subdeliverable>book-upgrade</subdeliverable>
+          <subdeliverable>book-gnome-user</subdeliverable>
+          <subdeliverable>article-installation</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+        <dc>DC-SLES-gnome-user</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installation</dc>
+        </deliverable>
+      </language>
+      <language lang="zh-cn" translation-type="list">
+        <branch>maintenance/SLE15SP3</branch>
+        <subdir>l10n/sles/zh-cn</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-rmt</subdeliverable>
+          <subdeliverable>book-administration</subdeliverable>
+          <subdeliverable>book-tuning</subdeliverable>
+          <subdeliverable>book-storage</subdeliverable>
+          <subdeliverable>book-upgrade</subdeliverable>
+          <subdeliverable>book-autoyast</subdeliverable>
+          <subdeliverable>book-security</subdeliverable>
+          <subdeliverable>book-gnome-user</subdeliverable>
+          <subdeliverable>book-deployment</subdeliverable>
+          <subdeliverable>article-installation</subdeliverable>
+          <subdeliverable>article-modules</subdeliverable>
+          <subdeliverable>article-jeos</subdeliverable>
+          <subdeliverable>book-virtualization</subdeliverable>
+          <subdeliverable>article-virtualization-best-practices</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-administration</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-autoyast</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-gnome-user</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installation</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-modules</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-rmt</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-security</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-storage</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-tuning</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-virtualization</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-virtualization-best-practices</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-amd-sev</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-raspberry-pi</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-jeos</dc>
+        </deliverable>
+      </language>
+    </builddocs>
+    <internal>
+      <ref product="sle-public-cloud" docset="all" dc="DC-public-cloud" category="public-cloud" titleformat="title subtitle"/>
+      <ref product="suse-distribution-migration-system" docset="15" dc="DC-distribution-migration-system" category="public-cloud"/>
+      <ref product="appliance" docset="keg-2" dc="DC-keg" category="appliance-building"/>
+      <ref product="appliance" docset="kiwi-9" dc="DC-kiwi" category="appliance-building"/>
+      <ref product="sbp" docset="systems-management" dc="DC-SBP-KMP-Manual-SLE12SP2" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="third-party" dc="DC-SBP-intelsupport" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="systems-management" dc="DC-SBP-SLE15-Custom-Installation-Medium" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="systems-management" dc="DC-SBP-SLE-OffLine-Upgrade-Local-Boot" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="security" dc="DC-SBP-Spectre-Meltdown-L1TF" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="tuning-performance" dc="DC-SBP-performance-tuning" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="tuning-performance" dc="DC-SBP-AMD-EPYC-2-SLES15SP1" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="tuning-performance" dc="DC-SBP-AMD-EPYC-3-SLES15SP2" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="devel-tools" dc="DC-SBP-GCC-11" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="security" dc="DC-SBP-SUSE-security-report-2021" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="security" dc="DC-SBP-SLSA4" category="best-practice" titleformat="title subtitle"/>
+      <ref product="trd" docset="wordpress" dc="DC-linux_gs_wordpress-lamp-sles" category="best-practice" titleformat="title subtitle"/>
+      <ref product="compliance" docset="all" dc="DC-SLES-openscap" category="security" titleformat="title subtitle"/>
+      <ref product="compliance" docset="all" dc="DC-SLES-pci-dss" category="security" titleformat="title subtitle"/>
+      <ref product="container" docset="all" dc="DC-Container-guide" category="container-virtualization" titleformat="title subtitle"/>
+    </internal>
+    <external>
+      <link category="release-notes">
+        <language lang="en-us" default="1" title="Release Notes">
+          <url format="html" href="https://www.suse.com/releasenotes/x86_64/SUSE-SLES/15-SP3"/>
+        </language>
+      </link>
+    </external>
+  </docset>
+
+  <docset lifecycle="unsupported" setid="15-SP2">
+    <version>15 SP2</version>
+    <canonical>sles/15-SP6/</canonical>
+    <builddocs>
+      <git remote="https://github.com/SUSE/doc-sle.git"/>
+      <language default="1" lang="en-us">
+        <branch>maintenance/SLE15SP2</branch>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <format epub="0" html="1" pdf="0" single-html="0"/>
+          <subdeliverable category="administration">book-rmt</subdeliverable>
+          <subdeliverable category="administration">book-sle-admin</subdeliverable>
+          <subdeliverable category="administration">book-sle-tuning</subdeliverable>
+          <subdeliverable category="administration">book-storage</subdeliverable>
+          <subdeliverable category="installation-upgrade">book-sle-upgrade</subdeliverable>
+          <subdeliverable category="installation-upgrade">book-autoyast</subdeliverable>
+          <subdeliverable category="security">book-security</subdeliverable>
+          <subdeliverable category="end-user">book-gnomeuser</subdeliverable>
+          <subdeliverable category="installation-upgrade">book-sle-deployment</subdeliverable>
+          <subdeliverable category="installation-upgrade">art-sle-installquick</subdeliverable>
+          <subdeliverable category="installation-upgrade">art-modules</subdeliverable>
+          <subdeliverable category="installation-upgrade">art-jeos-quickstart</subdeliverable>
+          <subdeliverable category="container-virtualization">art-sles-xen2kvmquick</subdeliverable>
+          <subdeliverable category="container-virtualization">book-virt</subdeliverable>
+          <subdeliverable category="container-virtualization">article-vt-best-practices</subdeliverable>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-admin</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-autoyast</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-deployment</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="end-user">
+          <dc>DC-SLES-gnomeuser</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-installquick</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-modulesquick</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-rmt</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="security">
+          <dc>DC-SLES-security</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-storage</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-tuning</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-upgrade</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-virtualization</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-vt-best-practices</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-xen2kvmquick</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-amd-sev</dc>
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-rpi-quick</dc>
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-jeos</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+      </language>
+      <language lang="de-de" translation-type="list">
+        <branch>maintenance/SLE15SP2</branch>
+        <subdir>l10n/sles/de-de</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-admin</subdeliverable>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>book-sle-upgrade</subdeliverable>
+          <subdeliverable>book-gnomeuser</subdeliverable>
+          <subdeliverable>art-sle-installquick</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-admin</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-gnomeuser</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+      <language lang="es-es" translation-type="list">
+        <branch>maintenance/SLE15SP2</branch>
+        <subdir>l10n/sles/es-es</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>book-sle-upgrade</subdeliverable>
+          <subdeliverable>art-sle-installquick</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+      <language lang="fr-fr" translation-type="list">
+        <branch>maintenance/SLE15SP2</branch>
+        <subdir>l10n/sles/fr-fr</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>book-sle-upgrade</subdeliverable>
+          <subdeliverable>art-sle-installquick</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+      <language lang="ja-jp" translation-type="list">
+        <branch>maintenance/SLE15SP2</branch>
+        <subdir>l10n/sles/ja-jp</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-admin</subdeliverable>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>book-sle-upgrade</subdeliverable>
+          <subdeliverable>book-gnomeuser</subdeliverable>
+          <subdeliverable>book-storage</subdeliverable>
+          <subdeliverable>art-sle-installquick</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-admin</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-gnomeuser</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-storage</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+      <language lang="ko-kr" translation-type="list">
+        <branch>maintenance/SLE15SP2</branch>
+        <subdir>l10n/sles/ko-kr</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>book-sle-upgrade</subdeliverable>
+          <subdeliverable>art-sle-installquick</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+      <language lang="pt-br" translation-type="list">
+        <branch>maintenance/SLE15SP2</branch>
+        <subdir>l10n/sles/pt-br</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>book-sle-upgrade</subdeliverable>
+          <subdeliverable>book-gnomeuser</subdeliverable>
+          <subdeliverable>art-sle-installquick</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-gnomeuser</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+      <language lang="zh-cn" translation-type="full">
+        <branch>maintenance/SLE15SP2</branch>
+        <subdir>l10n/sles/zh-cn</subdir>
+      </language>
+    </builddocs>
+    <internal>
+      <ref product="sle-public-cloud" docset="all" dc="DC-public-cloud" category="public-cloud"/>
+      <ref product="suse-distribution-migration-system" docset="15" dc="DC-distribution-migration-system" category="public-cloud"/>
+      <ref product="appliance" docset="kiwi-9" dc="DC-kiwi" category="container-virtualization"/>
+      <ref product="sbp" docset="systems-management" dc="DC-SBP-KMP-Manual-SLE12SP2" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="third-party" dc="DC-SBP-intelsupport" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="systems-management" dc="DC-SBP-SLE15-Custom-Installation-Medium" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="systems-management" dc="DC-SBP-SLE-OffLine-Upgrade-Local-Boot" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="security" dc="DC-SBP-Spectre-Meltdown-L1TF" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="tuning-performance" dc="DC-SBP-performance-tuning" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="tuning-performance" dc="DC-SBP-AMD-EPYC-2-SLES15SP1" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="tuning-performance" dc="DC-SBP-AMD-EPYC-3-SLES15SP2" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="devel-tools" dc="DC-SBP-GCC-10" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="devel-tools" dc="DC-SBP-GCC-11" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="security" dc="DC-SBP-SUSE-security-report-2021" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="security" dc="DC-SBP-SLSA4" category="best-practice" titleformat="title subtitle"/>
+      <ref product="compliance" docset="all" dc="DC-SLES-openscap" category="security" titleformat="title subtitle"/>
+      <ref product="compliance" docset="all" dc="DC-SLES-pci-dss" category="security" titleformat="title subtitle"/>
+      <ref product="container" docset="all" dc="DC-Container-guide" category="container-virtualization" titleformat="title subtitle"/>
+    </internal>
+    <external>
+      <link category="release-notes">
+        <language lang="en-us" default="1" title="Release Notes">
+          <url format="html" href="https://www.suse.com/releasenotes/x86_64/SUSE-SLES/15-SP2"/>
+        </language>
+      </link>
+      <link category="other-doc">
+        <language lang="en-us" default="1" title="SUSE Linux Enterprise Server for Arm FAQ">
+          <url format="pdf" href="https://links.imagerelay.com/cdn/3404/ql/71704106aab745989a17dd20a4651e94/s"/>
+        </language>
+      </link>
+    </external>
+  </docset>
+
+  <docset lifecycle="unsupported" setid="15-SP1">
+    <version>15 SP1</version>
+    <canonical>sles/15-SP6</canonical>
+    <builddocs>
+      <git remote="https://github.com/SUSE/doc-sle.git"/>
+      <language default="1" lang="en-us">
+        <branch>maintenance/SLE15SP1</branch>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <format epub="0" html="1" pdf="0" single-html="0"/>
+          <subdeliverable category="administration">book-rmt</subdeliverable>
+          <subdeliverable category="administration">book-sle-admin</subdeliverable>
+          <subdeliverable category="administration">book-sle-tuning</subdeliverable>
+          <subdeliverable category="administration">book-storage</subdeliverable>
+          <subdeliverable category="installation-upgrade">book-sle-upgrade</subdeliverable>
+          <subdeliverable category="installation-upgrade">book-autoyast</subdeliverable>
+          <subdeliverable category="security">book-security</subdeliverable>
+          <subdeliverable category="end-user">book-gnomeuser</subdeliverable>
+          <subdeliverable category="installation-upgrade">book-sle-deployment</subdeliverable>
+          <subdeliverable category="container-virtualization">book-sles-docker</subdeliverable>
+          <subdeliverable category="installation-upgrade">art-sle-installquick</subdeliverable>
+          <subdeliverable category="installation-upgrade">art-modules</subdeliverable>
+          <subdeliverable category="container-virtualization">art-sles-xen2kvmquick</subdeliverable>
+          <subdeliverable category="container-virtualization">book-virt</subdeliverable>
+          <subdeliverable category="container-virtualization">article-vt-best-practices</subdeliverable>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-admin</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-autoyast</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-deployment</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-dockerquick</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="end-user">
+          <dc>DC-SLES-gnomeuser</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-installquick</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-modulesquick</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-rmt</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="security">
+          <dc>DC-SLES-security</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-storage</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-tuning</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-upgrade</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-virtualization</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-vt-best-practices</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-xen2kvmquick</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-amd-sev</dc>
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-rpi-quick</dc>
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="special-offering">
+          <dc>DC-SHOW-quick</dc>
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="special-offering">
+          <dc>DC-SHOW-suma_quick</dc>
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </deliverable>
+      </language>
+      <language lang="de-de" translation-type="list">
+        <branch>maintenance/SLE15SP1</branch>
+        <subdir>l10n/sles/de-de</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-admin</subdeliverable>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>book-sle-upgrade</subdeliverable>
+          <subdeliverable>book-gnomeuser</subdeliverable>
+          <subdeliverable>art-sle-installquick</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-admin</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-gnomeuser</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+      <language lang="es-es" translation-type="list">
+        <branch>maintenance/SLE15SP1</branch>
+        <subdir>l10n/sles/es-es</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>book-sle-upgrade</subdeliverable>
+          <subdeliverable>art-sle-installquick</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+      <language lang="fr-fr" translation-type="list">
+        <branch>maintenance/SLE15SP1</branch>
+        <subdir>l10n/sles/fr-fr</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>book-sle-upgrade</subdeliverable>
+          <subdeliverable>art-sle-installquick</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+      <language lang="ja-jp" translation-type="list">
+        <branch>maintenance/SLE15SP1</branch>
+        <subdir>l10n/sles/ja-jp</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-admin</subdeliverable>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>book-sle-upgrade</subdeliverable>
+          <subdeliverable>book-gnomeuser</subdeliverable>
+          <subdeliverable>book-storage</subdeliverable>
+          <subdeliverable>art-sle-installquick</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-admin</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-gnomeuser</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-storage</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+      <language lang="ko-kr" translation-type="list">
+        <branch>maintenance/SLE15SP1</branch>
+        <subdir>l10n/sles/ko-kr</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>book-sle-upgrade</subdeliverable>
+          <subdeliverable>art-sle-installquick</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+      <language lang="pt-br" translation-type="list">
+        <branch>maintenance/SLE15SP1</branch>
+        <subdir>l10n/sles/pt-br</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>book-sle-upgrade</subdeliverable>
+          <subdeliverable>book-gnomeuser</subdeliverable>
+          <subdeliverable>art-sle-installquick</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-gnomeuser</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+      <language lang="zh-cn" translation-type="list">
+        <branch>maintenance/SLE15SP1</branch>
+        <subdir>l10n/sles/zh-cn</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-admin</subdeliverable>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>book-sle-upgrade</subdeliverable>
+          <subdeliverable>book-gnomeuser</subdeliverable>
+          <subdeliverable>book-storage</subdeliverable>
+          <subdeliverable>art-sle-installquick</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-admin</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-gnomeuser</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-storage</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+    </builddocs>
+    <internal>
+      <ref product="sle-public-cloud" docset="all" dc="DC-public-cloud" category="public-cloud"/>
+      <ref product="suse-distribution-migration-system" docset="15" dc="DC-distribution-migration-system" category="public-cloud"/>
+      <ref product="appliance" docset="kiwi-9" dc="DC-kiwi" category="container-virtualization"/>
+      <ref product="sbp" docset="systems-management" dc="DC-SBP-KMP-Manual-SLE12SP2" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="third-party" dc="DC-SBP-intelsupport" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="systems-management" dc="DC-SBP-SLE15-Custom-Installation-Medium" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="systems-management" dc="DC-SBP-SLE-OffLine-Upgrade-Local-Boot" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="security" dc="DC-SBP-Spectre-Meltdown-L1TF" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="tuning-performance" dc="DC-SBP-performance-tuning" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="tuning-performance" dc="DC-SBP-AMD-EPYC-2-SLES15SP1" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="security" dc="DC-SBP-SUSE-security-report-2021" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="security" dc="DC-SBP-SLSA4" category="best-practice" titleformat="title subtitle"/>
+      <ref product="compliance" docset="all" dc="DC-SLES-openscap" category="security" titleformat="title subtitle"/>
+      <ref product="compliance" docset="all" dc="DC-SLES-pci-dss" category="security" titleformat="title subtitle"/>
+      <ref product="container" docset="all" dc="DC-Container-guide" category="container-virtualization" titleformat="title subtitle"/>
+    </internal>
+    <external>
+      <link category="release-notes">
+        <language lang="en-us" default="1" title="Release Notes">
+          <url format="html" href="https://www.suse.com/releasenotes/x86_64/SUSE-SLES/15-SP1"/>
+        </language>
+      </link>
+    </external>
+  </docset>
+
+  <docset lifecycle="unsupported" setid="15-GA">
+    <version>15 GA</version>
+    <canonical>sles/15-SP6/</canonical>
+    <builddocs>
+      <git remote="https://github.com/SUSE/doc-sle.git"/>
+      <language default="1" lang="en-us">
+        <branch>maintenance/SLE15SP0</branch>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <format epub="0" html="1" pdf="0" single-html="0"/>
+          <subdeliverable category="administration">book-sle-admin</subdeliverable>
+          <subdeliverable category="installation-upgrade">book-sle-deployment</subdeliverable>
+          <subdeliverable category="installation-upgrade">book-sle-upgrade</subdeliverable>
+          <subdeliverable category="end-user">book-gnomeuser</subdeliverable>
+          <subdeliverable category="installation-upgrade">book-autoyast</subdeliverable>
+          <subdeliverable category="security">book-security</subdeliverable>
+          <subdeliverable category="administration">book-sle-tuning</subdeliverable>
+          <subdeliverable category="administration">book-rmt</subdeliverable>
+          <subdeliverable category="administration">book-storage</subdeliverable>
+          <subdeliverable category="container-virtualization">book-virt</subdeliverable>
+          <subdeliverable category="container-virtualization">book-sles-docker</subdeliverable>
+          <subdeliverable category="installation-upgrade">art-sle-installquick</subdeliverable>
+          <subdeliverable category="installation-upgrade">art-modules</subdeliverable>
+          <subdeliverable category="container-virtualization">art-sles-xen2kvmquick</subdeliverable>
+          <subdeliverable category="container-virtualization">article-vt-best-practices</subdeliverable>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-rpi-quick</dc>
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-admin</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-deployment</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-upgrade</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="end-user">
+          <dc>DC-SLES-gnomeuser</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-autoyast</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="security">
+          <dc>DC-SLES-security</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-tuning</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-rmt</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-storage</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-virtualization</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-dockerquick</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-installquick</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-modulesquick</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-xen2kvmquick</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-vt-best-practices</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+      </language>
+      <language lang="de-de" translation-type="list">
+        <branch>maintenance/SLE15SP0</branch>
+        <subdir>l10n/sles/de-de</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-admin</subdeliverable>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>book-sle-upgrade</subdeliverable>
+          <subdeliverable>book-gnomeuser</subdeliverable>
+          <subdeliverable>art-sle-installquick</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-admin</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-gnomeuser</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+      <language lang="es-es" translation-type="list">
+        <branch>maintenance/SLE15SP0</branch>
+        <subdir>l10n/sles/es-es</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>book-sle-upgrade</subdeliverable>
+          <subdeliverable>art-sle-installquick</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+      <language lang="fr-fr" translation-type="list">
+        <branch>maintenance/SLE15SP0</branch>
+        <subdir>l10n/sles/fr-fr</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>book-sle-upgrade</subdeliverable>
+          <subdeliverable>art-sle-installquick</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+      <language lang="ja-jp" translation-type="list">
+        <branch>maintenance/SLE15SP0</branch>
+        <subdir>l10n/sles/ja-jp</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-admin</subdeliverable>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>book-sle-upgrade</subdeliverable>
+          <subdeliverable>book-gnomeuser</subdeliverable>
+          <subdeliverable>book-storage</subdeliverable>
+          <subdeliverable>art-sle-installquick</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-admin</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-gnomeuser</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-storage</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+      <language lang="ko-kr" translation-type="list">
+        <branch>maintenance/SLE15SP0</branch>
+        <subdir>l10n/sles/ko-kr</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>book-sle-upgrade</subdeliverable>
+          <subdeliverable>art-sle-installquick</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+      <language lang="pt-br" translation-type="list">
+        <branch>maintenance/SLE15SP0</branch>
+        <subdir>l10n/sles/pt-br</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>book-sle-upgrade</subdeliverable>
+          <subdeliverable>book-gnomeuser</subdeliverable>
+          <subdeliverable>art-sle-installquick</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-gnomeuser</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+      <language lang="zh-cn" translation-type="list">
+        <branch>maintenance/SLE15SP0</branch>
+        <subdir>l10n/sles/zh-cn</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-admin</subdeliverable>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>book-sle-upgrade</subdeliverable>
+          <subdeliverable>book-gnomeuser</subdeliverable>
+          <subdeliverable>book-storage</subdeliverable>
+          <subdeliverable>art-sle-installquick</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-admin</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-gnomeuser</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-storage</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+    </builddocs>
+    <internal>
+      <ref product="sle-public-cloud" docset="all" dc="DC-public-cloud" category="public-cloud"/>
+      <ref product="suse-distribution-migration-system" docset="15" dc="DC-distribution-migration-system" category="public-cloud"/>
+      <ref product="appliance" docset="kiwi-9" dc="DC-kiwi" category="container-virtualization"/>
+      <ref product="sbp" docset="systems-management" dc="DC-SBP-KMP-Manual-SLE12SP2" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="third-party" dc="DC-SBP-intelsupport" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="systems-management" dc="DC-SBP-SLE15-Custom-Installation-Medium" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="systems-management" dc="DC-SBP-SLE-OffLine-Upgrade-Local-Boot" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="security" dc="DC-SBP-Spectre-Meltdown-L1TF" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="tuning-performance" dc="DC-SBP-performance-tuning" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="security" dc="DC-SBP-SUSE-security-report-2021" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="security" dc="DC-SBP-SLSA4" category="best-practice" titleformat="title subtitle"/>
+      <ref product="compliance" docset="all" dc="DC-SLES-openscap" category="security" titleformat="title subtitle"/>
+      <ref product="compliance" docset="all" dc="DC-SLES-pci-dss" category="security" titleformat="title subtitle"/>
+      <ref product="container" docset="all" dc="DC-Container-guide" category="container-virtualization" titleformat="title subtitle"/>
+    </internal>
+    <external>
+      <link category="release-notes">
+        <language lang="en-us" default="1" title="Release Notes">
+          <url format="html" href="https://www.suse.com/releasenotes/x86_64/SUSE-SLES/15"/>
+        </language>
+      </link>
+    </external>
+  </docset>
+
+  <docset lifecycle="supported" setid="12-SP5">
+    <version>12 SP5</version>
+    <!--  <canonical>sles/12-SP6/</canonical>-->
+    <builddocs>
+      <git remote="https://github.com/SUSE/doc-sle.git"/>
+      <language default="1" lang="en-us">
+        <branch>maintenance/SLE12SP5</branch>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <format epub="0" html="1" pdf="0" single-html="0"/>
+          <subdeliverable category="administration">book-sle-admin</subdeliverable>
+          <subdeliverable category="installation-upgrade">book-sle-deployment</subdeliverable>
+          <subdeliverable category="end-user">book-gnomeuser</subdeliverable>
+          <subdeliverable category="installation-upgrade">book-autoyast</subdeliverable>
+          <subdeliverable category="security">book-security</subdeliverable>
+          <subdeliverable category="administration">book-sle-tuning</subdeliverable>
+          <subdeliverable category="administration">book-smt</subdeliverable>
+          <subdeliverable category="administration">stor-admin</subdeliverable>
+          <subdeliverable category="administration">book-hardening</subdeliverable>
+          <subdeliverable category="container-virtualization">book-virt</subdeliverable>
+          <subdeliverable category="container-virtualization">book-sles-docker</subdeliverable>
+          <subdeliverable category="installation-upgrade">art-sle-installquick</subdeliverable>
+          <subdeliverable category="container-virtualization">art-sles-xen2kvmquick</subdeliverable>
+          <subdeliverable category="container-virtualization">article-vt-best-practices</subdeliverable>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-amazon-ecs</dc>
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-amd-sev</dc>
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-kgraft</dc>
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-pcidss</dc>
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-admin</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-deployment</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="end-user">
+          <dc>DC-SLES-gnomeuser</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-autoyast</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="security">
+          <dc>DC-SLES-security</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-tuning</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-smt</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-storage</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="administration">
+          <dc>DC-SLES-hardening</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-virtualization</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-dockerquick</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="installation-upgrade">
+          <dc>DC-SLES-installquick</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-xen2kvmquick</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable category="container-virtualization">
+          <dc>DC-SLES-vt-best-practices</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+      </language>
+      <language lang="de-de" translation-type="list">
+        <branch>maintenance/SLE12SP5</branch>
+        <subdir>l10n/sles/de-de</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-admin</subdeliverable>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>book-gnomeuser</subdeliverable>
+          <subdeliverable>art-sle-installquick</subdeliverable>
+        </deliverable>
+        <deliverable>
+        <dc>DC-SLES-admin</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-gnomeuser</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+      <language lang="es-es" translation-type="list">
+        <branch>maintenance/SLE12SP5</branch>
+        <subdir>l10n/sles/es-es</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>art-sle-installquick</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+      <language lang="fr-fr" translation-type="list">
+        <branch>maintenance/SLE12SP5</branch>
+        <subdir>l10n/sles/fr-fr</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>art-sle-installquick</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+      <language lang="ja-jp" translation-type="list">
+        <branch>maintenance/SLE12SP5</branch>
+        <subdir>l10n/sles/ja-jp</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-admin</subdeliverable>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>book-gnomeuser</subdeliverable>
+          <subdeliverable>stor-admin</subdeliverable>
+          <subdeliverable>art-sle-installquick</subdeliverable>
+        </deliverable>
+        <deliverable>
+        <dc>DC-SLES-admin</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-gnomeuser</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-storage</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+      <language lang="ko-kr" translation-type="list">
+        <branch>maintenance/SLE12SP5</branch>
+        <subdir>l10n/sles/ko-kr</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>art-sle-installquick</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+      <language lang="pt-br" translation-type="list">
+        <branch>maintenance/SLE12SP5</branch>
+        <subdir>l10n/sles/pt-br</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>book-gnomeuser</subdeliverable>
+          <subdeliverable>art-sle-installquick</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-gnomeuser</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+      <language lang="zh-cn" translation-type="list">
+        <branch>maintenance/SLE12SP5</branch>
+        <subdir>l10n/sles/zh-cn</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-admin</subdeliverable>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>book-gnomeuser</subdeliverable>
+          <subdeliverable>stor-admin</subdeliverable>
+          <subdeliverable>art-sle-installquick</subdeliverable>
+        </deliverable>
+        <deliverable>
+        <dc>DC-SLES-admin</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-gnomeuser</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-storage</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+    </builddocs>
+    <internal>
+      <ref product="sle-public-cloud" docset="all" dc="DC-public-cloud" category="public-cloud"/>
+      <ref product="suse-distribution-migration-system" docset="15" dc="DC-distribution-migration-system" category="public-cloud"/>
+      <ref product="sbp" docset="tuning-performance" dc="DC-SBP-AMD-EPYC-SLES12SP3" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="systems-management" dc="DC-SBP-KMP-Manual" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="systems-management" dc="DC-SBP-KMP-Manual-SLE12SP2" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="third-party" dc="DC-SBP-intelsupport" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="systems-management" dc="DC-SBP-SLE-OffLine-Upgrade-Local-Boot" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="security" dc="DC-SBP-Spectre-Meltdown-L1TF" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="systems-management" dc="DC-SBP-Multi-PXE-Install" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="systems-management" dc="DC-SLES12SP3-rpiquick" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="tuning-performance" dc="DC-SBP-performance-tuning" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="third-party" dc="DC-SBP-OracleWeblogic-SLES12SP3" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="third-party" dc="DC-SBP-oraclerac" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="security" dc="DC-SBP-SUSE-security-report-2021" category="best-practice" titleformat="title subtitle"/>
+      <ref product="sbp" docset="security" dc="DC-SBP-SLSA4" category="best-practice" titleformat="title subtitle"/>
+      <ref product="compliance" docset="all" dc="DC-SLES-openscap" category="security" titleformat="title subtitle"/>
+      <ref product="compliance" docset="all" dc="DC-SLES-pci-dss" category="security" titleformat="title subtitle"/>
+      <ref product="container" docset="all" dc="DC-Container-guide" category="container-virtualization" titleformat="title subtitle"/>
+    </internal>
+    <external>
+      <link category="release-notes">
+        <language lang="en-us" default="1" title="Release Notes">
+          <url format="html" href="https://www.suse.com/releasenotes/x86_64/SUSE-SLES/12-SP5"/>
+        </language>
+      </link>
+    </external>
+  </docset>
+
+</product>

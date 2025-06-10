@@ -1,4 +1,4 @@
-from docbuild.cli.cli import cli
+from docbuild.cli.cmd_cli import cli
 
 
 def test_help_option(runner):
