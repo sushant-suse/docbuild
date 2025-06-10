@@ -118,7 +118,3 @@ def cli(
 cli.add_command(build)
 cli.add_command(c14n)
 cli.add_command(config)
-
-
-if __name__ == "__main__":
-    cli()  # pragma: no cover
