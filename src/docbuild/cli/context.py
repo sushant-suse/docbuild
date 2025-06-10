@@ -5,7 +5,6 @@ from pathlib import Path
 from typing import Any
 
 from ..models.doctype import Doctype
-from ..models.serverroles import ServerRole
 
 
 @dataclass

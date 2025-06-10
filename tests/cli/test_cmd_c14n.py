@@ -2,8 +2,6 @@ import pytest
 
 from docbuild.cli.cmd_cli import cli
 
-from ..common import changedir
-
 
 @pytest.mark.skip('Replace --role with --env-config')
 def test_c14n_command(fake_envfile, runner):

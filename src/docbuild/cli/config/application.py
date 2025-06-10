@@ -19,6 +19,6 @@ def app(ctx: click.Context) -> None:
         click.secho(f"# Application config files '{files}'", fg='blue')
         print(Pretty(ctx.obj.appconfig, expand_all=True))
     else:
-        click.secho(f"# No application config files provided", fg='yellow')
+        click.secho("# No application config files provided", fg='yellow')
         print(Pretty(ctx.obj.appconfig, expand_all=True))
 

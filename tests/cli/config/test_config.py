@@ -1,8 +1,5 @@
-from unittest.mock import MagicMock
 
 from docbuild.cli.cmd_cli import cli
-from docbuild.cli.config import config
-from docbuild.cli.context import DocBuildContext
 
 
 def test_showconfig_help_option(runner):

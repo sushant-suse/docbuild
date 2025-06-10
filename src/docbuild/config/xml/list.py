@@ -1,14 +1,12 @@
 """List all deliverables from the stitched Docserv config."""
 
-from collections.abc import Sequence
-from typing import Generator
+from collections.abc import Generator, Sequence
 import logging
 
 from lxml import etree
 
 from ...models.doctype import Doctype
 from ...models.lifecycle import LifecycleFlag
-
 
 xpathlog = logging.getLogger(__name__)
 log = logging.getLogger(__package__)
@@ -17,7 +15,7 @@ log = logging.getLogger(__package__)
 def list_all_deliverables(tree: etree._Element|etree._ElementTree,
                           doctypes:Sequence[Doctype] | None=None,
                           ) -> Generator[etree._Element, None, None]:
-    """Generator to list all deliverables from the stitched Docserv config
+    """Generate to list all deliverables from the stitched Docserv config.
 
     :param tree: the XML tree from the stitched Docserv config
     :param doctypes: a sequence of :class:`~docbuild.models.doctype.Doctype` objects.
@@ -32,7 +30,7 @@ def list_all_deliverables(tree: etree._Element|etree._ElementTree,
         log.debug("Filtering for docset %r", doctypes)
         for dt in doctypes:
             # Gradually build the XPath expression
-            xpath = f"self::product"
+            xpath = "self::product"
             if "*" not in dt.product:
                 xpath += f"[@productid={dt.product.value!r}]"
 
@@ -56,7 +54,7 @@ def list_all_deliverables(tree: etree._Element|etree._ElementTree,
             if "*" not in dt.langs:
                 xpath += (
                     '['
-                    +' or '.join([f"@lang={l.language!r}" for l in dt.langs])
+                    +' or '.join([f"@lang={lng.language!r}" for lng in dt.langs])
                     + ']'
                 )
 
@@ -84,8 +82,8 @@ def list_all_deliverables(tree: etree._Element|etree._ElementTree,
     else:
         # TODO: do we need all languages? How to handle non-en-us languages?
         xpath = (
-            f"self::product/docset"
-            f"/builddocs/language[@lang='en-us']/deliverable"
+            "self::product/docset"
+            "/builddocs/language[@lang='en-us']/deliverable"
         )
         xpathlog.debug("XPath: %r", xpath)
         print("XPath:", xpath)

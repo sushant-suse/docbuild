@@ -1,4 +1,5 @@
 from io import StringIO
+
 import pytest
 
 import docbuild.models.metadata as metadata_module

@@ -1,14 +1,15 @@
 """Module for defining the Metadata model."""
 
+from dataclasses import dataclass, field
 from pathlib import Path
 import re
 from typing import ClassVar, Self
-from dataclasses import dataclass, field
 
 
 @dataclass
 class Metadata:
     """A class to represent the metadata of a deliverable."""
+
     title: str | None = field(default=None)
     """The title of the deliverable."""
 
@@ -23,7 +24,7 @@ class Metadata:
     seo_social_descr: str = field(default="")
     """The SEO social description of the deliverable."""
     #
-    dateModified: str = field(default="")
+    dateModified: str = field(default="")  # noqa: N815
     """The date when the deliverable was last modified."""
     tasks: list[str] = field(default_factory=list)
     """A list of tasks related to the deliverable."""
@@ -34,14 +35,15 @@ class Metadata:
     #
     # description: str | None = field(default=None)
     products: list[dict] = field(default_factory=list)
-    """A list of products related to the deliverable, each represented as a dictionary."""
+    """A list of products related to the deliverable, each represented
+    as a dictionary."""
     # docTypes: list[str] | None = field(default=None)
     # archives: list[str] | None = field(default=None)
     # category: str | None = field(default=None)
     #
     _match: ClassVar[re.Pattern] = re.compile(r"\[(.*?)\](.*)")
 
-    def read(self, metafile: Path|str) -> Self:
+    def read(self, metafile: Path|str) -> Self:  # noqa: C901
         """Read the metadata from a file.
 
         :param metafile: The path to the metadata file.
@@ -88,7 +90,7 @@ class Metadata:
                     self.tasks = [task.strip() for task in value.split(";")]
 
                 case "productname":
-                    productlist = [entry["name"] for entry in self.products]
+                    # productlist = [entry["name"] for entry in self.products]
                     if mtch := self._match.match(value):
                         versions = mtch.group(1).strip().split(";")
                         product = mtch.group(2).strip()

@@ -1,1 +1,1 @@
-"""Contains utility functions"""
+"""Contains utility functions."""

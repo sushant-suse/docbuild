@@ -57,21 +57,22 @@ def node() -> etree._ElementTree:
     # 3
     ([Doctype.from_str("sles/*@supported,beta/en-us,de-de")],
      ['DC-SLES-administration', 'DC-SLES-deployment',
-      'DC-SLES-administration', 'DC-SLES-autoyast', ]),
+      'DC-SLES-administration', 'DC-SLES-autoyast' ]),
     # 4
     (
         [Doctype.from_str("sles/15sp4,15sp5/en-us")],
-        ['DC-SLES-administration', 'DC-SLES-deployment', 'DC-SLES-autoyast']
+        ['DC-SLES-administration', 'DC-SLES-deployment', 'DC-SLES-autoyast'],
     ),
     # 5
     (
         [Doctype.from_str("sles/*/*")],
-        ['DC-SLES-administration', 'DC-SLES-deployment', 'DC-SLES-administration', 'DC-SLES-autoyast']
+        ['DC-SLES-administration', 'DC-SLES-deployment',
+         'DC-SLES-administration', 'DC-SLES-autoyast'],
     ),
     # 6
     (
         [Doctype.from_str("smart/*/en-us")],
-        []
+        [],
     ),
 ])
 def test_list_all_deliverables(
@@ -80,7 +81,6 @@ def test_list_all_deliverables(
     node: etree._ElementTree,
 ) -> None:
     """Test the list_all_deliverables function with different doctypes."""
-
     deliverables = list(list_all_deliverables(node, doctypes))
     calc_dc_files = [d[0].text for d in deliverables]
 

@@ -1,4 +1,5 @@
 from pathlib import Path
+
 import click
 
 import docbuild.cli.cmd_cli as cli_mod
@@ -52,7 +53,7 @@ def test_cli_with_app_and_env_config(monkeypatch, runner, tmp_path):
         [
             "--app-config", str(app_file),
             "--env-config", str(env_file),
-            "capture"
+            "capture",
         ],
         obj=context,
     )
@@ -76,7 +77,8 @@ def test_cli_verbose_and_debug(monkeypatch, runner, tmp_path):
     def fake_handle_config(user_path, *a, **kw):
         if user_path == app_file:
             return (app_file,), {"app_data": "from_file"}, False
-        # For the env_config call, user_path will be None as --env-config is not specified
+        # For the env_config call, user_path will be None as
+        # --env-config is not specified
         return (Path("default_env.toml"),), {"env_data": "from_default"}, True
 
     monkeypatch.setattr(cli_mod, "handle_config", fake_handle_config)

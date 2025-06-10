@@ -5,17 +5,17 @@ import stat
 
 import pytest
 
+from docbuild.constants import APP_NAME
 from docbuild.logging import (
+    GITLOGGERNAME,
+    JINJALOGGERNAME,
+    LOGFILE,
+    LOGGERNAME,
+    XPATHLOGGERNAME,
     create_base_log_dir,
     get_effective_level,
     setup_logging,
-    LOGGERNAME,
-    JINJALOGGERNAME,
-    XPATHLOGGERNAME,
-    GITLOGGERNAME,
-    LOGFILE,
-    )
-from docbuild.constants import APP_NAME, BASE_LOG_DIR
+)
 
 
 def test_create_base_log_dir_with_tmp_path(tmp_path: Path):
@@ -33,7 +33,10 @@ def test_create_base_log_dir_with_tmp_path(tmp_path: Path):
     assert permissions == 0o700, f"Expected 0700, got {oct(permissions)}"
 
 
-def test_create_base_log_dir_with_env_var(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
+def test_create_base_log_dir_with_env_var(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+):
     """Test the creation of the base log directory with an environment variable."""
     base_log_dir = tmp_path / 'state' / APP_NAME / 'logs'
     monkeypatch.setenv("XDG_STATE_HOME", str(base_log_dir))
@@ -88,7 +91,8 @@ def test_logger_levels(monkeypatch: pytest.MonkeyPatch,
     git_logger = logging.getLogger(GITLOGGERNAME)
 
     assert app_logger.getEffectiveLevel() == expected_level
-    assert jinja_logger.getEffectiveLevel() <= expected_level  # jinja and others may use higher level
+    # jinja and others may use higher level:
+    assert jinja_logger.getEffectiveLevel() <= expected_level
     assert xpath_logger.getEffectiveLevel() <= expected_level
     assert git_logger.getEffectiveLevel() <= expected_level
 
@@ -100,7 +104,7 @@ def test_logger_levels(monkeypatch: pytest.MonkeyPatch,
 ])
 def test_logging_output(tmp_path: Path,
                         capsys: pytest.CaptureFixture[str],
-                        logger_name: str,):
+                        logger_name: str):
     setup_logging(cliverbosity=2,
                   logdir=tmp_path,
                   fmt="%(levelname)s:%(message)s",
@@ -123,10 +127,14 @@ def test_setup_logging_with_queue(tmp_path: Path, monkeypatch: pytest.MonkeyPatc
     logger.debug("queue-based logging works")
 
     # Since we cannot capture QueueHandler logs via caplog, we check handler types.
-    assert any(isinstance(h, logging.handlers.QueueHandler) for h in logger.handlers)
+    assert any(
+        isinstance(h, logging.handlers.QueueHandler) for h in logger.handlers
+    )
 
 
-def test_setup_logging_triggers_rollover(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+def test_setup_logging_triggers_rollover(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
+):
     """Test setup_logging triggers a rollover when logfile already exists."""
     logdir = tmp_path / "logs"
     logdir.mkdir(parents=True, exist_ok=True)

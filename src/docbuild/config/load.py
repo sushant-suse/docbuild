@@ -105,7 +105,8 @@ def handle_config(
         * A tuple of found config file paths or None if no config file is found.
         * The loaded configuration as a dictionary or the default configuration.
         * A boolean indicating if the default configuration was used.
-    :raises ValueError: If no config file is found and no default configuration is provided.
+    :raises ValueError: If no config file is found and no default
+        configuration is provided.
     """
     if user_path:
         return (Path(user_path),), load_single_config(user_path), False

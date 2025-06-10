@@ -23,6 +23,7 @@ exclude = [
     "__pypackages__",
     "_build",
     "build",
+    "contrib",
     "dist",
     "site-packages",
     "venv",

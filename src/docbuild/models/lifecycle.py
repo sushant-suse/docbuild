@@ -5,7 +5,6 @@ import re
 
 from ..constants import ALLOWED_LIFECYCLES
 
-
 _SEPARATOR = re.compile(r"[|,]")
 
 
@@ -14,10 +13,10 @@ class BaseLifecycleFlag(Flag):
 
     @classmethod
     def from_str(cls, value: str) -> "BaseLifecycleFlag":
-        f"""Convert a string to a LifecycleFlag object.
+        """Convert a string to a LifecycleFlag object.
 
-        The string accepts the values {', '.join(repr(x) for x in ALLOWED_LIFECYCLES)}
-        or a combination of them separated by a comma or pipe.
+        The string accepts the values 'supported', 'beta', 'hidden',
+        'unsupported', or a combination of them separated by a comma or pipe.
         Addtionally, the class knows the values "UNKNOWN" and "unknown".
         An empty string, "", is equivalent to "UNKNOWN".
 
@@ -30,6 +29,7 @@ class BaseLifecycleFlag(Flag):
         <LifecycleFlag.supported|beta: 6>
         >>> LifecycleFlag.from_str("")
         <LifecycleFlag.unknown: 0>
+
         """
         try:
             flag = cls(0)  # Start with an empty flag

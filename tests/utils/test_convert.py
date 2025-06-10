@@ -16,7 +16,7 @@ from docbuild.utils import convert
         ("false", False),
         ("0", False),
         ("off", False),
-    ]
+    ],
 )
 def test_convert2bool(input_value, expected_output):
     """Test the convert2bool function."""

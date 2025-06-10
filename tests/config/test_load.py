@@ -1,10 +1,10 @@
-import pytest
 from pathlib import Path
 from typing import Any
-from docbuild.config.load import handle_config
-import docbuild.config.load as load_mod
 
-from docbuild.config.load import process_envconfig
+import pytest
+
+import docbuild.config.load as load_mod
+from docbuild.config.load import handle_config, process_envconfig
 from docbuild.constants import DEFAULT_ENV_CONFIG_FILENAME
 
 from ..common import changedir

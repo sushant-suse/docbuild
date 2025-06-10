@@ -137,7 +137,7 @@ def fake_confiles(
                 {
                     # Example return value,
                     # can be customized with fake_confiles.mock.return_value
-                    'fake_config_key': 'fake_config_value'
+                    'fake_config_key': 'fake_config_value',
                 },
             ),
         )
@@ -179,5 +179,5 @@ def fake_validate_options(
         )
 
         yield MockCombinedConfig(
-            fakefile, mock, mock_load_and_merge_configs, mock_load_single_config
+            fakefile, mock, mock_load_and_merge_configs, mock_load_single_config,
         )

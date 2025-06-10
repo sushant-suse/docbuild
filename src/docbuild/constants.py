@@ -5,7 +5,6 @@ import re
 
 from .models.serverroles import ServerRole
 
-
 APP_NAME = "docbuild"
 """The name of the application, used in paths and config files."""
 
@@ -110,10 +109,12 @@ PROJECT_DIR = Path.cwd()
 """The current working directory, used as the project directory."""
 
 USER_CONFIG_DIR = Path.home() / '.config' / APP_NAME
-"""The user-specific configuration directory, typically located at ~/.config/docbuild."""
+"""The user-specific configuration directory, typically located
+at ~/.config/docbuild."""
 
 SYSTEM_CONFIG_DIR = Path('/etc') / APP_NAME
-"""The system-wide configuration directory, typically located at /etc/docbuild."""
+"""The system-wide configuration directory, typically located
+at /etc/docbuild."""
 
 CONFIG_PATHS = (
     # The system-wide config path:
@@ -126,7 +127,8 @@ CONFIG_PATHS = (
 """The paths where the application will look for configuration files."""
 
 APP_CONFIG_BASENAMES = ('.config.toml', 'config.toml')
-"""The base filenames for the application configuration files, in order of priority."""
+"""The base filenames for the application configuration files, in
+order of priority."""
 
 PROJECT_LEVEL_APP_CONFIG_FILENAMES = (
     f'.{APP_NAME}.config.toml',
@@ -142,11 +144,15 @@ ENV_CONFIG_FILENAME = "env.{role}.toml"
 """The filename of the environment's config file without any paths."""
 
 DEFAULT_ENV_CONFIG_FILENAME = ENV_CONFIG_FILENAME.format(role="production")
-"""The default filename for the environment's config file, typically used in production."""
+"""The default filename for the environment's config file, typically
+used in production."""
 
 PLACEHOLDER_PATTERN: re.Pattern[str] = re.compile(r"(?<!\{)\{([^{}]+)\}(?!\})")
-"""Compiled regex for standard placeholders in configuration files (like ``{placeholder}``)."""
+"""Compiled regex for standard placeholders in configuration files
+(like ``{placeholder}``)."""
 
 # --- Logging constants ---
 BASE_LOG_DIR = Path.home() / '.local' / 'state' / APP_NAME / 'logs'
-"""The directory where log files will be stored, typically at :file:`~/.local/state/docbuild/logs` as recommended by the XDG Base Directory Specification."""
+"""The directory where log files will be stored, typically at
+:file:`~/.local/state/docbuild/logs` as recommended by the XDG Base
+Directory Specification."""

@@ -1,17 +1,12 @@
-from pathlib import Path
 from types import SimpleNamespace
-from unittest.mock import MagicMock
 
 import click
 from click import Abort, Command, Context
+from pydantic import Field, ValidationError
 import pytest
 
-from pydantic import ValidationError, Field
-from pydantic_core import PydanticCustomError
-
-from docbuild.cli.cmd_cli import cli
 import docbuild.cli.cmd_build as cmd_build
-from docbuild.models.doctype import Doctype
+from docbuild.cli.cmd_cli import cli
 
 
 def test_validate_doctypes_with_empty_doctypes():
@@ -234,7 +229,7 @@ def test_validate_doctypes_full_error_message(monkeypatch, capsys):
             [{'type': 'string_type',
               'loc': ('product', "foo"),
               'input': 4,
-              'ctx': {'gt': 5}}
+              'ctx': {'gt': 5}},
             ],
         )
 
@@ -247,11 +242,11 @@ def test_validate_doctypes_full_error_message(monkeypatch, capsys):
     })
     monkeypatch.setattr(cmd_build.Doctype, "from_str", mock_validation_error)
 
-    with pytest.raises(click.Abort, match=r"Mock validation error") as exc_info:
+    with pytest.raises(click.Abort, match=r"Mock validation error"):
         cmd_build.validate_doctypes(
             click.Context(click.Command("dummy")),
             None,
-            ("foo/bar",)
+            ("foo/bar",),
         )
 
     # Capture output after the function call
@@ -271,7 +266,7 @@ def test_validate_doctypes_only_hint_error_message(monkeypatch, capsys):
             [{'type': 'string_type',
               'loc': ('product', "foo"),
               'input': 4,
-              'ctx': {'gt': 5}}
+              'ctx': {'gt': 5}},
             ],
         )
 
@@ -283,17 +278,16 @@ def test_validate_doctypes_only_hint_error_message(monkeypatch, capsys):
     })
     monkeypatch.setattr(cmd_build.Doctype, "from_str", mock_validation_error)
 
-    with pytest.raises(click.Abort, match=r"Mock validation error") as exc_info:
+    with pytest.raises(click.Abort, match=r"Mock validation error"):
         cmd_build.validate_doctypes(
             click.Context(click.Command("dummy")),
             None,
-            ("foo/bar",)
+            ("foo/bar",),
         )
 
     # Capture output after the function call
     captured = capsys.readouterr()
 
-    # assert exc_info.value.title == "Mock validation error"
     assert "ERROR in 'product'" in captured.err or captured.out
     assert "Hint" in captured.out
     assert "Examples" not in captured.out  # No examples provided
@@ -307,7 +301,7 @@ def test_validate_doctypes_only_description_error_message(monkeypatch, capsys):
             [{'type': 'string_type',
               'loc': ('product', "foo"),
               'input': 4,
-              'ctx': {'gt': 5}}
+              'ctx': {'gt': 5}},
             ],
         )
 
@@ -319,11 +313,11 @@ def test_validate_doctypes_only_description_error_message(monkeypatch, capsys):
     })
     monkeypatch.setattr(cmd_build.Doctype, "from_str", mock_validation_error)
 
-    with pytest.raises(click.Abort, match=r"Mock validation error") as exc_info:
+    with pytest.raises(click.Abort, match=r"Mock validation error"):
         cmd_build.validate_doctypes(
             click.Context(click.Command("dummy")),
             None,
-            ("foo/bar",)
+            ("foo/bar",),
         )
 
     # Capture output after the function call

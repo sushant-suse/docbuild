@@ -2,7 +2,7 @@
 
 from functools import total_ordering
 import re
-from typing import Annotated, Any, ClassVar
+from typing import Any, ClassVar
 
 from pydantic import BaseModel, Field, computed_field
 from pydantic.config import ConfigDict
@@ -39,7 +39,8 @@ class LanguageCode(BaseModel):
         examples=["en-us", "de-de"],
         frozen=True,
     )
-    """The natural language in the format ll-cc, where 'll' is the language and 'cc' the country."""
+    """The natural language in the format ll-cc, where 'll' is the
+    language and 'cc' the country."""
 
     model_config = ConfigDict(frozen=True)
     """Configuration for the model, should be a dictionary

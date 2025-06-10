@@ -1,4 +1,4 @@
-# Configuration file for the Sphinx documentation builder.
+"""Configuration file for the Sphinx documentation builder."""
 #
 # For the full list of built-in configuration values, see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
@@ -9,7 +9,7 @@
 from docbuild.__about__ import __version__
 
 project = 'docbuild'
-copyright = '2025, Tom Schraitle'
+copyright = '2025, Tom Schraitle'  # noqa: A001
 author = 'Tom Schraitle'
 release = __version__
 

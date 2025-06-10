@@ -5,8 +5,8 @@ import logging.handlers
 import os
 from pathlib import Path
 import queue
-from .constants import APP_NAME, BASE_LOG_DIR
 
+from .constants import APP_NAME, BASE_LOG_DIR
 
 LOGGERNAME = f"{APP_NAME}"
 """Name of the main logger for the application."""
@@ -50,7 +50,7 @@ def setup_logging(
     logdir: str | Path | None = None,
     default_logdir: str | Path = BASE_LOG_DIR,
     use_queue: bool = True,
-):
+) -> None:
     """Set up logging for the application.
 
     :param cliverbosity: The verbosity level from the command line.
@@ -68,9 +68,15 @@ def setup_logging(
     xpath_index = verbosity_index + 1
     git_index = verbosity_index + 2
 
-    jinja_level = logging.DEBUG if jinja_index > 2 else LOGLEVELS.get(min(jinja_index, 2), logging.INFO)
-    xpath_level = logging.DEBUG if xpath_index > 2 else LOGLEVELS.get(min(xpath_index, 2), logging.INFO)
-    git_level = logging.DEBUG if git_index > 2 else LOGLEVELS.get(min(git_index, 2), logging.INFO)
+    jinja_level = logging.DEBUG if jinja_index > 2 else LOGLEVELS.get(
+        min(jinja_index, 2), logging.INFO,
+    )
+    xpath_level = logging.DEBUG if xpath_index > 2 else LOGLEVELS.get(
+        min(xpath_index, 2), logging.INFO,
+    )
+    git_level = logging.DEBUG if git_index > 2 else LOGLEVELS.get(
+        min(git_index, 2), logging.INFO,
+    )
 
     standard_formatter = logging.Formatter(fmt)
     git_formatter = logging.Formatter("[%(levelname)s] [Git] - %(message)s")
@@ -87,7 +93,7 @@ def setup_logging(
     need_roll = log_path.exists()
 
     rotating_file_handler = logging.handlers.RotatingFileHandler(
-        log_path, backupCount=KEEP_LOGS
+        log_path, backupCount=KEEP_LOGS,
     )
     rotating_file_handler.setLevel(logging.DEBUG)
     rotating_file_handler.setFormatter(standard_formatter)
@@ -110,7 +116,7 @@ def setup_logging(
     else:
         handlers = [console_handler, rotating_file_handler]
 
-    def configure_logger(name: str, level: int):
+    def configure_logger(name: str, level: int) -> None:
         logger = logging.getLogger(name)
         logger.setLevel(level)
         for handler in handlers:

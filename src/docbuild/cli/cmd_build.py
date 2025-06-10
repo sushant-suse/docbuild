@@ -5,15 +5,17 @@ with the following properties:
 
 \b
 
-* (Optional) ``PRODUCT`` is the product. To mark "ALL" products, omit the product
-  or use "*"
-* (Optional) ``DOCSET`` is the docset, usually the version or release of a product.
+* (Optional) ``PRODUCT`` is the product. To mark "ALL" products, omit the
+  product or use "*"
+* (Optional) ``DOCSET`` is the docset, usually the version or release of
+  a product.
   To mark "ALL" docsets, omit the docset or use ``"*"``.
-* (Optional) ``LIFECYCLES`` marks a list of lifecycles separated by comma or pipe symbol.
+* (Optional) ``LIFECYCLES`` marks a list of lifecycles separated by comma
+  or pipe symbol.
   A lifecycle can be one of the values 'supported', 'unsupported', 'beta',
   or 'hidden'.
-* ``LANGS`` marks a list of languages separated by comma. Every single language
-  contains a LANGUAGE-COUNTRY syntax, for example 'en-us', 'de-de' etc.
+* ``LANGS`` marks a list of languages separated by comma. Every single
+  language contains a LANGUAGE-COUNTRY syntax, for example 'en-us', 'de-de' etc.
 
 Examples of the doctypes syntax:
 
@@ -30,10 +32,10 @@ Examples of the doctypes syntax:
 * ``"sles/@beta,supported/de-de"``
   Same as the previous one, but with comma as the separator between
   the lifecycle states.
-"""
+"""  # noqa: D301
 
 import click
-from pydantic import ValidationError, Field
+from pydantic import Field, ValidationError
 
 from ..models.doctype import Doctype
 from ..utils.merge import merge_doctypes
@@ -82,12 +84,12 @@ def validate_doctypes(ctx: click.Context,
                 hint = getattr(
                     Doctype.model_fields.get(field_name, safe_field),
                     "description",
-                    None
+                    None,
                 )
                 examples = getattr(
                     Doctype.model_fields.get(field_name, safe_field),
                     "examples",
-                    None
+                    None,
                 )
                 click.secho(
                     f"ERROR in '{field}': {msg}",

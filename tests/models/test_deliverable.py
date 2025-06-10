@@ -1,13 +1,11 @@
+from collections.abc import Generator
 from pathlib import Path
-from typing import Generator
 
-import pytest
 from lxml import etree
-
+import pytest
 
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.metadata import Metadata
-
 
 DATADIR = Path(__file__).absolute().parent.parent / "data"
 
@@ -60,7 +58,7 @@ def node() -> etree._ElementTree:
 def get_deliverables(node, *, lang:str = "en-us"):
         """Get all deliverable elements from the XML node."""
         yield from node.xpath(
-            f"/product/docset/builddocs/language[@lang={lang!r}]/deliverable"
+            f"/product/docset/builddocs/language[@lang={lang!r}]/deliverable",
         )
 
 
@@ -111,7 +109,9 @@ def test_deliverable_pdlangdc(firstnode: Deliverable):
 
 
 def test_deliverable_full_id(firstnode: Deliverable):
-    assert firstnode.full_id == "sles/15-SP6/maintenance_SLE15SP6/en-us:DC-SLES-administration"
+    assert firstnode.full_id == (
+        "sles/15-SP6/maintenance_SLE15SP6/en-us:DC-SLES-administration"
+    )
 
 
 def test_deliverable_lang_is_default(firstnode: Deliverable):
@@ -133,7 +133,7 @@ def test_deliverable_branch_german(deliverable_de: etree._Element):
 
 def test_deliverable_no_branch_found(node: etree._ElementTree):
     branch = node.xpath(
-        "/product/docset/builddocs/language[@lang='en-us']/branch"
+        "/product/docset/builddocs/language[@lang='en-us']/branch",
     )
     # Remove the branch element to simulate no branch found
     if branch:
@@ -142,7 +142,7 @@ def test_deliverable_no_branch_found(node: etree._ElementTree):
     deliverables = get_deliverables(node)
     with pytest.raises(ValueError, match="No branch found for this deliverable"):
         deli = Deliverable(next(deliverables))
-        deli.branch  # This should raise an error
+        deli.branch  # noqa: B018 This should raise an error
 
 
 def test_deliverable_subdir(firstnode: Deliverable):
@@ -160,7 +160,7 @@ def test_deliverable_git(firstnode: Deliverable):
 
 def test_deliverable_no_git_found(node: etree._ElementTree):
     git = node.xpath(
-        "/product/docset[1]/builddocs/git"
+        "/product/docset[1]/builddocs/git",
     )
     # Remove the git element to simulate no error
     if git:
@@ -169,7 +169,7 @@ def test_deliverable_no_git_found(node: etree._ElementTree):
     deliverables = get_deliverables(node)
     with pytest.raises(ValueError, match="No git remote found"):
         deli = Deliverable(next(deliverables))
-        deli.git  # This should raise an error
+        deli.git  #  noqa: B018 This should raise an error
 
 
 def test_deliverable_dcfile(firstnode: Deliverable):
@@ -191,7 +191,7 @@ def test_deliverable_format(firstnode: Deliverable):
 
 def test_deliverable_no_format_found(node: etree._ElementTree):
     format_elem = node.xpath(
-        "/product/docset/builddocs/language[@lang='en-us']/deliverable[1]/format"
+        "/product/docset/builddocs/language[@lang='en-us']/deliverable[1]/format",
     )
     # Remove the format element to simulate no error
     if format_elem:
@@ -200,7 +200,7 @@ def test_deliverable_no_format_found(node: etree._ElementTree):
     deliverables = get_deliverables(node)
     with pytest.raises(ValueError, match="No format found for"):
         deli = Deliverable(next(deliverables))
-        deli.format  # This should raise an error
+        deli.format  #  noqa: B018 This should raise an error
 
 
 def test_deliverable_node(firstnode: Deliverable):
@@ -217,7 +217,7 @@ def test_deliverable_acronym(firstnode: Deliverable):
 
 def test_deliverable_no_acronym_found(node: etree._ElementTree):
     acronym_elem = node.xpath(
-        "/product/acronym"
+        "/product/acronym",
     )
     # Remove the acronym element to simulate no error
     if acronym_elem:
@@ -271,7 +271,9 @@ def test_deliverable_base_format_path_rootid_none(deliverable_de: etree._Element
         # lang="de-de"
     )
     # If rootid is None, fallback to the deliverable's basefile
-    assert deli._base_format_path("html") == "/de-de/sles/15-SP6/html/SLES-administration/"
+    assert deli._base_format_path("html") == (
+        "/de-de/sles/15-SP6/html/SLES-administration/"
+    )
 
 
 def test_deliverable_singlehtml_path(firstnode: Deliverable):
@@ -318,7 +320,10 @@ def test_deliverable_hash(firstnode: Deliverable):
 
 
 def test_deliverable_repr(firstnode: etree._Element):
-    assert repr(firstnode) == "Deliverable(productid='sles', docsetid='15-SP6', lang='en-us', branch='maintenance/SLE15SP6', dcfile='DC-SLES-administration')"
+    assert repr(firstnode) == (
+        "Deliverable(productid='sles', docsetid='15-SP6', lang='en-us', "
+        "branch='maintenance/SLE15SP6', dcfile='DC-SLES-administration')"
+    )
 
 
 def test_deliverable_to_dict(firstnode: Deliverable):

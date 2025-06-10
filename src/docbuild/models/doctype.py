@@ -2,7 +2,7 @@
 
 import re
 from re import Pattern
-from typing import Annotated, ClassVar, Self
+from typing import ClassVar, Self
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -16,7 +16,9 @@ class Doctype(BaseModel):
     """A "doctype" that comprises of a product, docset, lifecycle, and language.
 
     >>> Doctype.from_str("sles/15-SP6@supported/en-us,de-de")
-    Doctype(product=<Product.SLES: 'sles'>, docset=['15-SP6'], lifecycle=<LifecycleFlag.SUPPORTED: 'supported'>, langs=[LanguageCode(language='en-us'), LanguageCode(language='de-de')])
+    Doctype(product=<Product.SLES: 'sles'>, docset=['15-SP6'], \
+    lifecycle=<LifecycleFlag.SUPPORTED: 'supported'>, \
+    langs=[LanguageCode(language='en-us'), LanguageCode(language='de-de')])
     """
 
     # __init__.__doc__ = """Create a new Doctype instance.

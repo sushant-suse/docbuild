@@ -1,4 +1,5 @@
 import pytest
+
 from docbuild.models.doctype import Doctype
 from docbuild.utils.merge import _dedup_doctypes, merge_doctypes
 
