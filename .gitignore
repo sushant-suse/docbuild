@@ -284,3 +284,8 @@ node_modules/
 .ipython/*
 # Except for the startup directory and its contents
 !.ipython/profile_default/startup/*
+
+# Ignore any app or environment config files
+/env.*.toml
+/.config.toml
+/config.toml
