@@ -45,36 +45,53 @@ def node() -> etree._ElementTree:
     return etree.fromstring(xml_data, parser=None).getroottree()
 
 
-@pytest.mark.parametrize("doctypes, dc_files", [
-    # 0
-    (None, ['DC-SLES-administration', 'DC-SLES-deployment', 'DC-SLES-autoyast']),
-    # 1
-    ([Doctype.from_str("*/*@supported,beta/en-us")],
-     ['DC-SLES-administration', 'DC-SLES-deployment', 'DC-SLES-autoyast']),
-    # 2
-    ([Doctype.from_str("sles/*@supported,beta/en-us")],
-     ['DC-SLES-administration', 'DC-SLES-deployment', 'DC-SLES-autoyast']),
-    # 3
-    ([Doctype.from_str("sles/*@supported,beta/en-us,de-de")],
-     ['DC-SLES-administration', 'DC-SLES-deployment',
-      'DC-SLES-administration', 'DC-SLES-autoyast' ]),
-    # 4
-    (
-        [Doctype.from_str("sles/15sp4,15sp5/en-us")],
-        ['DC-SLES-administration', 'DC-SLES-deployment', 'DC-SLES-autoyast'],
-    ),
-    # 5
-    (
-        [Doctype.from_str("sles/*/*")],
-        ['DC-SLES-administration', 'DC-SLES-deployment',
-         'DC-SLES-administration', 'DC-SLES-autoyast'],
-    ),
-    # 6
-    (
-        [Doctype.from_str("smart/*/en-us")],
-        [],
-    ),
-])
+@pytest.mark.parametrize(
+    'doctypes, dc_files',
+    [
+        # 0
+        (None, ['DC-SLES-administration', 'DC-SLES-deployment', 'DC-SLES-autoyast']),
+        # 1
+        (
+            [Doctype.from_str('*/*@supported,beta/en-us')],
+            ['DC-SLES-administration', 'DC-SLES-deployment', 'DC-SLES-autoyast'],
+        ),
+        # 2
+        (
+            [Doctype.from_str('sles/*@supported,beta/en-us')],
+            ['DC-SLES-administration', 'DC-SLES-deployment', 'DC-SLES-autoyast'],
+        ),
+        # 3
+        (
+            [Doctype.from_str('sles/*@supported,beta/en-us,de-de')],
+            [
+                'DC-SLES-administration',
+                'DC-SLES-deployment',
+                'DC-SLES-administration',
+                'DC-SLES-autoyast',
+            ],
+        ),
+        # 4
+        (
+            [Doctype.from_str('sles/15sp4,15sp5/en-us')],
+            ['DC-SLES-administration', 'DC-SLES-deployment', 'DC-SLES-autoyast'],
+        ),
+        # 5
+        (
+            [Doctype.from_str('sles/*/*')],
+            [
+                'DC-SLES-administration',
+                'DC-SLES-deployment',
+                'DC-SLES-administration',
+                'DC-SLES-autoyast',
+            ],
+        ),
+        # 6
+        (
+            [Doctype.from_str('smart/*/en-us')],
+            [],
+        ),
+    ],
+)
 def test_list_all_deliverables(
     doctypes: list[Doctype] | None,
     dc_files: list[str],

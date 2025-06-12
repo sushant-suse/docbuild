@@ -1,4 +1,5 @@
 """Set up logging for the documentation build process."""
+
 import atexit
 import logging
 import logging.handlers
@@ -8,18 +9,18 @@ import queue
 
 from .constants import APP_NAME, BASE_LOG_DIR
 
-LOGGERNAME = f"{APP_NAME}"
+LOGGERNAME = f'{APP_NAME}'
 """Name of the main logger for the application."""
 
-LOGFILE = f"{LOGGERNAME}.log"
+LOGFILE = f'{LOGGERNAME}.log'
 """Filename for the main log file."""
 
 KEEP_LOGS = 4
 """ Number of log files to keep before rolling over."""
 
-JINJALOGGERNAME = f"{LOGGERNAME}.jinja"
-XPATHLOGGERNAME = f"{LOGGERNAME}.xpath"
-GITLOGGERNAME = f"{LOGGERNAME}.git"
+JINJALOGGERNAME = f'{LOGGERNAME}.jinja'
+XPATHLOGGERNAME = f'{LOGGERNAME}.xpath'
+GITLOGGERNAME = f'{LOGGERNAME}.git'
 
 LOGLEVELS = {
     None: logging.WARNING,  # fallback
@@ -29,7 +30,7 @@ LOGLEVELS = {
 }  # """Map of verbosity levels to logging levels."""
 
 
-def create_base_log_dir(base_log_dir: str|Path = BASE_LOG_DIR) -> Path:
+def create_base_log_dir(base_log_dir: str | Path = BASE_LOG_DIR) -> Path:
     """Create the base log directory if it doesn't exist.
 
     This directory is typically located at :file:`~/.local/state/docbuild/logs`
@@ -39,14 +40,14 @@ def create_base_log_dir(base_log_dir: str|Path = BASE_LOG_DIR) -> Path:
         Considers the `XDG_STATE_HOME` environment variable if set.
     :return: The path to the base log directory.
     """
-    log_dir = Path(os.getenv("XDG_STATE_HOME", base_log_dir))
+    log_dir = Path(os.getenv('XDG_STATE_HOME', base_log_dir))
     log_dir.mkdir(mode=0o700, parents=True, exist_ok=True)
     return log_dir
 
 
 def setup_logging(
-    cliverbosity: int|None,
-    fmt: str = "[%(levelname)s] %(funcName)s: %(message)s",
+    cliverbosity: int | None,
+    fmt: str = '[%(levelname)s] %(funcName)s: %(message)s',
     logdir: str | Path | None = None,
     default_logdir: str | Path = BASE_LOG_DIR,
     use_queue: bool = True,
@@ -68,18 +69,33 @@ def setup_logging(
     xpath_index = verbosity_index + 1
     git_index = verbosity_index + 2
 
-    jinja_level = logging.DEBUG if jinja_index > 2 else LOGLEVELS.get(
-        min(jinja_index, 2), logging.INFO,
+    jinja_level = (
+        logging.DEBUG
+        if jinja_index > 2
+        else LOGLEVELS.get(
+            min(jinja_index, 2),
+            logging.INFO,
+        )
     )
-    xpath_level = logging.DEBUG if xpath_index > 2 else LOGLEVELS.get(
-        min(xpath_index, 2), logging.INFO,
+    xpath_level = (
+        logging.DEBUG
+        if xpath_index > 2
+        else LOGLEVELS.get(
+            min(xpath_index, 2),
+            logging.INFO,
+        )
     )
-    git_level = logging.DEBUG if git_index > 2 else LOGLEVELS.get(
-        min(git_index, 2), logging.INFO,
+    git_level = (
+        logging.DEBUG
+        if git_index > 2
+        else LOGLEVELS.get(
+            min(git_index, 2),
+            logging.INFO,
+        )
     )
 
     standard_formatter = logging.Formatter(fmt)
-    git_formatter = logging.Formatter("[%(levelname)s] [Git] - %(message)s")
+    git_formatter = logging.Formatter('[%(levelname)s] [Git] - %(message)s')
 
     console_handler = logging.StreamHandler()
     console_handler.setLevel(verbosity)
@@ -93,7 +109,8 @@ def setup_logging(
     need_roll = log_path.exists()
 
     rotating_file_handler = logging.handlers.RotatingFileHandler(
-        log_path, backupCount=KEEP_LOGS,
+        log_path,
+        backupCount=KEEP_LOGS,
     )
     rotating_file_handler.setLevel(logging.DEBUG)
     rotating_file_handler.setFormatter(standard_formatter)

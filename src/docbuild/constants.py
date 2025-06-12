@@ -5,14 +5,14 @@ import re
 
 from .models.serverroles import ServerRole
 
-APP_NAME = "docbuild"
+APP_NAME = 'docbuild'
 """The name of the application, used in paths and config files."""
 
-DEFAULT_LANGS = ("en-us",)
+DEFAULT_LANGS = ('en-us',)
 """The default languages used by the application."""
 
 ALLOWED_LANGUAGES = frozenset(
-    "de-de en-us es-es fr-fr ja-jp ko-kr pt-br zh-cn".split(" "),
+    'de-de en-us es-es fr-fr ja-jp ko-kr pt-br zh-cn'.split(' '),
 )
 """The languages supported by the documentation portal."""
 
@@ -25,12 +25,11 @@ ALLOWED_LANGUAGES = frozenset(
 SERVER_ROLES = tuple([role.value for role in ServerRole])
 """The different server roles, including long and short spelling."""
 
-DEFAULT_LIFECYCLE = "supported"
+DEFAULT_LIFECYCLE = 'supported'
 """The default lifecycle state for a docset."""
 
-ALLOWED_LIFECYCLES = ("supported", "beta", "hidden", "unsupported")
+ALLOWED_LIFECYCLES = ('supported', 'beta', 'hidden', 'unsupported')
 """The available lifecycle states for a docset."""
-
 
 
 # All product acronyms and their names
@@ -42,9 +41,10 @@ ALLOWED_LIFECYCLES = ("supported", "beta", "hidden", "unsupported")
 #   -v '/product/name' -nl config.d/[a-z]*.xml
 VALID_PRODUCTS: dict[str, str] = {
     key.strip(): value.strip()
-    for key, value in (line.split(" ", 1)
-    # Syntax acronym <SPACE> full name:
-    for line in """appliance Appliance building
+    for key, value in (
+        line.split(' ', 1)
+        # Syntax acronym <SPACE> full name:
+        for line in """appliance Appliance building
 cloudnative Cloud Native
 compliance Compliance Documentation
 container Container Documentation
@@ -73,30 +73,30 @@ suse-cap SUSE Cloud Application Platform
 suse-distribution-migration-system SUSE Distribution Migration System
 suse-edge SUSE Edge
 trd Technical Reference Documentation""".strip().splitlines()
-)
+    )
 }
 """A dictionary of valid products acronyms and their full names."""
 
 ALLOWED_PRODUCTS = tuple([item for item in VALID_PRODUCTS])
 """A tuple of valid product acronyms."""
 
-SINGLE_LANG_REGEX = re.compile(r"[a-z]{2}-[a-z]{2}")
+SINGLE_LANG_REGEX = re.compile(r'[a-z]{2}-[a-z]{2}')
 """Regex for a single language code in the format 'xx-XX' (e.g., 'en-us')."""
 
 MULTIPLE_LANG_REGEX = re.compile(
-    rf"^({SINGLE_LANG_REGEX.pattern},)*"
-    rf"{SINGLE_LANG_REGEX.pattern}",
+    rf'^({SINGLE_LANG_REGEX.pattern},)*'
+    rf'{SINGLE_LANG_REGEX.pattern}',
 )
 """Regex for multiple languages, separated by commas."""
 
-LIFECYCLES_STR = "|".join(ALLOWED_LIFECYCLES)
+LIFECYCLES_STR = '|'.join(ALLOWED_LIFECYCLES)
 """Regex for lifecycle states, separated by pipe (|)."""
 
 # Syntax for a single doctype
 #
 # <product-value|*>/<docset-value|*>@<lifecycle-value>/<lang-value1,lang-value2,...|*>
 #
-SEPARATORS = r"[ :;]+"
+SEPARATORS = r'[ :;]+'
 """Regex string for separators used in doctype strings."""
 
 
@@ -137,17 +137,17 @@ PROJECT_LEVEL_APP_CONFIG_FILENAMES = (
 )
 """Additional configuration filenames at the project level."""
 
-APP_CONFIG_FILENAME = "config.toml"
+APP_CONFIG_FILENAME = 'config.toml'
 """The filename of the application's config file without any paths."""
 
-ENV_CONFIG_FILENAME = "env.{role}.toml"
+ENV_CONFIG_FILENAME = 'env.{role}.toml'
 """The filename of the environment's config file without any paths."""
 
-DEFAULT_ENV_CONFIG_FILENAME = ENV_CONFIG_FILENAME.format(role="production")
+DEFAULT_ENV_CONFIG_FILENAME = ENV_CONFIG_FILENAME.format(role='production')
 """The default filename for the environment's config file, typically
 used in production."""
 
-PLACEHOLDER_PATTERN: re.Pattern[str] = re.compile(r"(?<!\{)\{([^{}]+)\}(?!\})")
+PLACEHOLDER_PATTERN: re.Pattern[str] = re.compile(r'(?<!\{)\{([^{}]+)\}(?!\})')
 """Compiled regex for standard placeholders in configuration files
 (like ``{placeholder}``)."""
 

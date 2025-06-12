@@ -11,4 +11,3 @@ def test_verbosity_counts(context, fake_envfile, runner):
     assert mock.call_count == 1
     assert result.exit_code == 0
     assert context.verbose == 2
-

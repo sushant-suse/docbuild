@@ -5,14 +5,14 @@ import re
 
 from ..constants import ALLOWED_LIFECYCLES
 
-_SEPARATOR = re.compile(r"[|,]")
+_SEPARATOR = re.compile(r'[|,]')
 
 
 class BaseLifecycleFlag(Flag):
     """Base class for LifecycleFlag."""
 
     @classmethod
-    def from_str(cls, value: str) -> "BaseLifecycleFlag":
+    def from_str(cls, value: str) -> 'BaseLifecycleFlag':
         """Convert a string to a LifecycleFlag object.
 
         The string accepts the values 'supported', 'beta', 'hidden',
@@ -43,12 +43,12 @@ class BaseLifecycleFlag(Flag):
             return flag
 
         except KeyError as err:
-            allowed = ", ".join(cls.__members__.keys())
+            allowed = ', '.join(cls.__members__.keys())
             raise ValueError(
-                f"Invalid lifecycle name: {err.args[0]!r}. Allowed values: {allowed}",
+                f'Invalid lifecycle name: {err.args[0]!r}. Allowed values: {allowed}',
             ) from err
 
-    def __contains__(self, other: str|Flag) -> bool:
+    def __contains__(self, other: str | Flag) -> bool:
         """Return True if self has at least one of same flags set as other.
 
         >>> "supported" in Lifecycle.beta
@@ -73,8 +73,8 @@ class BaseLifecycleFlag(Flag):
 # retrieved.
 # TODO: Should we allow weird combination like "supported|unsupported"
 LifecycleFlag = BaseLifecycleFlag(
-    "LifecycleFlag",
-    {"unknown": 0, "UNKNOWN": 0}
+    'LifecycleFlag',
+    {'unknown': 0, 'UNKNOWN': 0}
     | {item: (2 << index) for index, item in enumerate(ALLOWED_LIFECYCLES, 0)},
 )
 """LifecycleFlag represents the lifecycle of a product."""

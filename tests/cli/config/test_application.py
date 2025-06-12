@@ -20,4 +20,3 @@ def test_config_app(context, runner):
     # Convert to dict
     output_dict = ast.literal_eval(pretty_dict_str)
     assert output_dict == {'foo': 'bar', 'baz': [1, 2, 3]}
-

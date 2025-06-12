@@ -55,6 +55,7 @@ ignore = [
     "D203",    # Conflicts with D211 (one blank line before class docstring)
     "D213",    # Conflicts with D212 (multi-line docstring start convention)
     # "D401",    # First line of docstring should be in imperative mood
+    "COM812",  # 
 ]
 
 # Allow autofix for everything except complexity and annotations

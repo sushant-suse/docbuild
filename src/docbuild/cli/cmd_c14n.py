@@ -14,4 +14,4 @@ def c14n(ctx: click.Context) -> None:
     """
     ctx.ensure_object(DocBuildContext)
     context: DocBuildContext = ctx.obj
-    click.echo(f"[C17N] Verbosity: {context.verbose}")
+    click.echo(f'[C17N] Verbosity: {context.verbose}')

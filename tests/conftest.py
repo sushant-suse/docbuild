@@ -25,21 +25,21 @@ from docbuild.constants import DEFAULT_ENV_CONFIG_FILENAME
 from tests.common import changedir
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope='function')
 def runner() -> CliRunner:
     """Provide a CliRunner instance for testing."""
     return CliRunner()
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope='function')
 def default_env_config_filename(tmp_path: Path) -> Path:
     """Provide a default env config file path."""
     envfile = tmp_path / DEFAULT_ENV_CONFIG_FILENAME
-    envfile.write_text("")
+    envfile.write_text('')
     return envfile
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope='function')
 def env_content(default_env_config_filename: Path) -> Path:
     """Provide a default content for the env config file."""
     content = """# Test file
@@ -116,7 +116,9 @@ def fake_envfile(
     )
 
     monkeypatch.setattr(
-        load_mod, "process_envconfig", mock,
+        load_mod,
+        'process_envconfig',
+        mock,
     )
 
     with changedir(tmp_path):
@@ -142,7 +144,9 @@ def fake_confiles(
             ),
         )
         monkeypatch.setattr(
-            cli, 'load_and_merge_configs', mock,
+            cli,
+            'load_and_merge_configs',
+            mock,
         )
         yield MockEnvConfig(fakefile, mock)
 
@@ -162,22 +166,29 @@ def fake_validate_options(
         mock = MagicMock(
             return_value=None,  # This function does not return anything
         )
-        #monkeypatch.setattr(
+        # monkeypatch.setattr(
         #    cli_module, 'validate_options', mock,
-        #)
+        # )
 
         mock_load_and_merge_configs = MagicMock(
             return_value=([fakefile], {'fake_key': 'fake_value'}),
         )
         monkeypatch.setattr(
-            cli_module, 'load_and_merge_configs', mock_load_and_merge_configs,
+            cli_module,
+            'load_and_merge_configs',
+            mock_load_and_merge_configs,
         )
 
-        mock_load_single_config = MagicMock(return_value={"fake_key": "fake_value"})
+        mock_load_single_config = MagicMock(return_value={'fake_key': 'fake_value'})
         monkeypatch.setattr(
-            cli_module, 'load_single_config', mock_load_single_config,
+            cli_module,
+            'load_single_config',
+            mock_load_single_config,
         )
 
         yield MockCombinedConfig(
-            fakefile, mock, mock_load_and_merge_configs, mock_load_single_config,
+            fakefile,
+            mock,
+            mock_load_and_merge_configs,
+            mock_load_single_config,
         )

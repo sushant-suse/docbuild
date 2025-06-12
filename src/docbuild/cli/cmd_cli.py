@@ -23,15 +23,18 @@ from .defaults import DEFAULT_APP_CONFIG, DEFAULT_ENV_CONFIG
 
 @click.group(
     name=APP_NAME,
-    context_settings={"show_default": True, "help_option_names": ["-h", "--help"]},
-    help="Main CLI tool for document operations.",
+    context_settings={'show_default': True, 'help_option_names': ['-h', '--help']},
+    help='Main CLI tool for document operations.',
 )
-@click.version_option(__version__,
-                      # package_name=,
-                      prog_name=__package__)
-@click.option("-v", "--verbose", count=True, help="Increase verbosity")
+@click.version_option(
+    __version__,
+    # package_name=,
+    prog_name=__package__,
+)
+@click.option('-v', '--verbose', count=True, help='Increase verbosity')
 @click.option('--dry-run', is_flag=True, help='Run without making changes')
-@click.option('--debug/--no-debug',
+@click.option(
+    '--debug/--no-debug',
     default=False,
     envvar='DOCBUILD_DEBUG',
     help=(
@@ -40,7 +43,8 @@ from .defaults import DEFAULT_APP_CONFIG, DEFAULT_ENV_CONFIG
         "If available, read the environment variable 'DOCBUILD_DEBUG'."
     ),
 )
-@click.option('--app-config',
+@click.option(
+    '--app-config',
     metavar='APP_CONFIG_FILE',
     type=click.Path(
         exists=True,
@@ -51,7 +55,8 @@ from .defaults import DEFAULT_APP_CONFIG, DEFAULT_ENV_CONFIG
     ),
     help='Filename to the application TOML config file. Overrides auto-search.',
 )
-@click.option('--env-config',
+@click.option(
+    '--env-config',
     metavar='ENV_CONFIG_FILE',
     type=click.Path(exists=True, dir_okay=False),
     help=(

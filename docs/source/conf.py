@@ -13,9 +13,9 @@ copyright = '2025, Tom Schraitle'  # noqa: A001
 author = 'Tom Schraitle'
 release = __version__
 
-gh_user = "tomschr"
-gh_repo_url = f"https://github.com/{gh_user}/{project}"
-gh_repo_slug = f"{gh_user}/{project}"
+gh_user = 'tomschr'
+gh_repo_url = f'https://github.com/{gh_user}/{project}'
+gh_repo_slug = f'{gh_user}/{project}'
 
 
 # --- Prolog configuration
@@ -37,14 +37,13 @@ extensions = [
     'sphinx.ext.doctest',
     'sphinx.ext.extlinks',
     # For documenting click CLI commands:
-    "sphinx_click",
+    'sphinx_click',
     # Copy button in code blocks:
-    "sphinx_copybutton",
+    'sphinx_copybutton',
     # For automatic API documentation generation:
-    "sphinx_autodoc_typehints",
+    'sphinx_autodoc_typehints',
     # For generating API documentation from docstrings:
-    "autoapi.extension",
-
+    'autoapi.extension',
 ]
 
 templates_path = ['_templates']
@@ -55,7 +54,7 @@ language = 'en'
 # -- Options for autoapi extension
 # https://sphinx-autoapi.readthedocs.io/en/latest/reference/config.html
 autoapi_modules = {
-    "docbuild": None,
+    'docbuild': None,
     # {
     #     # "output": "reference/_autoapi",
     #     # "prune": True|False,
@@ -63,25 +62,25 @@ autoapi_modules = {
     #     # "template":
     # }
 }
-autoapi_root = "reference/_autoapi"
+autoapi_root = 'reference/_autoapi'
 autoapi_dirs = ['../../src/']
-autoapi_type = "python"
+autoapi_type = 'python'
 autoapi_add_toctree_entry = False
 # autoapi_template_dir = "_templates/autoapi"
 autoapi_options = [
-    "members",
+    'members',
     # "undoc-members",
-    "inherited-members",
-    "show-inheritance",
-    "show-module-summary",
-    "imported-members",
-    "special-members",
-    "show-inheritance-diagram",  # needs sphinx.ext.inheritance_diagram & graphviz
+    'inherited-members',
+    'show-inheritance',
+    'show-module-summary',
+    'imported-members',
+    'special-members',
+    'show-inheritance-diagram',  # needs sphinx.ext.inheritance_diagram & graphviz
     # "private-members",
 ]
 autoapi_keep_files = True
-autodoc_typehints = "signature"
-autoapi_own_page_level = "class"
+autodoc_typehints = 'signature'
+autoapi_own_page_level = 'class'
 
 
 # -- Options for extlinks extension ------------------------------------------
@@ -100,11 +99,11 @@ extlinks = {
 
 autosummary_generate = False
 autodoc_default_options = {
-    "members": True,
-    "undoc-members": False,
-    "show-inheritance": True,
-    "inherited-members": False,
-    "private-members": True,
+    'members': True,
+    'undoc-members': False,
+    'show-inheritance': True,
+    'inherited-members': False,
+    'private-members': True,
 }
 
 html_theme = 'pydata_sphinx_theme'
@@ -117,41 +116,41 @@ html_css_files = [
 ]
 
 html_context = {
-    "github_user": gh_user,
-    "github_repo": project,
-    "github_version": "main",
-    "doc_path": "docs/source/",
+    'github_user': gh_user,
+    'github_repo': project,
+    'github_version': 'main',
+    'doc_path': 'docs/source/',
 }
 
 html_theme_options = {
-    "announcement": "Documentation is under construction.",
-    "show_prev_next": True,
+    'announcement': 'Documentation is under construction.',
+    'show_prev_next': True,
     # "html_last_updated_fmt": "%b %d, %Y",
-    "content_footer_items": ["last-updated"],
-    "github_url": gh_repo_url,
+    'content_footer_items': ['last-updated'],
+    'github_url': gh_repo_url,
     #   "external_links": [
     #       {"name": "link-one-name", "url": "https://<link-one>"},
     #   ],
     #
-    "icon_links": [
+    'icon_links': [
         {
-            "name": "GitLab susedoc/docserv-config",
-            "url": "https://gitlab.suse.de/susedoc/docserv-config",
-            "icon": "fa-brands fa-square-gitlab",
-            "type": "fontawesome",
+            'name': 'GitLab susedoc/docserv-config',
+            'url': 'https://gitlab.suse.de/susedoc/docserv-config',
+            'icon': 'fa-brands fa-square-gitlab',
+            'type': 'fontawesome',
         },
     ],
     #
-    "use_edit_page_button": True,
-    "back_to_top_button": True,
-    "logo": {
-        "text": "Docbuild Documentation",
-        #"image_light": "_static/logo-light.png",
-        #"image_dark": "_static/logo-dark.png",
+    'use_edit_page_button': True,
+    'back_to_top_button': True,
+    'logo': {
+        'text': 'Docbuild Documentation',
+        # "image_light": "_static/logo-light.png",
+        # "image_dark": "_static/logo-dark.png",
     },
 }
 
-html_logo = "_static/logo.png"
+html_logo = '_static/logo.png'
 
 # -- Options for intersphinx extension ---------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#configuration
@@ -159,6 +158,6 @@ html_logo = "_static/logo.png"
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
     'pydantic': ('https://docs.pydantic.dev/latest/', None),
-    "click": ("https://click.palletsprojects.com/en/latest/", None),
-    "jinja2": ("https://jinja.palletsprojects.com/en/latest/", None),
+    'click': ('https://click.palletsprojects.com/en/latest/', None),
+    'jinja2': ('https://jinja.palletsprojects.com/en/latest/', None),
 }

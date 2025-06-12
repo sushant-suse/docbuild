@@ -1,4 +1,4 @@
-"""Load and process configuration files."""""
+"""Load and process configuration files.""" ''
 
 from collections.abc import Iterable, Sequence
 from itertools import product
@@ -28,7 +28,7 @@ def process_envconfig(envconfigfile: str | Path | None) -> tuple[Path, Container
 
     else:
         raise ValueError(
-            "Could not find default ENV configuration file.",
+            'Could not find default ENV configuration file.',
         )
 
     rawconfig = load_single_config(envconfigfile)
@@ -44,7 +44,7 @@ def load_single_config(configfile: str | Path) -> dict[str, Any]:
     :raise tomllib.TOMLDecodeError: If the config file is not a valid TOML file
         or cannot be decoded.
     """
-    with Path(configfile).open("rb") as f:
+    with Path(configfile).open('rb') as f:
         return toml.load(f)
 
 
@@ -70,8 +70,8 @@ def load_and_merge_configs(
     # If no paths are provided, raise an error:
     if not paths:
         raise ValueError(
-            "No paths provided. "
-            "Please provide at least one path to load the config files.",
+            'No paths provided. '
+            'Please provide at least one path to load the config files.',
         )
 
     # Create a carthesian product of paths and default filenames:
@@ -92,7 +92,7 @@ def handle_config(
     basenames: Iterable[str] | None,
     default_filename: str | None = None,
     default_config: object | None = None,
-) -> tuple[tuple[Path, ...] | None, object|dict, bool]:
+) -> tuple[tuple[Path, ...] | None, object | dict, bool]:
     """Return (config_files, config, from_defaults) for config file handling.
 
     :param user_path: Path to the user-defined config file, if any.

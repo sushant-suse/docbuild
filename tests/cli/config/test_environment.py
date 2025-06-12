@@ -18,16 +18,16 @@ def capture_context(ctx):
     # click.echo(ctx.obj)
     pass
 
+
 # Register the test-only command temporarily
 cli.add_command(capture_context)
 
 
-
 def test_showconfig_env_help_option(runner):
-    result = runner.invoke(cli, ["--help"])
+    result = runner.invoke(cli, ['--help'])
     assert result.exit_code == 0
-    assert "Usage:" in result.output
-    assert "--env-config" in result.output
+    assert 'Usage:' in result.output
+    assert '--env-config' in result.output
     # assert "[mutually_exclusive]" in result.output
     # assert "--role" in result.output
 
@@ -38,14 +38,16 @@ def test_showconfig_env_config_option(
     runner,
 ):
     mock = fake_envfile.mock
-    configfile = Path(__file__).parent / "sample-env.toml"
-    mock.return_value = (configfile, {"mocked": True})
+    configfile = Path(__file__).parent / 'sample-env.toml'
+    mock.return_value = (configfile, {'mocked': True})
 
     result = runner.invoke(
         cli,
         [
-            "--env-config", configfile,
-            "config", "env",
+            '--env-config',
+            configfile,
+            'config',
+            'env',
         ],
         obj=context,
     )
@@ -53,30 +55,31 @@ def test_showconfig_env_config_option(
     assert context.envconfigfiles == (configfile,)
 
 
-@pytest.mark.skip("Replace --role with --env-config")
+@pytest.mark.skip('Replace --role with --env-config')
 def test_showconfig_env_role_option(
     context,
     fake_envfile,
     runner,
 ):
     return_value = {
-        "paths": {
-            "config_dir": "/etc/docbuild",
-            "repo_dir": "/data/docserv/repos/permanent-full/",
-            "temp_repo_dir": "/data/docserv/repos/temporary-branches/",
-            "tmp": {
-                "tmp_base_path": "/tmp",
-                "tmp_path": "/tmp/doc-example-com",
+        'paths': {
+            'config_dir': '/etc/docbuild',
+            'repo_dir': '/data/docserv/repos/permanent-full/',
+            'temp_repo_dir': '/data/docserv/repos/temporary-branches/',
+            'tmp': {
+                'tmp_base_path': '/tmp',
+                'tmp_path': '/tmp/doc-example-com',
             },
         },
     }
     fake_envfile.mock.return_value = (
-        fake_envfile.fakefile, return_value,
+        fake_envfile.fakefile,
+        return_value,
     )
 
     result = runner.invoke(
         cli,
-        ["--role=production", "config", "env"],
+        ['--role=production', 'config', 'env'],
         obj=context,
     )
 
@@ -97,10 +100,11 @@ def test_env_no_config_no_role(
         "No such file or directory: 'env.production.toml'",
     )
     result = runner.invoke(
-        cli, ["--role=production", "config", "env"],
+        cli,
+        ['--role=production', 'config', 'env'],
         obj=context,
     )
 
     assert result.exit_code != 0
     assert isinstance(result.exception, FileNotFoundError)
-    assert "No such file or directory" in str(result.exception)
+    assert 'No such file or directory' in str(result.exception)

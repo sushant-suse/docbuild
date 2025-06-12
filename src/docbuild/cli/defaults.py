@@ -10,31 +10,30 @@ They can be overridden by the user through configuration files or command-line o
 from ..constants import APP_NAME
 
 DEFAULT_APP_CONFIG = {
-    "debug": False,
-    "role": "production",
-    "paths": {
-        "config_dir": "/etc/docbuild",
-        "repo_dir": "/data/docserv/repos/permanent-full/",
-        "temp_repo_dir": "/data/docserv/repos/temporary-branches/",
+    'debug': False,
+    'role': 'production',
+    'paths': {
+        'config_dir': '/etc/docbuild',
+        'repo_dir': '/data/docserv/repos/permanent-full/',
+        'temp_repo_dir': '/data/docserv/repos/temporary-branches/',
     },
-    "paths.tmp": {
-        "tmp_base_path": "/tmp",
-        "tmp_path": "{tmp_base_path}/doc-example-com",
+    'paths.tmp': {
+        'tmp_base_path': '/tmp',
+        'tmp_path': '{tmp_base_path}/doc-example-com',
     },
 }
 """Default configuration for the application."""
 
 DEFAULT_ENV_CONFIG = {
-    "role": "production",
-    "paths": {
-        "config_dir": "/etc/docbuild",
-        "repo_dir": "/data/docserv/repos/permanent-full/",
-        "temp_repo_dir": "/data/docserv/repos/temporary-branches/",
+    'role': 'production',
+    'paths': {
+        'config_dir': '/etc/docbuild',
+        'repo_dir': '/data/docserv/repos/permanent-full/',
+        'temp_repo_dir': '/data/docserv/repos/temporary-branches/',
     },
-    "paths.tmp": {
-        "tmp_base_path": f"/var/tmp/{APP_NAME}",
-        "tmp_path": "{tmp_base_path}/doc-example-com",
+    'paths.tmp': {
+        'tmp_base_path': f'/var/tmp/{APP_NAME}',
+        'tmp_path': '{tmp_base_path}/doc-example-com',
     },
 }
 """Default configuration for the environment."""
-

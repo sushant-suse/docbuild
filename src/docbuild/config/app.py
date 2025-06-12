@@ -24,8 +24,10 @@ MAX_RECURSION_DEPTH: int = 10
 """The maximum recursion depth for placeholder replacement."""
 
 
-def replace_placeholders(config: Container,  # noqa: C901
-                         max_recursion_depth: int = MAX_RECURSION_DEPTH) -> Container:
+def replace_placeholders(
+    config: Container,  # noqa: C901
+    max_recursion_depth: int = MAX_RECURSION_DEPTH,
+) -> Container:
     """Replace placeholder values in a nested dictionary structure.
 
     * ``{foo}`` resolves from the current section.
@@ -37,23 +39,26 @@ def replace_placeholders(config: Container,  # noqa: C901
     :raises KeyError: If a placeholder cannot be resolved.
     """
 
-    def lookup_placeholder(path: str, context: Container, container_name: str,
-                           ) -> Container:
-        parts = path.split(".")
+    def lookup_placeholder(
+        path: str,
+        context: Container,
+        container_name: str,
+    ) -> Container:
+        parts = path.split('.')
         value = context
         resolved_path = []
 
         for part in parts:
             resolved_path.append(part)
             if not isinstance(value, dict):
-                full_path = ".".join(resolved_path)
+                full_path = '.'.join(resolved_path)
                 raise KeyError(
                     f"While resolving '{{{path}}}' in '{container_name}': "
                     f"'{full_path}' is not a dictionary "
-                    f"(got type {type(value).__name__}).",
+                    f'(got type {type(value).__name__}).',
                 )
             if part not in value:
-                full_path = ".".join(resolved_path)
+                full_path = '.'.join(resolved_path)
                 raise KeyError(
                     f"While resolving '{{{path}}}' in '{container_name}': "
                     f"missing key '{part}' in path '{full_path}'.",
@@ -64,10 +69,11 @@ def replace_placeholders(config: Container,  # noqa: C901
 
     def replacement(match: re.Match, container: Container, key: str | int) -> str:
         inner = match.group(1)
-        container_name = str(key) if isinstance(key, str) \
-                         else f"list item at index {key}"
+        container_name = (
+            str(key) if isinstance(key, str) else f'list item at index {key}'
+        )
 
-        if "." in inner:
+        if '.' in inner:
             return str(lookup_placeholder(inner, config, container_name))
         elif isinstance(container, dict) and inner in container:
             return str(container[inner])
@@ -87,7 +93,7 @@ def replace_placeholders(config: Container,  # noqa: C901
         if count == max_recursion_depth:
             raise ValueError(f"Too many nested placeholder expansions in key '{key}'.")
         # Finally, replace escaped braces with literal ones
-        return s.replace("{{", "{").replace("}}", "}")
+        return s.replace('{{', '{').replace('}}', '}')
 
     stack: list[StackItem] = [(config, key, config) for key in config]
 

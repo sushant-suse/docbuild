@@ -43,8 +43,9 @@ from .context import DocBuildContext
 
 
 # --- Callback Function ---
-def validate_doctypes(ctx: click.Context,
-    param: click.Parameter|None,
+def validate_doctypes(
+    ctx: click.Context,
+    param: click.Parameter | None,
     doctypes: tuple[str, ...],
 ) -> list[Doctype]:
     """Click callback function to validate a list of doctype strings.
@@ -66,40 +67,39 @@ def validate_doctypes(ctx: click.Context,
 
     # click.echo(f"Our doctypes: {doctypes=}")
     for doctype_str in doctypes:
-
         try:
             doctype = Doctype.from_str(doctype_str)
-            click.echo(f"Got {doctype}")
+            click.echo(f'Got {doctype}')
             processed_data.append(doctype)
 
         except ValidationError as err:
             for error in err.errors():
-                field = error["loc"][0]
+                field = error['loc'][0]
                 # Convert to string to ensure it works as dictionary key
                 field_name = str(field)
-                msg = error["msg"]
+                msg = error['msg']
                 # Make accessing of .description and .examples safe(r) if
                 # the definition in Doctype is not present
                 safe_field = Field(description=None, examples=None)
                 hint = getattr(
                     Doctype.model_fields.get(field_name, safe_field),
-                    "description",
+                    'description',
                     None,
                 )
                 examples = getattr(
                     Doctype.model_fields.get(field_name, safe_field),
-                    "examples",
+                    'examples',
                     None,
                 )
                 click.secho(
                     f"ERROR in '{field}': {msg}",
-                    fg="red",
+                    fg='red',
                     err=True,
                 )
                 if hint:
-                    click.echo(f"  → Hint: {hint}")
+                    click.echo(f'  → Hint: {hint}')
                 if examples:
-                    click.echo(f"  → Examples: {', '.join(examples)}")
+                    click.echo(f'  → Examples: {", ".join(examples)}')
                 click.echo()
             raise click.Abort(err) from err
 
@@ -114,10 +114,10 @@ def validate_doctypes(ctx: click.Context,
 
 
 @click.command(
-    help=__doc__.replace("\b\n\n", "\b\n").replace("``", ""),  # type: ignore
+    help=__doc__.replace('\b\n\n', '\b\n').replace('``', ''),  # type: ignore
 )
 @click.argument(
-    "doctypes",
+    'doctypes',
     nargs=-1,
     callback=validate_doctypes,
 )
@@ -131,6 +131,6 @@ def build(ctx: click.Context, doctypes: tuple[Doctype]) -> None:
     ctx.ensure_object(DocBuildContext)
     context: DocBuildContext = ctx.obj
 
-    click.echo(f"[BUILD] Verbosity: {context.verbose}")
-    click.echo(f"{context=}")
-    click.echo(f"{context.appconfigfiles=}")
+    click.echo(f'[BUILD] Verbosity: {context.verbose}')
+    click.echo(f'{context=}')
+    click.echo(f'{context.appconfigfiles=}')

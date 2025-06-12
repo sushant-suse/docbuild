@@ -20,6 +20,7 @@ from ..constants import ALLOWED_LANGUAGES
 #                     for item in sorted(ALLOWED_LANGUAGES)},
 # )
 
+
 @total_ordering
 class LanguageCode(BaseModel):
     """The language in the format language-country (all lowercase).
@@ -29,14 +30,14 @@ class LanguageCode(BaseModel):
     """
 
     language: str = Field(
-        title="The natural language",
+        title='The natural language',
         description=(
-            "A natural language in the format ll-cc, "
+            'A natural language in the format ll-cc, '
             "whereas 'll' is the language and 'cc' the country "
-            "both in lowercase letters. "
+            'both in lowercase letters. '
             "The special syntax '*' denotes every language."
-            ),
-        examples=["en-us", "de-de"],
+        ),
+        examples=['en-us', 'de-de'],
         frozen=True,
     )
     """The natural language in the format ll-cc, where 'll' is the
@@ -47,27 +48,27 @@ class LanguageCode(BaseModel):
     conforming to Pydantic's :class:`~pydantic.config.ConfigDict`."""
 
     ALLOWED_LANGS: ClassVar[frozenset] = frozenset(
-        {"*"} | ALLOWED_LANGUAGES,
+        {'*'} | ALLOWED_LANGUAGES,
     )
     """Class variable containing all allowed languages."""
 
     def __init__(self, language: str, **kwargs: dict[Any, Any]) -> None:
         """Initialize the LanguageCode instance."""
-        super().__init__(language=language.replace("_", "-"), **kwargs)
-        if language == "*":
-            self._lang, self._country = ("*", "*")
+        super().__init__(language=language.replace('_', '-'), **kwargs)
+        if language == '*':
+            self._lang, self._country = ('*', '*')
         else:
-            self._lang, self._country = re.split(r"[_-]", language)
+            self._lang, self._country = re.split(r'[_-]', language)
 
     def __str__(self) -> str:
         """Implement str(self)."""
-        return f"{self.language}"
+        return f'{self.language}'
 
     def __repr__(self) -> str:
         """Implement repr(self)."""
-        return f"{self.__class__.__name__}(language={str(self)!r})"
+        return f'{self.__class__.__name__}(language={str(self)!r})'
 
-    def __eq__(self, other: "object|str|LanguageCode") -> bool:
+    def __eq__(self, other: 'object|str|LanguageCode') -> bool:
         """Implement self == other.
 
         The comparison does NOT break the principle of equality:
@@ -83,7 +84,7 @@ class LanguageCode(BaseModel):
             return self.language == other
         return NotImplemented
 
-    def __lt__(self, other: "object|str|LanguageCode") -> bool:
+    def __lt__(self, other: 'object|str|LanguageCode') -> bool:
         """Implement self < other.
 
         Special properties:
@@ -99,9 +100,9 @@ class LanguageCode(BaseModel):
             return NotImplemented
 
         # "*" is always smallest
-        if self.language == "*":
-            return other_value != "*"
-        if other_value == "*":
+        if self.language == '*':
+            return other_value != '*'
+        if other_value == '*':
             return False
 
         # Perform string comparison after handling the wildcard case
@@ -114,7 +115,7 @@ class LanguageCode(BaseModel):
         """
         return hash(self.language)
 
-    def matches(self, other: "LanguageCode | str") -> bool:
+    def matches(self, other: 'LanguageCode | str') -> bool:
         """Return True if this LanguageCode matches the other, considering wildcards.
 
         The string '*' matches any language:
@@ -125,26 +126,28 @@ class LanguageCode(BaseModel):
         True
         """
         other_value = str(other)
-        return (self.language == "*" or
-                other_value == "*" or
-                self.language == other_value)
+        return (
+            self.language == '*' or other_value == '*' or self.language == other_value
+        )
 
-    @field_validator("language")
+    @field_validator('language')
     @classmethod
     def validate_language(cls, value: str) -> str:
         """Check if the passed language adheres to the allowed language."""
         # value = value.replace("_", "-")
         if value not in cls.ALLOWED_LANGS:
             raise ValueError(
-                (f"Invalid language code '{value}'. "
-                 f"Expected one of {', '.join(sorted(cls.ALLOWED_LANGS))}"),
+                (
+                    f"Invalid language code '{value}'. "
+                    f'Expected one of {", ".join(sorted(cls.ALLOWED_LANGS))}'
+                ),
             )
         return value
 
     @computed_field(
         repr=False,
-        title="The language part of the language code",
-        examples=["en", "de", "ja"],
+        title='The language part of the language code',
+        examples=['en', 'de', 'ja'],
     )
     def lang(self) -> str:
         """Extract the language part of the language code (property)."""
@@ -152,8 +155,8 @@ class LanguageCode(BaseModel):
 
     @computed_field(
         repr=False,
-        title="The country part of the language code",
-        examples=["us", "de", "jp"],
+        title='The country part of the language code',
+        examples=['us', 'de', 'jp'],
     )
     def country(self) -> str:
         """Extract the country part of the language code (property)."""
