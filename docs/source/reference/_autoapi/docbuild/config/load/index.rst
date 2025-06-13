@@ -72,6 +72,7 @@ Module Contents
        * A tuple of found config file paths or None if no config file is found.
        * The loaded configuration as a dictionary or the default configuration.
        * A boolean indicating if the default configuration was used.
-   :raises ValueError: If no config file is found and no default configuration is provided.
+   :raises ValueError: If no config file is found and no default
+       configuration is provided.
 
 

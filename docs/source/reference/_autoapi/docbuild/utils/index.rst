@@ -5,7 +5,7 @@ docbuild.utils
 
 .. autoapi-nested-parse::
 
-   Contains utility functions
+   Contains utility functions.
 
 
 

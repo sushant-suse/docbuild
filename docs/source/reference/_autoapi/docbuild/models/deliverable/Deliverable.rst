@@ -15,7 +15,7 @@ docbuild.models.deliverable.Deliverable
       :type: str
 
 
-      Return the product ID
+      Return the product ID.
 
 
 
@@ -23,7 +23,7 @@ docbuild.models.deliverable.Deliverable
       :type: str
 
 
-      Return the docset ID
+      Return the docset ID.
 
 
 
@@ -31,7 +31,7 @@ docbuild.models.deliverable.Deliverable
       :type: str
 
 
-      Returns the language and country code (e.g., 'en-us')
+      Returns the language and country code (e.g., 'en-us').
 
 
 
@@ -39,7 +39,7 @@ docbuild.models.deliverable.Deliverable
       :type: str
 
 
-      Returns only the language (e.g., 'en')
+      Returns only the language (e.g., 'en').
 
 
 
@@ -47,8 +47,7 @@ docbuild.models.deliverable.Deliverable
       :type: str
 
 
-      Returns product and docset
-              
+      Returns product and docset.
 
 
 
@@ -56,7 +55,7 @@ docbuild.models.deliverable.Deliverable
       :type: str
 
 
-      Product, docset, and language
+      Return product, docset, and language.
 
 
 
@@ -64,7 +63,7 @@ docbuild.models.deliverable.Deliverable
       :type: str
 
 
-      Product, docset, language and DC filename
+      Return product, docset, language and DC filename.
 
 
 
@@ -72,7 +71,7 @@ docbuild.models.deliverable.Deliverable
       :type: str
 
 
-      Returns the full ID of the deliverable
+      Return the full ID of the deliverable.
 
 
 
@@ -80,7 +79,7 @@ docbuild.models.deliverable.Deliverable
       :type: bool
 
 
-      Checks if the language is the default language
+      Check if the language is the default language.
 
 
 
@@ -88,7 +87,7 @@ docbuild.models.deliverable.Deliverable
       :type: str
 
 
-      Returns the product, docset, language and the DC filename
+      Return the product, docset, language and the DC filename.
 
 
 
@@ -96,7 +95,7 @@ docbuild.models.deliverable.Deliverable
       :type: str
 
 
-      Returns the branch where to find the deliverable
+      Return the branch where to find the deliverable.
 
 
 
@@ -104,7 +103,7 @@ docbuild.models.deliverable.Deliverable
       :type: str
 
 
-      Returns the subdirectory inside the repository
+      Return the subdirectory inside the repository.
 
 
 
@@ -112,7 +111,7 @@ docbuild.models.deliverable.Deliverable
       :type: str
 
 
-      Returns the git repository
+      Return the git repository.
 
 
 
@@ -120,7 +119,7 @@ docbuild.models.deliverable.Deliverable
       :type: str
 
 
-      Returns the DC filename
+      Return the DC filename.
 
 
 
@@ -128,7 +127,7 @@ docbuild.models.deliverable.Deliverable
       :type: str
 
 
-      Returns the DC filename without the DC prefix
+      Return the DC filename without the DC prefix.
 
 
 
@@ -136,7 +135,7 @@ docbuild.models.deliverable.Deliverable
       :type: dict[Literal['html', 'single-html', 'pdf', 'epub'], bool]
 
 
-      Returns the formats of the deliverable
+      Return the formats of the deliverable.
 
 
 
@@ -144,7 +143,7 @@ docbuild.models.deliverable.Deliverable
       :type: lxml.etree._Element
 
 
-      Returns the node of the deliverable
+      Return the node of the deliverable.
 
 
 
@@ -152,7 +151,7 @@ docbuild.models.deliverable.Deliverable
       :type: str
 
 
-      Returns the product name
+      Return the product name.
 
 
 
@@ -160,7 +159,7 @@ docbuild.models.deliverable.Deliverable
       :type: str
 
 
-      Returns the product acronym
+      Return the product acronym.
 
 
 
@@ -168,7 +167,7 @@ docbuild.models.deliverable.Deliverable
       :type: str
 
 
-      Returns the version of the docset
+      Return the version of the docset.
 
 
 
@@ -176,7 +175,7 @@ docbuild.models.deliverable.Deliverable
       :type: str
 
 
-      Returns the lifecycle of the docset
+      Return the lifecycle of the docset.
 
 
 
@@ -184,7 +183,7 @@ docbuild.models.deliverable.Deliverable
       :type: str
 
 
-      Returns the relative path of the deliverable
+      Return the relative path of the deliverable.
 
 
 
@@ -192,7 +191,7 @@ docbuild.models.deliverable.Deliverable
       :type: pathlib.Path
 
 
-      Returns the "slug" path of the repository
+      Return the "slug" path of the repository.
 
 
 
@@ -200,7 +199,7 @@ docbuild.models.deliverable.Deliverable
       :type: str
 
 
-      Returns the path to the ZIP file
+      Return the path to the ZIP file.
 
 
 
@@ -208,7 +207,7 @@ docbuild.models.deliverable.Deliverable
       :type: str
 
 
-      Returns the path to the HTML directory.
+      Return the path to the HTML directory.
 
 
 
@@ -216,7 +215,7 @@ docbuild.models.deliverable.Deliverable
       :type: str
 
 
-      Returns the path to the single HTML directory
+      Return the path to the single HTML directory.
 
 
 
@@ -224,7 +223,7 @@ docbuild.models.deliverable.Deliverable
       :type: str
 
 
-      Returns the path to the PDF file
+      Return the path to the PDF file.
 
 
 
@@ -232,7 +231,7 @@ docbuild.models.deliverable.Deliverable
       :type: lxml.etree._Element
 
 
-      Returns the product node of the deliverable
+      Return the product node of the deliverable.
 
 
 
@@ -240,7 +239,7 @@ docbuild.models.deliverable.Deliverable
       :type: lxml.etree._Element
 
 
-      Returns the docset node of the deliverable
+      Return the docset node of the deliverable.
 
 
 
@@ -248,7 +247,7 @@ docbuild.models.deliverable.Deliverable
       :type: str | None
 
 
-      Returns the metadata file
+      Return the metadata file.
 
 
 
@@ -256,7 +255,19 @@ docbuild.models.deliverable.Deliverable
       :type: docbuild.models.metadata.Metadata | None
 
 
-      Returns the metadata object of the deliverable
+      Return the metadata object of the deliverable.
+
+
+
+   .. py:method:: __hash__() -> int
+
+      Implement hash(self).
+
+
+
+   .. py:method:: __repr__() -> str
+
+      Implement repr(self).
 
 
 
@@ -264,7 +275,7 @@ docbuild.models.deliverable.Deliverable
       :abstractmethod:
 
 
-      Return the deliverable as a JSON object
+      Return the deliverable as a JSON object.
 
 
 
@@ -272,6 +283,6 @@ docbuild.models.deliverable.Deliverable
       :staticmethod:
 
 
-      Make a name safe for use in a filename or directory
+      Make a name safe for use in a filename or directory.
 
 

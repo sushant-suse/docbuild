@@ -5,7 +5,7 @@ docbuild.config.xml
 
 .. autoapi-nested-parse::
 
-   Module for handling XML configuration files
+   Module for handling XML configuration files.
 
 
 

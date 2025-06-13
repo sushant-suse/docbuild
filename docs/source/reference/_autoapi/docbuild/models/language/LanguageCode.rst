@@ -20,7 +20,8 @@ docbuild.models.language.LanguageCode
       :value: None
 
 
-      The natural language in the format ll-cc, where 'll' is the language and 'cc' the country.
+      The natural language in the format ll-cc, where 'll' is the
+      language and 'cc' the country.
 
 
 

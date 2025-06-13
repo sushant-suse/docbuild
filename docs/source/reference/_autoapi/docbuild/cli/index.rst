@@ -7,9 +7,9 @@ docbuild.cli
 
    CLI interface for docbuild.
 
-   * :class:`~docbuild.cli.build`: Build the documentation.
-   * :class:`~docbuild.cli.c14n`: Canonicalize the documentation.
-   * :class:`~docbuild.cli.cli`: Main CLI entry point for docbuild.
+   * :class:`~docbuild.cli.cmd_build`: Build the documentation.
+   * :class:`~docbuild.cli.cmd_c14n`: Canonicalize the documentation.
+   * :class:`~docbuild.cli.cmd_cli`: Main CLI entry point for docbuild.
    * :class:`~docbuild.cli.config`: Configuration management for docbuild CLI commands.
 
    Additional modules:
@@ -24,9 +24,9 @@ Submodules
 .. toctree::
    :maxdepth: 1
 
-   /reference/_autoapi/docbuild/cli/build/index
-   /reference/_autoapi/docbuild/cli/c14n/index
-   /reference/_autoapi/docbuild/cli/cli/index
+   /reference/_autoapi/docbuild/cli/cmd_build/index
+   /reference/_autoapi/docbuild/cli/cmd_c14n/index
+   /reference/_autoapi/docbuild/cli/cmd_cli/index
    /reference/_autoapi/docbuild/cli/config/index
    /reference/_autoapi/docbuild/cli/context/index
    /reference/_autoapi/docbuild/cli/defaults/index

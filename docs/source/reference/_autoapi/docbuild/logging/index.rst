@@ -65,7 +65,7 @@ Module Contents
    :return: The path to the base log directory.
 
 
-.. py:function:: setup_logging(cliverbosity: int | None, fmt: str = '[%(levelname)s] %(funcName)s: %(message)s', logdir: str | pathlib.Path | None = None, default_logdir: str | pathlib.Path = BASE_LOG_DIR, use_queue: bool = True)
+.. py:function:: setup_logging(cliverbosity: int | None, fmt: str = '[%(levelname)s] %(funcName)s: %(message)s', logdir: str | pathlib.Path | None = None, default_logdir: str | pathlib.Path = BASE_LOG_DIR, use_queue: bool = True) -> None
 
    Set up logging for the application.
 

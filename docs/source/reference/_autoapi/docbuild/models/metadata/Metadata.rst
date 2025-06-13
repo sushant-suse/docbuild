@@ -92,7 +92,8 @@ docbuild.models.metadata.Metadata
       :value: []
 
 
-      A list of products related to the deliverable, each represented as a dictionary.
+      A list of products related to the deliverable, each represented
+      as a dictionary.
 
 
 

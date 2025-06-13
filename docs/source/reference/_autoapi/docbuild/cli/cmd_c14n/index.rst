@@ -1,7 +1,7 @@
-docbuild.cli.c14n
-=================
+docbuild.cli.cmd_c14n
+=====================
 
-.. py:module:: docbuild.cli.c14n
+.. py:module:: docbuild.cli.cmd_c14n
 
 .. autoapi-nested-parse::
 
@@ -14,7 +14,7 @@ Functions
 
 .. autoapisummary::
 
-   docbuild.cli.c14n.c14n
+   docbuild.cli.cmd_c14n.c14n
 
 
 Module Contents

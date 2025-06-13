@@ -20,9 +20,9 @@ Functions
 Module Contents
 ---------------
 
-.. py:function:: list_all_deliverables(tree: lxml.etree._Element | lxml.etree._ElementTree, doctypes: collections.abc.Sequence[docbuild.models.doctype.Doctype] | None = None) -> Generator[lxml.etree._Element, None, None]
+.. py:function:: list_all_deliverables(tree: lxml.etree._Element | lxml.etree._ElementTree, doctypes: collections.abc.Sequence[docbuild.models.doctype.Doctype] | None = None) -> collections.abc.Generator[lxml.etree._Element, None, None]
 
-   Generator to list all deliverables from the stitched Docserv config
+   Generate to list all deliverables from the stitched Docserv config.
 
    :param tree: the XML tree from the stitched Docserv config
    :param doctypes: a sequence of :class:`~docbuild.models.doctype.Doctype` objects.

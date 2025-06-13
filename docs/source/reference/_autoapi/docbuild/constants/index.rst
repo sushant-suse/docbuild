@@ -128,12 +128,14 @@ Module Contents
 
 .. py:data:: USER_CONFIG_DIR
 
-   The user-specific configuration directory, typically located at ~/.config/docbuild.
+   The user-specific configuration directory, typically located
+   at ~/.config/docbuild.
 
 
 .. py:data:: SYSTEM_CONFIG_DIR
 
-   The system-wide configuration directory, typically located at /etc/docbuild.
+   The system-wide configuration directory, typically located
+   at /etc/docbuild.
 
 
 .. py:data:: CONFIG_PATHS
@@ -145,7 +147,8 @@ Module Contents
    :value: ('.config.toml', 'config.toml')
 
 
-   The base filenames for the application configuration files, in order of priority.
+   The base filenames for the application configuration files, in
+   order of priority.
 
 
 .. py:data:: PROJECT_LEVEL_APP_CONFIG_FILENAMES
@@ -171,17 +174,21 @@ Module Contents
    :value: 'env.production.toml'
 
 
-   The default filename for the environment's config file, typically used in production.
+   The default filename for the environment's config file, typically
+   used in production.
 
 
 .. py:data:: PLACEHOLDER_PATTERN
    :type:  re.Pattern[str]
 
-   Compiled regex for standard placeholders in configuration files (like ``{placeholder}``).
+   Compiled regex for standard placeholders in configuration files
+   (like ``{placeholder}``).
 
 
 .. py:data:: BASE_LOG_DIR
 
-   The directory where log files will be stored, typically at :file:`~/.local/state/docbuild/logs` as recommended by the XDG Base Directory Specification.
+   The directory where log files will be stored, typically at
+   :file:`~/.local/state/docbuild/logs` as recommended by the XDG Base
+   Directory Specification.
 
 

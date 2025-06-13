@@ -12,7 +12,7 @@ docbuild.models.doctype.Doctype
    A "doctype" that comprises of a product, docset, lifecycle, and language.
 
    >>> Doctype.from_str("sles/15-SP6@supported/en-us,de-de")
-   Doctype(product=<Product.SLES: 'sles'>, docset=['15-SP6'], lifecycle=<LifecycleFlag.SUPPORTED: 'supported'>, langs=[LanguageCode(language='en-us'), LanguageCode(language='de-de')])
+   Doctype(product=<Product.SLES: 'sles'>, docset=['15-SP6'],     lifecycle=<LifecycleFlag.SUPPORTED: 'supported'>,     langs=[LanguageCode(language='en-us'), LanguageCode(language='de-de')])
 
 
    .. py:attribute:: product
