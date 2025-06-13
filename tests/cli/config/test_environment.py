@@ -79,11 +79,12 @@ def test_showconfig_env_role_option(
 
     result = runner.invoke(
         cli,
-        ['--role=production', 'config', 'env'],
+        ['--env-config', fake_envfile.fakefile, 'config', 'env'],
         obj=context,
     )
 
     assert fake_envfile.mock.call_count == 1
+    # assert fake_envfile.fakefile
     assert result.exit_code == 0
     assert context.envconfigfiles == (fake_envfile.fakefile.absolute(),)
     assert context.envconfig == return_value
