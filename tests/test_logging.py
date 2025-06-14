@@ -1,4 +1,6 @@
+from contextlib import contextmanager
 import logging
+import logging.handlers
 from pathlib import Path
 import stat
 
@@ -15,6 +17,26 @@ from docbuild.logging import (
     get_effective_level,
     setup_logging,
 )
+
+
+@contextmanager
+def clear_handlers():
+    """Context manager to clear all logging handlers before and after a test."""
+    def _clear_handlers():
+        """Clear all handlers for all loggers."""
+        for name in [LOGGERNAME, JINJALOGGERNAME, XPATHLOGGERNAME, GITLOGGERNAME]:
+            logger = logging.getLogger(name)
+            for handler in logger.handlers[:]:
+                logger.removeHandler(handler)
+                handler.close()
+
+    try:
+        # Start with a clean slate
+        _clear_handlers()
+        yield
+    finally:
+        # Ensure handlers are cleared after the test
+        _clear_handlers()
 
 
 def test_create_base_log_dir_with_tmp_path(tmp_path: Path):
@@ -128,18 +150,6 @@ def test_logging_output(
     assert 'debug message' in captured.err
 
 
-def test_setup_logging_with_queue(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
-    """Ensure the setup completes successfully when use_queue is True."""
-    monkeypatch.setenv('XDG_STATE_HOME', str(tmp_path))
-    setup_logging(cliverbosity=2, use_queue=True, logdir=tmp_path)
-
-    logger = logging.getLogger('docbuild')
-    logger.debug('queue-based logging works')
-
-    # Since we cannot capture QueueHandler logs via caplog, we check handler types.
-    assert any(isinstance(h, logging.handlers.QueueHandler) for h in logger.handlers)
-
-
 def test_setup_logging_triggers_rollover(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -158,3 +168,21 @@ def test_setup_logging_triggers_rollover(
     # After rollover, a new empty log file should exist
     assert log_path.exists()
     assert log_path.read_text() == '' or 'existing content' not in log_path.read_text()
+
+
+def test_setup_logging_with_queue(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    """Ensure the setup completes successfully when use_queue is True."""
+    # Clear any existing handlers to avoid conflicts
+
+    with clear_handlers():
+        monkeypatch.setenv('XDG_STATE_HOME', str(tmp_path))
+        setup_logging(cliverbosity=2, use_queue=True, logdir=tmp_path)
+
+        logger = logging.getLogger(LOGGERNAME)
+        logger.debug('queue-based logging works')
+
+        # Since we cannot capture QueueHandler logs via caplog, we check handler types.
+        assert any(isinstance(h, logging.handlers.QueueHandler) for h in logger.handlers)
+
+        # Ensure all logging threads are flushed and closed before test ends
+        logging.shutdown()
