@@ -96,34 +96,45 @@ class Deliverable:
 
     @cached_property
     def branch(self) -> str:
-        """Return the branch where to find the deliverable."""
-        # preceding-sibling::branch
-        node = self._node.getparent().find('branch')
+        """Return the branch where to find the deliverable.
+
+        Searches for the branch in the English language node first,
+        then in the current language node.
+
+        :return: The branch name as a string.
+        :raises ValueError: If no branch is found
+        """
+        node = self._node.getparent().findtext('branch', default=None)
         if node is not None:
-            return node.text.strip()
+            return node.strip()
 
         # If we cannot find the branch in the current language node,
         # we look in the English language and use this branch
         node = self._node.getparent().xpath(
-            "preceding-sibling::language[@lang='en-us']/branch",
+            "ancestor::builddocs/language"
+            "[@lang!='en-us' or @default!='1' or @default!='true']/branch",
         )
         if node:
             return node[0].text.strip()
+
         raise ValueError(f'No branch found for this deliverable {self.pdlangdc}')
 
     @cached_property
     def subdir(self) -> str:
-        """Return the subdirectory inside the repository."""
-        # precding-sibling::subdir
-        node = self._node.getparent().find('subdir')
+        """Return subdirectory or an empty string if not found."""
+        node = self._node.getparent().findtext('subdir', default=None)
         if node is not None:
-            return node.text.strip()
+            return node.strip()
         else:
             return ''
 
     @cached_property
     def git(self) -> str:
-        """Return the git repository."""
+        """Return the git repository.
+
+        :return: The git remote URL as a string.
+        :raises ValueError: If no git remote is found for the deliverable.
+        """
         # ../preceding-sibling::git/@remote
         node = self._node.getparent().getparent().find('git')
         if node is not None:
@@ -135,9 +146,9 @@ class Deliverable:
 
     @cached_property
     def dcfile(self) -> str:
-        """Return the DC filename."""
+        """Return the DC filename or None if not found."""
         # ./dc
-        return self._node.find('dc', namespaces=None).text.strip()
+        return self._node.findtext('dc', default=None, namespaces=None)
 
     @cached_property
     def basefile(self) -> str:
@@ -146,7 +157,13 @@ class Deliverable:
 
     @cached_property
     def format(self) -> dict[Literal['html', 'single-html', 'pdf', 'epub'], bool]:
-        """Return the formats of the deliverable."""
+        """Return the formats of the deliverable.
+
+        Normalize the format attributes to boolean values.
+
+        :return: A dictionary with format names as keys and boolean values.
+        :raises ValueError: If no format is found for the deliverable.
+        """
         # ./format
         dc = self.dcfile
         # We need to look inside English deliverables for formats
@@ -169,24 +186,24 @@ class Deliverable:
 
     @cached_property
     def productname(self) -> str:
-        """Return the product name."""
+        """Return the product name or None if not found."""
         # anecstor::product/name
-        return self.product_node.find('name', namespaces=None).text.strip()
+        return self.product_node.findtext('name', default=None, namespaces=None)
 
     @cached_property
     def acronym(self) -> str:
-        """Return the product acronym."""
+        """Return the product acronym or None if not found."""
         # ancestor::product/acronym
-        node = self.product_node.find('acronym', namespaces=None)
+        node = self.product_node.findtext('acronym', default=None, namespaces=None)
         if node is not None:
-            return node.text.strip()
+            return node.strip()
         return ''
 
     @cached_property
     def version(self) -> str:
-        """Return the version of the docset."""
+        """Return the version of the docset or None if not found."""
         # ancestor::docset/version
-        return self.docset_node.find('version', namespaces=None).text.strip()
+        return self.docset_node.findtext('version', default=None, namespaces=None)
 
     @cached_property
     def lifecycle(self) -> str:
@@ -219,6 +236,7 @@ class Deliverable:
         )
 
     def _base_format_path(self, fmt: str) -> str:
+        """Return the base path for a given format."""
         path = '/'
         fallback_rootid = self.dcfile.lstrip('DC-')
         if self.meta is not None:
