@@ -12,4 +12,6 @@
         ".venv*/": true,
         "**/*.egg-info/": true
     },
+    "python.analysis.diagnosticsSource": "Pyright",
+    "python.analysis.typeCheckingMode": "standard",
 }
