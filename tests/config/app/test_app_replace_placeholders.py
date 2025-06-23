@@ -188,3 +188,52 @@ def test_escaped_braces():
     config = {'section': {'key': 'This is a literal brace: {{not_a_placeholder}}'}}
     result = replace_placeholders(config)
     assert result['section']['key'] == 'This is a literal brace: {not_a_placeholder}'
+
+
+def test_replace_placeholders_max_recursion_error():
+    """Test that max recursion depth is enforced."""
+    # Create a config with circular references that will cause infinite recursion
+    config = {
+        'a': '{b}',
+        'b': '{c}',
+        'c': '{d}',
+        'd': '{e}',
+        'e': '{f}',
+        'f': '{g}',
+        'g': '{h}',
+        'h': '{i}',
+        'i': '{j}',
+        'j': '{k}',
+        'k': '{a}',  # Circular reference back to 'a'
+    }
+
+    # This should raise ValueError due to max recursion depth
+    with pytest.raises(
+        ValueError, match='Too many nested placeholder expansions in key'
+    ):
+        replace_placeholders(config, max_recursion_depth=5)
+
+
+def test_replace_placeholders_list_with_non_processable_items():
+    """Test that list items that are not dict/list/str are skipped."""
+    config = {
+        'mixed_list': [
+            'string_item',  # This will be processed (str)
+            42,  # This will be skipped (int)
+            3.14,  # This will be skipped (float)
+            True,  # This will be skipped (bool)
+            None,  # This will be skipped (NoneType)
+            {'nested': 'dict'},  # This will be processed (dict)
+            [1, 2, 3],  # This will be processed (list)
+        ]
+    }
+
+    # This should process without error, skipping non-string/dict/list items
+    result = replace_placeholders(config)
+
+    # The structure should remain the same since no placeholders to replace
+    assert result == config
+    assert result['mixed_list'][1] == 42  # int unchanged
+    assert result['mixed_list'][2] == 3.14  # float unchanged
+    assert result['mixed_list'][3] is True  # bool unchanged
+    assert result['mixed_list'][4] is None  # None unchanged

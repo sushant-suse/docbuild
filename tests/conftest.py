@@ -12,7 +12,7 @@ Naming conventions:
 from collections.abc import Generator
 from pathlib import Path
 from typing import Any, NamedTuple
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, Mock
 
 from click.testing import CliRunner
 import pytest
@@ -54,6 +54,14 @@ tmp_path = "{tmp_base_path}/doc-example-com"
 """
     default_env_config_filename.write_text(content)
     return default_env_config_filename
+
+
+@pytest.fixture
+def mock_context() -> DocBuildContext:
+    """Mock DocBuildContext."""
+    context = Mock(spec=DocBuildContext)
+    context.verbose = 2
+    return context
 
 
 class DummyCtx:

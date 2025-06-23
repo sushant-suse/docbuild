@@ -1,4 +1,5 @@
 from pathlib import Path
+import tempfile
 from typing import Any
 
 import pytest
@@ -252,3 +253,26 @@ def test_handle_config_first_basename_exists(monkeypatch):
     assert result[0] == (first_file,)
     assert result[1] == {'section': {'key': 'first'}}
     assert result[2] is False
+
+
+def test_handle_config_falls_back_to_default_with_default_filename(tmp_path):
+    """Test fallback to default config when using default_filename."""
+    with tempfile.TemporaryDirectory(dir=tmp_path) as temp_dir:
+        search_dirs = [temp_dir]
+        default_filename = 'nonexistent.toml'
+        default_config = {'fallback': 'config'}
+
+        # This should return the default config since the default filename doesn't exist
+        config_files, config, from_defaults = handle_config(
+            user_path=None,
+            search_dirs=search_dirs,
+            basenames=None,  # Using default_filename instead
+            default_filename=default_filename,
+            default_config=default_config,
+        )
+
+        # Should return None for config_files, the default config,
+        # and True for from_defaults
+        assert config_files is None
+        assert config == default_config
+        assert from_defaults is True
