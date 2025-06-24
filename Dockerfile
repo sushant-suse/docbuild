@@ -7,7 +7,7 @@
 
 ARG PYTHON_VERSION=3.13-slim
 
-# -------
+# ------- Stage 1: Build the environment ----------------
 FROM python:${PYTHON_VERSION} AS builder
 
 # Create a non-root user
@@ -33,7 +33,7 @@ ADD --chown=app:app . /app
 RUN --mount=type=cache,target=/root/.cache/uv \
   uv sync --no-editable
 
-# -------
+# ------- Stage 2: Build/provide the application --------
 FROM python:${PYTHON_VERSION}
 
 # Copy the environment, but not the source code
