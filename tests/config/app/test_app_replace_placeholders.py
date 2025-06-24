@@ -2,7 +2,12 @@ import re
 
 import pytest
 
-from docbuild.config.app import replace_placeholders
+from docbuild.config.app import (
+    CircularReferenceError,
+    PlaceholderResolutionError,
+    PlaceholderResolver,
+    replace_placeholders,
+)
 
 
 def test_replace_placeholders():
@@ -50,7 +55,7 @@ def test_missing_key_in_current_section():
     }
 
     with pytest.raises(
-        KeyError,
+        PlaceholderResolutionError,
         match=re.escape(
             "While resolving '{user}' in 'url': key 'user' "
             'not found in current section.',
@@ -71,7 +76,7 @@ def test_unresolved_key_in_config():
     }
 
     with pytest.raises(
-        KeyError,
+        PlaceholderResolutionError,
         match=re.escape(
             "While resolving '{paths.tmp.session}' in 'full_tmp_path': missing key "
             "'session' in path 'paths.tmp.session'.",
@@ -130,7 +135,7 @@ def test_placeholder_path_is_not_dict():
     }
 
     with pytest.raises(
-        KeyError,
+        PlaceholderResolutionError,
         match=re.escape(
             "While resolving '{paths.tmp.value}' in 'path': 'paths.tmp.value' is not "
             'a dictionary (got type str).',
@@ -164,7 +169,9 @@ def test_too_many_nested_placeholder_expansions():
             'b': '{a}',
         },
     }
-    with pytest.raises(ValueError, match='Too many nested placeholder expansions'):
+    with pytest.raises(
+        CircularReferenceError, match='Too many nested placeholder expansions'
+    ):
         replace_placeholders(data)
 
 
@@ -209,7 +216,7 @@ def test_replace_placeholders_max_recursion_error():
 
     # This should raise ValueError due to max recursion depth
     with pytest.raises(
-        ValueError, match='Too many nested placeholder expansions in key'
+        CircularReferenceError, match='Too many nested placeholder expansions in key'
     ):
         replace_placeholders(config, max_recursion_depth=5)
 
@@ -237,3 +244,37 @@ def test_replace_placeholders_list_with_non_processable_items():
     assert result['mixed_list'][2] == 3.14  # float unchanged
     assert result['mixed_list'][3] is True  # bool unchanged
     assert result['mixed_list'][4] is None  # None unchanged
+
+
+def test_placeholder_resolution_error_is_keyerror():
+    """Test that PlaceholderResolutionError is a subclass of KeyError."""
+    config = {
+        'section': {
+            'value': '{missing_key}',
+        },
+    }
+
+    # Should be catchable as both PlaceholderResolutionError and KeyError
+    with pytest.raises(PlaceholderResolutionError):
+        replace_placeholders(config)
+
+    with pytest.raises(KeyError):
+        replace_placeholders(config)
+
+
+def test_placeholder_wrong_type():
+    config = 42
+    assert replace_placeholders(config) == 42, 'Non-dict input should return unchanged'
+
+
+def test_get_container_name_with_none_key():
+    """Test _get_container_name when _current_key is None."""
+    config = {'test': 'value'}
+    resolver = PlaceholderResolver(config)
+
+    # Initially _current_key is None
+    assert resolver._current_key is None
+
+    # This should return 'unknown'
+    container_name = resolver._get_container_name()
+    assert container_name == 'unknown'

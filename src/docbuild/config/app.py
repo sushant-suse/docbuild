@@ -3,29 +3,163 @@
 import re
 from typing import Any
 
-# import tomlkit as toml
-from ..constants import (
-    PLACEHOLDER_PATTERN,
-)
-
-# class StackItem(TypedDict):
-#     container: Container
-#     section_key: str
-#     parent: Container | Sequence[Any] | None
-
 # Type aliases
 Container = dict[str, Any] | list[Any]
 """A dictionary or list container for any configuration data."""
-
-StackItem = tuple[Container, str | int, Container]
-"""A tuple representing a stack item for placeholder resolution."""
 
 MAX_RECURSION_DEPTH: int = 10
 """The maximum recursion depth for placeholder replacement."""
 
 
+class PlaceholderResolutionError(KeyError):
+    """Exception raised when a placeholder cannot be resolved."""
+
+    pass
+
+
+class CircularReferenceError(ValueError):
+    """Circular reference is detected in placeholder resolution."""
+
+    pass
+
+
+class PlaceholderResolver:
+    """Handles placeholder resolution in configuration data."""
+
+    PLACEHOLDER_PATTERN: re.Pattern[str] = re.compile(r'(?<!\{)\{([^{}]+)\}(?!\})')
+    """Compiled regex for standard placeholders in configuration
+       files (like ``{placeholder}``)."""
+
+    def __init__(
+        self, config: dict[str, Any], max_recursion_depth: int = MAX_RECURSION_DEPTH
+    ) -> None:
+        self.config = config
+        self.max_recursion_depth = max_recursion_depth
+        self._current_container: dict[str, Any] | list[Any] | None = None
+        self._current_key: str | int | None = None
+
+    def _resolve_dotted_path(self, path: str) -> Any:
+        """Resolve a dotted path like 'paths.tmp.session'."""
+        parts = path.split('.')
+        value = self.config
+        resolved_path = []
+        container_name = self._get_container_name()
+
+        for part in parts:
+            resolved_path.append(part)
+            if not isinstance(value, dict):
+                full_path = '.'.join(resolved_path)
+                raise PlaceholderResolutionError(
+                    f"While resolving '{{{path}}}' in '{container_name}': "
+                    f"'{full_path}' is not a dictionary "
+                    f'(got type {type(value).__name__}).',
+                )
+            if part not in value:
+                full_path = '.'.join(resolved_path)
+                raise PlaceholderResolutionError(
+                    f"While resolving '{{{path}}}' in '{container_name}': "
+                    f"missing key '{part}' in path '{full_path}'.",
+                )
+            value = value[part]
+
+        return value
+
+    def _resolve_placeholder(self, match: re.Match) -> str:
+        """Resolve a single placeholder match."""
+        placeholder = match.group(1)
+        container_name = self._get_container_name()
+
+        if '.' in placeholder:
+            # Dotted path - resolve from root config
+            return str(self._resolve_dotted_path(placeholder))
+        elif (
+            isinstance(self._current_container, dict)
+            and placeholder in self._current_container
+        ):
+            # Simple key - resolve from current container
+            return str(self._current_container[placeholder])
+        else:
+            # Key not found in current section
+            raise PlaceholderResolutionError(
+                f"While resolving '{{{placeholder}}}' in '{container_name}': "
+                f"key '{placeholder}' not found in current section.",
+            )
+
+    def _resolve_string_placeholders(self, text: str) -> str:
+        """Resolve all placeholders in a string with recursion protection."""
+        count = 0
+        cls = self.__class__
+        while count < self.max_recursion_depth:
+            new_text = cls.PLACEHOLDER_PATTERN.sub(self._resolve_placeholder, text)
+
+            if new_text == text:
+                # No more changes, we're done
+                break
+
+            text = new_text
+            count += 1
+
+        if count == self.max_recursion_depth:
+            key_name = self._get_container_name()
+            raise CircularReferenceError(
+                f"Too many nested placeholder expansions in key '{key_name}'."
+            )
+
+        # Replace escaped braces with literal ones
+        return text.replace('{{', '{').replace('}}', '}')
+
+    def _get_container_name(self) -> str:
+        """Get a human-readable name for the current container/key being processed."""
+        if self._current_key is None:
+            return 'unknown'
+        return (
+            str(self._current_key)
+            if isinstance(self._current_key, str)
+            else f'list item at index {self._current_key}'
+        )
+
+    def replace(self) -> dict[str, Any]:
+        """Replace all placeholders in the configuration.
+
+        :return: The configuration with all placeholders resolved.
+        :raises PlaceholderResolutionError: If a placeholder cannot be resolved.
+        :raises CircularReferenceError: If a circular reference is detected.
+        """
+        # Use a stack to process all items iteratively
+        # Stack items: (container, key, context) where container can be dict or list
+        stack: list[tuple[dict[str, Any] | list[Any], str | int, dict[str, Any]]] = [
+            (self.config, key, self.config) for key in self.config
+        ]
+
+        while stack:
+            container, key, context = stack.pop()
+
+            # Set current context for private methods
+            self._current_container = container
+            self._current_key = key
+
+            value = container[key]
+
+            if isinstance(value, str):
+                # Resolve placeholders in string values
+                container[key] = self._resolve_string_placeholders(value)
+
+            elif isinstance(value, dict):
+                # Add all dict items to stack for processing
+                for subkey in value:
+                    stack.append((value, subkey, value))
+
+            elif isinstance(value, list):
+                # Add string/dict/list items from lists to stack for processing
+                for i, item in enumerate(value):
+                    if isinstance(item, (dict, list, str)):
+                        stack.append((value, i, context))
+
+        return self.config
+
+
 def replace_placeholders(
-    config: Container,  # noqa: C901
+    config: dict[str, Any],
     max_recursion_depth: int = MAX_RECURSION_DEPTH,
 ) -> Container:
     """Replace placeholder values in a nested dictionary structure.
@@ -34,84 +168,14 @@ def replace_placeholders(
     * ``{a.b.c}`` resolves deeply from the config.
     * ``{{foo}}`` escapes to literal ``{foo}``.
 
-    :param config: The loaded configuration dictionary.
+    :param config: The configuration dictionary.
+    :param max_recursion_depth: Maximum recursion depth for placeholder resolution.
     :return: A new dictionary with placeholders replaced.
-    :raises KeyError: If a placeholder cannot be resolved.
+    :raises PlaceholderResolutionError: If a placeholder cannot be resolved.
+    :raises CircularReferenceError: If a circular reference is detected.
     """
+    if not isinstance(config, dict):
+        return config
 
-    def lookup_placeholder(
-        path: str,
-        context: Container,
-        container_name: str,
-    ) -> Container:
-        parts = path.split('.')
-        value = context
-        resolved_path = []
-
-        for part in parts:
-            resolved_path.append(part)
-            if not isinstance(value, dict):
-                full_path = '.'.join(resolved_path)
-                raise KeyError(
-                    f"While resolving '{{{path}}}' in '{container_name}': "
-                    f"'{full_path}' is not a dictionary "
-                    f'(got type {type(value).__name__}).',
-                )
-            if part not in value:
-                full_path = '.'.join(resolved_path)
-                raise KeyError(
-                    f"While resolving '{{{path}}}' in '{container_name}': "
-                    f"missing key '{part}' in path '{full_path}'.",
-                )
-            value = value[part]
-
-        return value
-
-    def replacement(match: re.Match, container: Container, key: str | int) -> str:
-        inner = match.group(1)
-        container_name = (
-            str(key) if isinstance(key, str) else f'list item at index {key}'
-        )
-
-        if '.' in inner:
-            return str(lookup_placeholder(inner, config, container_name))
-        elif isinstance(container, dict) and inner in container:
-            return str(container[inner])
-        else:
-            raise KeyError(
-                f"While resolving '{{{inner}}}' in '{container_name}': "
-                f"key '{inner}' not found in current section.",
-            )
-
-    def resolve_string(s: str, container: Container, key: str | int) -> str:
-        prev = None
-        count = 0
-        while s != prev and count < max_recursion_depth:
-            prev = s
-            s = PLACEHOLDER_PATTERN.sub(lambda m: replacement(m, container, key), s)
-            count += 1
-        if count == max_recursion_depth:
-            raise ValueError(f"Too many nested placeholder expansions in key '{key}'.")
-        # Finally, replace escaped braces with literal ones
-        return s.replace('{{', '{').replace('}}', '}')
-
-    stack: list[StackItem] = [(config, key, config) for key in config]
-
-    while stack:
-        container, key, context = stack.pop()
-        value = container[key]  # type: ignore[assignment]
-
-        if isinstance(value, str):
-            new_value = resolve_string(value, container, key)
-            container[key] = new_value
-
-        elif isinstance(value, list):
-            for i, item in enumerate(value):
-                if isinstance(item, dict | list | str):
-                    stack.append((value, i, context))
-
-        elif isinstance(value, dict):
-            for subkey in value:
-                stack.append((value, subkey, value))
-
-    return config
+    resolver = PlaceholderResolver(config, max_recursion_depth)
+    return resolver.replace()

@@ -147,10 +147,6 @@ DEFAULT_ENV_CONFIG_FILENAME = ENV_CONFIG_FILENAME.format(role='production')
 """The default filename for the environment's config file, typically
 used in production."""
 
-PLACEHOLDER_PATTERN: re.Pattern[str] = re.compile(r'(?<!\{)\{([^{}]+)\}(?!\})')
-"""Compiled regex for standard placeholders in configuration files
-(like ``{placeholder}``)."""
-
 # --- Logging constants ---
 BASE_LOG_DIR = Path.home() / '.local' / 'state' / APP_NAME / 'logs'
 """The directory where log files will be stored, typically at
