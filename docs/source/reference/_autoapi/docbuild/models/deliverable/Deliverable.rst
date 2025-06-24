@@ -97,13 +97,19 @@ docbuild.models.deliverable.Deliverable
 
       Return the branch where to find the deliverable.
 
+      Searches for the branch in the English language node first,
+      then in the current language node.
+
+      :return: The branch name as a string.
+      :raises ValueError: If no branch is found
+
 
 
    .. py:property:: subdir
       :type: str
 
 
-      Return the subdirectory inside the repository.
+      Return subdirectory or an empty string if not found.
 
 
 
@@ -113,13 +119,16 @@ docbuild.models.deliverable.Deliverable
 
       Return the git repository.
 
+      :return: The git remote URL as a string.
+      :raises ValueError: If no git remote is found for the deliverable.
+
 
 
    .. py:property:: dcfile
       :type: str
 
 
-      Return the DC filename.
+      Return the DC filename or None if not found.
 
 
 
@@ -137,6 +146,11 @@ docbuild.models.deliverable.Deliverable
 
       Return the formats of the deliverable.
 
+      Normalize the format attributes to boolean values.
+
+      :return: A dictionary with format names as keys and boolean values.
+      :raises ValueError: If no format is found for the deliverable.
+
 
 
    .. py:property:: node
@@ -151,7 +165,7 @@ docbuild.models.deliverable.Deliverable
       :type: str
 
 
-      Return the product name.
+      Return the product name or None if not found.
 
 
 
@@ -159,7 +173,7 @@ docbuild.models.deliverable.Deliverable
       :type: str
 
 
-      Return the product acronym.
+      Return the product acronym or None if not found.
 
 
 
@@ -167,7 +181,7 @@ docbuild.models.deliverable.Deliverable
       :type: str
 
 
-      Return the version of the docset.
+      Return the version of the docset or None if not found.
 
 
 
