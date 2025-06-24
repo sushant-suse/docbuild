@@ -35,6 +35,7 @@ We recommend to follow the steps to make a smooth integration of your changes:
    * ``deprecation``: informs about deprecation or removed features.
    * ``doc``: improves documentation.
    * ``feature``: adds new user facing features.
+   * ``refactor``: refactors code without changing the user facing API.
    * ``removal``: removes obsolete or deprecated features.
    * ``infra``: improves the infrastructure, e.g. build or test system.
 

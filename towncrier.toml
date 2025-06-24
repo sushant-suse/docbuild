@@ -30,3 +30,6 @@ name = "Removed Features"
 
 [tool.towncrier.fragment.infra]
 name = "Infrastructure"
+
+[tool.towncrier.fragment.refactor]
+name = "Code Refactoring"
