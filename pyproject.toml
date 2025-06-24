@@ -1,3 +1,10 @@
+#
+# Project configuration for docbuild
+#
+# Reference:
+# * https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
+# * https://peps.python.org/pep-0518/
+#
 [build-system]
 requires = [
   "setuptools>=77",
@@ -30,8 +37,8 @@ dynamic = ["version",]
 classifiers = [
     "Environment :: Console",
     "Intended Audience :: End Users/Desktop",
-    "Development Status :: 1 - Planning",
-    # "Development Status :: 2 - Pre-Alpha".
+    # "Development Status :: 1 - Planning",
+    "Development Status :: 2 - Pre-Alpha",
     # "Development Status :: 1 - Alpha",
     # "Development Status :: 4 - Beta",
     # "Development Status :: 5 - Production/Stable",
