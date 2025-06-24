@@ -10,3 +10,6 @@ This is a unsorted collection of ideas what could be implemented.
   * "-en-us" would match all languages minus English.
   * "-en-us,-de-de" would match all languages minus English and German.
     Should the second dash be optional?
+
+* `Deliverable`
+   support subdeliverables?
