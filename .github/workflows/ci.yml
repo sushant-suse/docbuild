@@ -1,0 +1,42 @@
+name: CI/Test
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: python
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install the latest version of uv
+        id: setup-uv
+        uses: astral-sh/setup-uv@v6
+        with:
+            version: "latest"
+            enable-cache: true
+            cache-suffix: "docbuild"
+
+      - name: Print the installed version
+        run: echo "Installed uv version is ${{ steps.setup-uv.outputs.uv-version }}"
+
+      - name: Install dependencies
+        run: uv sync --frozen --group devel
+
+      - name: Run tests
+        run: |
+           uv run pytest -vv
