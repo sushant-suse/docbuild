@@ -23,8 +23,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install jing
-        run: sudo apt-get update && sudo apt-get install -y jing
+      - name: Install tools
+        run: sudo apt-get update && sudo apt-get install -y jing libxml2-utils xsltproc
 
       - name: Install the latest version of uv
         id: setup-uv
