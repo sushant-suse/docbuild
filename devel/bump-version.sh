@@ -89,7 +89,10 @@ esac
 new_version="${major}.${minor}.${patch}"
 
 # 4. Write the new version back to the file
-echo "Bumping version: ${old_version} -> ${new_version}"
-sed -i.bak "s/__version__ = ${quote_char}${old_version}${quote_char}/__version__ = ${quote_char}${new_version}${quote_char}/" "${ABOUT_FILE}"
-rm "${ABOUT_FILE}.bak"
+message="Bumping version: ${old_version} -> ${new_version}"
+echo "${message}"
+sed -i "s/__version__ = ${quote_char}${old_version}${quote_char}/__version__ = ${quote_char}${new_version}${quote_char}/" "${ABOUT_FILE}"
+
+git commit -m "${message}" "${ABOUT_FILE}"
+
 echo "Successfully updated ${ABOUT_FILE}"
