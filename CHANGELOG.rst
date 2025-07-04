@@ -20,6 +20,62 @@ Changes for the upcoming release can be found in the
 
 .. towncrier release notes start
 
+Version 0.9.0
+=============
+
+Bug Fixes
+---------
+
+- Fix problem in logging test
+
+  The test suite reported a ValueError with I/O operations on closed files.
+  The fix ensures that we clean all handlers before and after the respective test.
+
+
+Improved Documentation
+----------------------
+
+- Extend design chapter
+
+
+Features
+--------
+
+- Implement :command:`validate` subcommand
+
+  This subcommand is used to validate XML configuration files against a RelaxNG schema. It checks both the structure and semantic correctness of the XML files to ensure they conform to the expected format. (:gh:`5`)
+- Implement a timer contextmanager factory in :func:`docbuild.utils.contextmgr.make_timer`.
+
+
+Infrastructure
+--------------
+
+- Create issue templates for bug report, feature request, and
+  documentation update. (:gh:`6`)
+- Add new type 'refactor' for towncrier
+- Format source code with ruff
+- GHA: Install xmllint/xsltproc tools
+- GHA: Trigger release workflow when tags are pushed
+- Implement a bash bump version script. If you pass "major", "minor", or "patch",
+  it raises the respective parts. It respects the semver specification.
+- Make CLI filenames consistent
+
+  Use prefix ``cmd_`` for real Click commands to distinguish them
+  from helper files (like :file:`context.py` which isn't a command).
+- Refactor Deliverable to use ``.findtext()``
+- Use ``--frozen`` option in aliases to avoid updating :filename:`uv.lock`.
+  Add new alias :command:`towncrier` (see :filename:`devel/activate-aliases.sh`).
+
+
+Code Refactoring
+----------------
+
+- Refactor ``replace_placeholders()`` function
+
+  * Introduce ``PlaceholderResolver`` class to reduce complexity
+  * Introduce a ``PlaceholderResolutionError``, derived from KeyError
+
+
 Version 0.8.0
 =============
 
