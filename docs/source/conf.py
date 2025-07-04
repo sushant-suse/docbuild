@@ -13,7 +13,7 @@ copyright = '2025, Tom Schraitle'  # noqa: A001
 author = 'Tom Schraitle'
 release = __version__
 
-gh_user = 'tomschr'
+gh_user = 'openSUSE'
 gh_repo_url = f'https://github.com/{gh_user}/{project}'
 gh_repo_slug = f'{gh_user}/{project}'
 
