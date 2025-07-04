@@ -8,7 +8,7 @@ directory = "changelog.d/"
 title_format = "Version {version}"
 # template = "changelog.d/_template.rst"
 # issue_format = "`#{issue} <https://github.com/python-attrs/attrs/issues/{issue}>`_"
-# issue_format = ":gh:`{issue}`"
+issue_format = ":gh:`{issue}`"
 
 [tool.towncrier.fragment.breaking]
 name = "Breaking Changes"
