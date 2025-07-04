@@ -1,0 +1,2 @@
+Create issue templates for bug report, feature request, and
+documentation update.
