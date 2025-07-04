@@ -31,5 +31,6 @@ Submodules
    /reference/_autoapi/docbuild/cli/config/index
    /reference/_autoapi/docbuild/cli/context/index
    /reference/_autoapi/docbuild/cli/defaults/index
+   /reference/_autoapi/docbuild/cli/process_validation/index
 
 

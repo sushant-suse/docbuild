@@ -15,8 +15,35 @@ Attributes
 .. autoapisummary::
 
    docbuild.config.app.Container
-   docbuild.config.app.StackItem
    docbuild.config.app.MAX_RECURSION_DEPTH
+
+
+Exceptions
+----------
+
+.. toctree::
+   :hidden:
+
+   /reference/_autoapi/docbuild/config/app/PlaceholderResolutionError
+   /reference/_autoapi/docbuild/config/app/CircularReferenceError
+
+.. autoapisummary::
+
+   docbuild.config.app.PlaceholderResolutionError
+   docbuild.config.app.CircularReferenceError
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /reference/_autoapi/docbuild/config/app/PlaceholderResolver
+
+.. autoapisummary::
+
+   docbuild.config.app.PlaceholderResolver
 
 
 Functions
@@ -35,11 +62,6 @@ Module Contents
    A dictionary or list container for any configuration data.
 
 
-.. py:data:: StackItem
-
-   A tuple representing a stack item for placeholder resolution.
-
-
 .. py:data:: MAX_RECURSION_DEPTH
    :type:  int
    :value: 10
@@ -48,7 +70,7 @@ Module Contents
    The maximum recursion depth for placeholder replacement.
 
 
-.. py:function:: replace_placeholders(config: Container, max_recursion_depth: int = MAX_RECURSION_DEPTH) -> Container
+.. py:function:: replace_placeholders(config: dict[str, Any], max_recursion_depth: int = MAX_RECURSION_DEPTH) -> Container
 
    Replace placeholder values in a nested dictionary structure.
 
@@ -56,8 +78,10 @@ Module Contents
    * ``{a.b.c}`` resolves deeply from the config.
    * ``{{foo}}`` escapes to literal ``{foo}``.
 
-   :param config: The loaded configuration dictionary.
+   :param config: The configuration dictionary.
+   :param max_recursion_depth: Maximum recursion depth for placeholder resolution.
    :return: A new dictionary with placeholders replaced.
-   :raises KeyError: If a placeholder cannot be resolved.
+   :raises PlaceholderResolutionError: If a placeholder cannot be resolved.
+   :raises CircularReferenceError: If a circular reference is detected.
 
 

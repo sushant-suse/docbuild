@@ -127,9 +127,10 @@ Module Contents
 
 .. py:function:: check_duplicated_url_in_extralinks(tree: lxml.etree._Element | lxml.etree._ElementTree) -> CheckResult
 
-   Check that url attributes in extralinks are unique.
+   Check that url attributes in extralinks are unique within each language.
 
-   Make sure each URL appears only once within a given external links section.
+   Make sure each URL appears only once within a given language in external
+   links section.
 
    .. code-block:: xml
 
@@ -147,7 +148,7 @@ Module Contents
        </external>
 
    :param tree: The XML tree to check.
-   :return: True if all url attributes in extralinks are unique, False otherwise.
+   :return: CheckResult with success status and any error messages.
 
 
 .. py:function:: check_enabled_format(tree: lxml.etree._Element | lxml.etree._ElementTree) -> CheckResult
