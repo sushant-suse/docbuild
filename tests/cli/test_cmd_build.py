@@ -5,7 +5,8 @@ from click import Abort, Command, Context
 from pydantic import Field, ValidationError
 import pytest
 
-import docbuild.cli.cmd_build as cmd_build
+from docbuild.cli import callback as callback_module
+from docbuild.cli.callback import validate_doctypes
 from docbuild.cli.cmd_cli import cli
 
 
@@ -14,7 +15,7 @@ def test_validate_doctypes_with_empty_doctypes():
     ctx = Context(cmd)
     ctx.obj = SimpleNamespace()
 
-    result = cmd_build.validate_doctypes(ctx, None, tuple())
+    result = validate_doctypes(ctx, None, tuple())
     assert not result
     # No ctx.obj.doctypes as this doesn't exist
 
@@ -29,28 +30,13 @@ def test_validate_doctypes_abort(monkeypatch):
         return DummyDoctype(s)
 
     monkeypatch.setattr(
-        cmd_build.Doctype,
+        callback_module.Doctype,
         'from_str',
         staticmethod(raise_for_invalid),
     )
 
     with pytest.raises(Abort, match='is not a valid Product'):
-        cmd_build.validate_doctypes(ctx, None, ('wrong/1/en-us',))
-
-
-@pytest.mark.skip('Replace --role with --env-config')
-def test_validate_doctypes_called_from_build(context, fake_envfile, runner):
-    result = runner.invoke(
-        cli,
-        ['--role=production', 'build', 'sles/17/en-us'],
-        obj=context,
-    )
-
-    assert fake_envfile.mock.call_count == 1
-    assert result.exit_code == 0
-    # assert "Got sles/17@supported/en-us" in result.output
-    assert context.doctypes == [DummyDoctype('sles/17/en-us')]
-    assert context.role == 'production'
+        validate_doctypes(ctx, None, ('wrong/1/en-us',))
 
 
 class DummyDoctype:
@@ -68,7 +54,7 @@ class DummyDoctype:
 def patch_doctype(monkeypatch):
     # Patch Doctype.from_str to return a DummyDoctype for testing
     monkeypatch.setattr(
-        cmd_build,
+        callback_module,
         'Doctype',
         type(
             'Doctype',
@@ -86,12 +72,12 @@ def patch_doctype(monkeypatch):
         ),
     )
     # Patch merge_doctypes to just return the list for simplicity
-    monkeypatch.setattr(cmd_build, 'merge_doctypes', lambda *args: list(args))
+    monkeypatch.setattr(callback_module, 'merge_doctypes', lambda *args: list(args))
 
 
 def test_validate_doctypes_empty(ctx):
     context = ctx(SimpleNamespace())
-    result = cmd_build.validate_doctypes(context, None, ())
+    result = validate_doctypes(context, None, ())
     assert result == []
     assert not hasattr(context.obj, 'doctypes') or context.obj.doctypes == []
 
@@ -99,7 +85,7 @@ def test_validate_doctypes_empty(ctx):
 def test_validate_doctypes_valid(ctx):
     context = ctx(SimpleNamespace())
     doctypes = ('foo/1/en-us', 'bar/2/de-de')
-    result = cmd_build.validate_doctypes(context, None, doctypes)
+    result = validate_doctypes(context, None, doctypes)
     assert result == [DummyDoctype('foo/1/en-us'), DummyDoctype('bar/2/de-de')]
     assert context.obj.doctypes == result
 
@@ -113,7 +99,7 @@ def test_validate_doctypes_invalid(monkeypatch, ctx):
             return [{'loc': ['field'], 'msg': 'bad', 'type': 'value_error'}]
 
     monkeypatch.setattr(
-        cmd_build,
+        callback_module,
         'Doctype',
         type(
             'Doctype',
@@ -133,7 +119,7 @@ def test_validate_doctypes_invalid(monkeypatch, ctx):
         ),
     )
     with pytest.raises(click.Abort):
-        cmd_build.validate_doctypes(context, None, ('bad/doctype',))
+        validate_doctypes(context, None, ('bad/doctype',))
 
 
 @pytest.mark.parametrize(
@@ -151,7 +137,7 @@ def test_validate_doctypes_with_doctypes(ctx, doctypes, expected):
     """Test validate_doctypes with different doctype inputs."""
     context = ctx(SimpleNamespace(doctypes=[]))
 
-    result = cmd_build.validate_doctypes(context, None, doctypes)
+    result = validate_doctypes(context, None, doctypes)
     assert result == expected
     assert context.obj.doctypes == expected
 
@@ -177,10 +163,10 @@ def test_validate_doctypes_validation_error(monkeypatch, ctx, capsys):
         return DummyDoctype(s)
 
     # Patch necessary methods
-    monkeypatch.setattr(cmd_build, 'ValidationError', MockValidationError)
-    monkeypatch.setattr(cmd_build.Doctype, 'from_str', staticmethod(mock_from_str))
+    monkeypatch.setattr(callback_module, 'ValidationError', MockValidationError)
+    monkeypatch.setattr(callback_module.Doctype, 'from_str', staticmethod(mock_from_str))
     monkeypatch.setattr(
-        cmd_build.Doctype,
+        callback_module.Doctype,
         'model_fields',
         {
             'product': type(
@@ -196,7 +182,7 @@ def test_validate_doctypes_validation_error(monkeypatch, ctx, capsys):
 
     # Test that the function properly aborts and formats error messages
     with pytest.raises(click.Abort):
-        cmd_build.validate_doctypes(context, None, ('invalid/product/en-us',))
+        validate_doctypes(context, None, ('invalid/product/en-us',))
 
     captured = capsys.readouterr()
     assert "ERROR in 'product': Invalid product name" in captured.err
@@ -217,9 +203,9 @@ def test_validate_doctypes_merge_called(monkeypatch, ctx):
         mock_merge_called_with = args
         return list(args)
 
-    monkeypatch.setattr(cmd_build, 'merge_doctypes', mock_merge)
+    monkeypatch.setattr(callback_module, 'merge_doctypes', mock_merge)
 
-    cmd_build.validate_doctypes(context, None, doctypes)
+    validate_doctypes(context, None, doctypes)
 
     # Verify merge_doctypes was called with both doctypes
     assert len(mock_merge_called_with) == 2
@@ -233,7 +219,7 @@ def test_validate_doctypes_merge_called(monkeypatch, ctx):
 def test_validate_doctypes_echo_outputs(ctx, capsys):
     """Test the echo statements in validate_doctypes."""
     context = ctx(SimpleNamespace())
-    cmd_build.validate_doctypes(context, None, ('sles/15/en-us',))
+    validate_doctypes(context, None, ('sles/15/en-us',))
 
     captured = capsys.readouterr()
     assert 'Got sles/15' in captured.out
@@ -254,7 +240,7 @@ def test_validate_doctypes_full_error_message(monkeypatch, capsys):
         )
 
     monkeypatch.setattr(
-        cmd_build.Doctype,
+        callback_module.Doctype,
         'model_fields',
         {
             'product': Field(
@@ -264,10 +250,10 @@ def test_validate_doctypes_full_error_message(monkeypatch, capsys):
             ),
         },
     )
-    monkeypatch.setattr(cmd_build.Doctype, 'from_str', mock_validation_error)
+    monkeypatch.setattr(callback_module.Doctype, 'from_str', mock_validation_error)
 
     with pytest.raises(click.Abort, match=r'Mock validation error'):
-        cmd_build.validate_doctypes(
+        validate_doctypes(
             click.Context(click.Command('dummy')),
             None,
             ('foo/bar',),
@@ -297,7 +283,7 @@ def test_validate_doctypes_only_hint_error_message(monkeypatch, capsys):
         )
 
     monkeypatch.setattr(
-        cmd_build.Doctype,
+        callback_module.Doctype,
         'model_fields',
         {
             'product': type(
@@ -310,10 +296,10 @@ def test_validate_doctypes_only_hint_error_message(monkeypatch, capsys):
             )(),
         },
     )
-    monkeypatch.setattr(cmd_build.Doctype, 'from_str', mock_validation_error)
+    monkeypatch.setattr(callback_module.Doctype, 'from_str', mock_validation_error)
 
     with pytest.raises(click.Abort, match=r'Mock validation error'):
-        cmd_build.validate_doctypes(
+        validate_doctypes(
             click.Context(click.Command('dummy')),
             None,
             ('foo/bar',),
@@ -342,7 +328,7 @@ def test_validate_doctypes_only_description_error_message(monkeypatch, capsys):
         )
 
     monkeypatch.setattr(
-        cmd_build.Doctype,
+        callback_module.Doctype,
         'model_fields',
         {
             'product': type(
@@ -355,10 +341,10 @@ def test_validate_doctypes_only_description_error_message(monkeypatch, capsys):
             )(),
         },
     )
-    monkeypatch.setattr(cmd_build.Doctype, 'from_str', mock_validation_error)
+    monkeypatch.setattr(callback_module.Doctype, 'from_str', mock_validation_error)
 
     with pytest.raises(click.Abort, match=r'Mock validation error'):
-        cmd_build.validate_doctypes(
+        validate_doctypes(
             click.Context(click.Command('dummy')),
             None,
             ('foo/bar',),
