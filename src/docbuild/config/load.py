@@ -7,11 +7,11 @@ import tomllib as toml
 from typing import Any
 
 from ..constants import DEFAULT_ENV_CONFIG_FILENAME
-from .app import Container, replace_placeholders
+from .app import replace_placeholders
 from .merge import deep_merge
 
 
-def process_envconfig(envconfigfile: str | Path | None) -> tuple[Path, Container]:
+def process_envconfig(envconfigfile: str | Path | None) -> tuple[Path, dict[str, Any]]:
     """Process the env config.
 
     :param envconfigfile: Path to the env TOML config file.

@@ -3,10 +3,6 @@
 import re
 from typing import Any
 
-# Type aliases
-Container = dict[str, Any] | list[Any]
-"""A dictionary or list container for any configuration data."""
-
 MAX_RECURSION_DEPTH: int = 10
 """The maximum recursion depth for placeholder replacement."""
 
@@ -159,9 +155,9 @@ class PlaceholderResolver:
 
 
 def replace_placeholders(
-    config: dict[str, Any],
+    config: dict[str, Any] | None,
     max_recursion_depth: int = MAX_RECURSION_DEPTH,
-) -> Container:
+) -> dict[str, Any] | None:
     """Replace placeholder values in a nested dictionary structure.
 
     * ``{foo}`` resolves from the current section.

@@ -26,15 +26,10 @@ def validate(ctx: click.Context, xmlfiles: tuple | Iterator[Path]) -> None:
 
     :param ctx: The Click context object.
     """
-    ctx.ensure_object(DocBuildContext)
     context: DocBuildContext = ctx.obj
     if context.envconfig is None:
         # log.critical('No envconfig found in context.')
         raise ValueError('No envconfig found in context.')
-
-    # Replace placeholders in the envconfig
-    # TODO: shouldn't this be done somewhere else? In the context initialization?
-    context.envconfig = replace_placeholders(context.envconfig)
 
     if (paths := ctx.obj.envconfig.get('paths')) is None:
         raise ValueError('No paths found in envconfig.')

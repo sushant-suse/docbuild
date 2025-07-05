@@ -36,7 +36,7 @@ class TestC14nCommand:
     def test_c14n_command_without_context_object(self, runner):
         """Test c14n command without passing a context object."""
         # Don't pass obj parameter - this will test ctx.ensure_object()
-        result = runner.invoke(cmd_c14n.c14n, [])
+        result = runner.invoke(cmd_c14n.c14n, [], obj=DocBuildContext())
 
         assert result.exit_code == 0
         # Should create a default context with verbose=0
