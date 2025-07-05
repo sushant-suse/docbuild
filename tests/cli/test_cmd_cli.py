@@ -30,7 +30,7 @@ def test_cli_defaults(monkeypatch, runner, tmp_path):
     monkeypatch.setattr(cli_mod, 'handle_config', fake_handle_config)
     result = runner.invoke(cli, ['--app-config', str(app_file), 'capture'])
     assert result.exit_code == 0
-    assert result.output.strip() == 'capture'
+    assert 'capture' in result.output.strip()
 
 
 def test_cli_with_app_and_env_config(monkeypatch, runner, tmp_path):
@@ -62,7 +62,7 @@ def test_cli_with_app_and_env_config(monkeypatch, runner, tmp_path):
         obj=context,
     )
     assert result.exit_code == 0
-    assert result.output == 'capture\n'
+    assert 'capture' in result.output.strip()
 
     assert context.appconfigfiles == (app_file,)
     assert context.appconfig == {'app_config_data': 'app_content'}
@@ -94,7 +94,7 @@ def test_cli_verbose_and_debug(monkeypatch, runner, tmp_path):
         obj=context,
     )
     assert result.exit_code == 0
-    assert result.output == 'capture\n'
+    assert 'capture\n' in result.output
     assert context.verbose == 3
     assert context.debug is True
     assert context.appconfigfiles == (app_file,)

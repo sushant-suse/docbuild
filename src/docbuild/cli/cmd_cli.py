@@ -5,6 +5,7 @@ from pathlib import Path
 import click
 
 from ..__about__ import __version__
+from ..config.app import replace_placeholders
 from ..config.load import handle_config
 from ..constants import (
     APP_CONFIG_BASENAMES,
@@ -117,6 +118,8 @@ def cli(
         None,
         DEFAULT_APP_CONFIG,
     )
+    context.appconfig = replace_placeholders(context.appconfig)
+
     (
         context.envconfigfiles,
         context.envconfig,
@@ -127,6 +130,9 @@ def cli(
         None,
         DEFAULT_ENV_CONFIG_FILENAME,
         DEFAULT_ENV_CONFIG,
+    )
+    context.envconfig = replace_placeholders(
+        context.envconfig,
     )
 
 

@@ -269,7 +269,7 @@ class TestValidateCommand:
             Path('test.xml').write_text('<?xml version="1.0"?><root></root>')
             # When no context object is passed, a default one is created,
             # which has envconfig=None, triggering the error.
-            result = runner.invoke(validate, ['test.xml'])
+            result = runner.invoke(validate, ['test.xml'], obj=DocBuildContext())
 
             assert result.exit_code != 0
             assert isinstance(result.exception, ValueError)
