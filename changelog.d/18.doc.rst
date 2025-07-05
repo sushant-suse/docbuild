@@ -1,8 +1,1 @@
-Docs: Improve development docs
-
-* Try to be consistent with prompts
-* Add some code block captions and names to have a constant anchor
-* Add two new sections:
-  * Triggering Actions Manually
-  * Knowing GitHub Setup
-* Mention GitHub CLI :command:`gh`
+Docs: Improve development and user docs
