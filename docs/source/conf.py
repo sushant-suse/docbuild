@@ -89,6 +89,8 @@ autoapi_own_page_level = 'class'
 extlinks = {
     # Example for linking to a specific file/path in the repo:
     'gh_path': (f'{gh_repo_url}/blob/main/%s', '%s'),
+    # Example for linking to a specific directory in the repo:
+    'gh_tree': (f'{gh_repo_url}/tree/main/%s', '%s'),
     # Linking to the GH issue tracker:
     'issue': (f'{gh_repo_url}/issues/%s', 'issue #%s'),
 }
