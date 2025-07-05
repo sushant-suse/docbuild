@@ -23,9 +23,8 @@ class TestLoadCheckFunctions:
             assert func.__name__.startswith('check_')
 
 
-
 class TestCreateStitchfile:
-    @pytest.mark.skip("TODO")
+    @pytest.mark.skip('TODO')
     def test_create_stitchfile_with_xml_files(self, tmp_path):
         """Test create_stitchfile with XML files in directory."""
         # This will cover lines 52-58

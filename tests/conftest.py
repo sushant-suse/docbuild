@@ -132,8 +132,9 @@ def make_path_mock(**members: Any | Callable[[], Any]) -> MagicMock:
 
     return mock
 
+
 def make_path_mock(
-    path: str = "",
+    path: str = '',
     return_values: dict = None,
     side_effects: dict = None,
     attributes: dict = None,
@@ -141,7 +142,7 @@ def make_path_mock(
     from pathlib import Path
     from unittest.mock import MagicMock
 
-    path_obj = Path(path) if path else Path("mocked")
+    path_obj = Path(path) if path else Path('mocked')
     mock = MagicMock(spec=Path)
 
     # Path-like behavior
@@ -150,9 +151,9 @@ def make_path_mock(
     mock.name = path_obj.name
     mock.suffix = path_obj.suffix
     mock.parts = path_obj.parts
-    mock.parent = make_path_mock(
-        str(path_obj.parent)
-    ) if path_obj != path_obj.parent else mock
+    mock.parent = (
+        make_path_mock(str(path_obj.parent)) if path_obj != path_obj.parent else mock
+    )
 
     # / operator
     def truediv(other: str) -> MagicMock:
@@ -178,7 +179,6 @@ def make_path_mock(
             getattr(mock, method).side_effect = func
 
     return mock
-
 
 
 @pytest.fixture

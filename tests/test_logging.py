@@ -22,6 +22,7 @@ from docbuild.logging import (
 @contextmanager
 def clear_handlers():
     """Context manager to clear all logging handlers before and after a test."""
+
     def _clear_handlers():
         """Clear all handlers for all loggers."""
         for name in [LOGGERNAME, JINJALOGGERNAME, XPATHLOGGERNAME, GITLOGGERNAME]:
@@ -182,7 +183,9 @@ def test_setup_logging_with_queue(tmp_path: Path, monkeypatch: pytest.MonkeyPatc
         logger.debug('queue-based logging works')
 
         # Since we cannot capture QueueHandler logs via caplog, we check handler types.
-        assert any(isinstance(h, logging.handlers.QueueHandler) for h in logger.handlers)
+        assert any(
+            isinstance(h, logging.handlers.QueueHandler) for h in logger.handlers
+        )
 
         # Ensure all logging threads are flushed and closed before test ends
         logging.shutdown()

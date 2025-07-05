@@ -43,7 +43,7 @@ def test_timer_factory_creates_independent_timers():
         time.sleep(sleep_duration)
 
     with timer2() as timer_data2:
-        time.sleep(sleep_duration*2)
+        time.sleep(sleep_duration * 2)
 
     assert timer_data1.name == timer_name1
     assert timer_data2.name == timer_name2
@@ -51,7 +51,7 @@ def test_timer_factory_creates_independent_timers():
     assert isinstance(timer_data1.elapsed, float)
     assert isinstance(timer_data2.elapsed, float)
     assert timer_data1.elapsed == pytest.approx(sleep_duration, abs=0.01)
-    assert timer_data2.elapsed == pytest.approx(sleep_duration*2, abs=0.01)
+    assert timer_data2.elapsed == pytest.approx(sleep_duration * 2, abs=0.01)
 
 
 def test_timer_for_nan_as_default():

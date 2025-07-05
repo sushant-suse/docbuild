@@ -111,7 +111,7 @@ class Deliverable:
         # If we cannot find the branch in the current language node,
         # we look in the English language and use this branch
         node = self._node.getparent().xpath(
-            "ancestor::builddocs/language"
+            'ancestor::builddocs/language'
             "[@lang!='en-us' or @default!='1' or @default!='true']/branch",
         )
         if node:

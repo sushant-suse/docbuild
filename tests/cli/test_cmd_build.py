@@ -164,7 +164,9 @@ def test_validate_doctypes_validation_error(monkeypatch, ctx, capsys):
 
     # Patch necessary methods
     monkeypatch.setattr(callback_module, 'ValidationError', MockValidationError)
-    monkeypatch.setattr(callback_module.Doctype, 'from_str', staticmethod(mock_from_str))
+    monkeypatch.setattr(
+        callback_module.Doctype, 'from_str', staticmethod(mock_from_str)
+    )
     monkeypatch.setattr(
         callback_module.Doctype,
         'model_fields',

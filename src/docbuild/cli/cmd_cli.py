@@ -93,7 +93,7 @@ def cli(
 
     if ctx.invoked_subcommand is None:
         # If no subcommand is invoked, show the help message
-        click.echo(10* '-')
+        click.echo(10 * '-')
         click.echo(ctx.get_help())
         ctx.exit(0)
 

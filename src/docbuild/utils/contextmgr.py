@@ -1,6 +1,5 @@
 """Provides context managers."""
 
-
 from collections.abc import Callable, Generator
 from contextlib import contextmanager
 from dataclasses import dataclass
@@ -14,7 +13,7 @@ class TimerData:
     name: str
     start: float = float('nan')
     end: float = float('nan')
-    elapsed: float = float("nan")
+    elapsed: float = float('nan')
 
 
 def make_timer(

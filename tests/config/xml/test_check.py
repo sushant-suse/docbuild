@@ -102,12 +102,12 @@ def assert_results(string, messages: list[str]) -> None:
 # -----------------------
 def test_check_in_registry():
     """Test that the check functions are registered correctly."""
-    print(">>>", register_check.registry)
     assert len(register_check.registry) > 0, 'No checks registered'
     for func in register_check.registry:
         assert callable(func), f'{func.__name__} is not callable'
-        assert func.__name__.startswith('check_'), \
+        assert func.__name__.startswith('check_'), (
             f'{func.__name__} does not start with "check_"'
+        )
 
 
 # ----

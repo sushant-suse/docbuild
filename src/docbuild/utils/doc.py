@@ -1,4 +1,5 @@
 """ """
+
 from collections.abc import Callable
 import functools
 from typing import Any, ParamSpec, TypeVar
@@ -18,7 +19,8 @@ class SafeDict(dict):
 
 
 def docstring(
-    template: str | None = None, **kwargs: Any   # noqa: ANN401
+    template: str | None = None,
+    **kwargs: Any,  # noqa: ANN401
 ) -> Callable[[Callable[P, R]], Callable[P, R]]:
     """Replace placeholders in docstring.
 
@@ -49,8 +51,9 @@ def docstring(
         print(greet.__doc__)
         # Output: "Hello Alice, welcome to {place}"
     """
+
     def decorator(func: Callable[P, R]) -> Callable[P, R]:
-        base_template = template if template is not None else func.__doc__ or ""
+        base_template = template if template is not None else func.__doc__ or ''
         formatted_doc = base_template.format_map(SafeDict(kwargs))
 
         @functools.wraps(func)

@@ -10,10 +10,7 @@ from lxml import etree
 if TYPE_CHECKING:
     from ..config.xml.checks import CheckResult
 
-F = TypeVar(
-    'F',
-    bound=Callable[[etree._Element | etree._ElementTree], 'CheckResult']
-)
+F = TypeVar('F', bound=Callable[[etree._Element | etree._ElementTree], 'CheckResult'])
 """Type variable for functions that take an XML element or tree and return CheckResult."""
 
 
