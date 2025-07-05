@@ -1,0 +1,1 @@
+Introduce new :file:`callback.py` file to separate :func:`validate_doctypes` function from the build command.
