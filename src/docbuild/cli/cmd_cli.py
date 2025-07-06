@@ -18,6 +18,7 @@ from ..constants import (
 from ..logging import setup_logging
 from .cmd_build import build
 from .cmd_c14n import c14n
+from .cmd_repo import repo
 from .cmd_validate import validate
 from .config import config
 from .context import DocBuildContext
@@ -140,4 +141,5 @@ def cli(
 cli.add_command(build)
 cli.add_command(c14n)
 cli.add_command(config)
+cli.add_command(repo)
 cli.add_command(validate)

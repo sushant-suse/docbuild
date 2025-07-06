@@ -1,0 +1,13 @@
+Implement cloning of Git repositories
+
+All repos are "bare" clones, meaning they do not have a working directory.
+This was needed to avoid issues with branches.
+
+The internal logic is available through some CLI commands:
+
+* :command:`docbuild repo clone` - Clone a repository into the permanent storage.
+  With the help of the :class:`~docbuild.cli.models.repo.Repo` class,
+  it can handle different notations of repositories, such as HTTP URLs, SSH URLS, or abbreviated URLs (like ``gh://org/repo``).
+* :command:`docbuild repo dir` - Shows the directory path for permanent storage.
+  This is useful for debugging and manual operations.
+* :command:`docbuild repo list` - List all repositories in the permanent storage.
