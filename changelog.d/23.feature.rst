@@ -1,0 +1,1 @@
+Support ``.xpath`` method in :class:`~docbuild.model.doctype.Doctype`
