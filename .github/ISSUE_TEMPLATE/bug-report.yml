@@ -26,10 +26,10 @@ body:
       description: Which version of Python is the problem with?
       multiple: true
       options:
-        - "3.11"
         - "3.12"
         - "3.13"
         - "3.14"
+        - "Other (describe below)"
     validations:
       required: true
 
