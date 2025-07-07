@@ -10,6 +10,7 @@ from lxml import etree
 
 from ..utils.convert import convert2bool
 from .metadata import Metadata
+from .repo import Repo
 
 
 @dataclass
@@ -129,7 +130,7 @@ class Deliverable:
             return ''
 
     @cached_property
-    def git(self) -> str:
+    def git(self) -> Repo:
         """Return the git repository.
 
         :return: The git remote URL as a string.
@@ -138,7 +139,7 @@ class Deliverable:
         # ../preceding-sibling::git/@remote
         node = self._node.getparent().getparent().find('git')
         if node is not None:
-            return node.attrib.get('remote').strip()
+            return Repo(node.attrib.get('remote'))
         raise ValueError(
             'No git remote found for '
             f'{self.productid}/{self.docsetid}/{self.lang}/{self.dcfile}'
@@ -221,11 +222,7 @@ class Deliverable:
     @cached_property
     def repo_path(self) -> Path:
         """Return the "slug" path of the repository."""
-        return Path(
-            self.git.translate(
-                str.maketrans({':': '_', '/': '_', '-': '_', '.': '_'}),
-            )
-        )
+        return Path(self.git.slug)
 
     @cached_property
     def zip_path(self) -> str:

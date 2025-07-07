@@ -158,7 +158,7 @@ def test_deliverable_no_subdir_found(deliverable_de: etree._Element):
 
 
 def test_deliverable_git(firstnode: Deliverable):
-    assert firstnode.git == 'https://github.com/SUSE/doc-sle.git'
+    assert firstnode.git.url == 'https://github.com/suse/doc-sle.git'
 
 
 def test_deliverable_no_git_found(node: etree._ElementTree):
@@ -244,7 +244,7 @@ def test_deliverable_relpath(firstnode: Deliverable):
 
 
 def test_deliverable_repo_path(firstnode: Deliverable):
-    assert firstnode.repo_path == Path('https___github_com_SUSE_doc_sle_git')
+    assert firstnode.repo_path == Path('https___github_com_suse_doc_sle_git')
 
 
 def test_deliverable_zip_path(firstnode: Deliverable):
