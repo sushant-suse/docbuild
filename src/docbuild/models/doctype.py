@@ -244,7 +244,10 @@ class Doctype(BaseModel):
             deliverables that match this Doctype.
         """
         # Example: /sles/15-SP6@supported/en-us,de-de
-        product = f"product[@productid={self.product.value!r}]"
+        product = "product"
+        if self.product != Product.ALL:
+            product += f'[@productid={self.product.value!r}]'
+
         setids = [f'@setid={d!r}' for d in self.docset if d != '*']
 
         setids_str = ' or '.join(setids)
