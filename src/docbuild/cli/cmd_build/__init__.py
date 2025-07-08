@@ -36,9 +36,9 @@ Examples of the doctypes syntax:
 
 import click
 
-from ..models.doctype import Doctype
-from .callback import validate_doctypes
-from .context import DocBuildContext
+from ...models.doctype import Doctype
+from ..callback import validate_doctypes
+from ..context import DocBuildContext
 
 
 @click.command(

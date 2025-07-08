@@ -9,12 +9,12 @@ import tempfile
 from lxml import etree
 from rich.console import Console
 
-from ..cli.context import DocBuildContext
-from ..config.xml.checks import CheckResult, register_check
-from ..config.xml.stitch import create_stitchfile
-from ..constants import XMLDATADIR
-from ..utils.decorators import RegistryDecorator
-from ..utils.paths import calc_max_len
+from ...config.xml.checks import CheckResult, register_check
+from ...config.xml.stitch import create_stitchfile
+from ...constants import XMLDATADIR
+from ...utils.decorators import RegistryDecorator
+from ...utils.paths import calc_max_len
+from ..context import DocBuildContext
 
 # Cast to help with type checking
 registry: RegistryDecorator = register_check  # type: ignore[assignment]

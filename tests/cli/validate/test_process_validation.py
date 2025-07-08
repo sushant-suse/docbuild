@@ -1,9 +1,8 @@
 from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
-from docbuild.cli import process_validation
+import docbuild.cli.cmd_validate.process as process_mod
 from docbuild.cli.context import DocBuildContext
-from docbuild.cli.process_validation import run_command, validate_rng
 
 
 async def test_run_command():
@@ -11,7 +10,7 @@ async def test_run_command():
     # Use a simple command that is guaranteed to exist
     command = ['echo', 'Hello, World!']
 
-    returncode, stdout, stderr = await run_command(*command)
+    returncode, stdout, stderr = await process_mod.run_command(*command)
 
     # Assert the return code is 0 (success)
     assert returncode == 0, f'Expected return code 0, got {returncode}'
@@ -34,7 +33,7 @@ async def test_validate_rng_with_rng_suffix(tmp_path: Path):
   <start><element name="root"><text/></element></start>
 </grammar>""")
 
-    returncode, _ = await validate_rng(xmlfile, rng_schema)
+    returncode, _ = await process_mod.validate_rng(xmlfile, rng_schema)
 
     assert returncode, f'Expected True, got {returncode}'
 
@@ -50,7 +49,7 @@ async def test_validate_rng_with_invalid_xml(tmp_path: Path):
     <start><element name="root"><text/></element></start>
 </grammar>""")
 
-    returncode, message = await validate_rng(xmlfile, rng_schema)
+    returncode, message = await process_mod.validate_rng(xmlfile, rng_schema)
     assert returncode is False, f'Expected False, got {returncode}'
     assert 'error: element "wrong_root"' in message
 
@@ -66,7 +65,7 @@ async def test_validate_rng_without_xinclude(tmp_path: Path):
     <start><element name="root"><text/></element></start>
 </grammar>""")
 
-    returncode, _ = await validate_rng(xmlfile, rng_schema, xinclude=False)
+    returncode, _ = await process_mod.validate_rng(xmlfile, rng_schema, xinclude=False)
 
     assert returncode, f'Expected True, got {returncode}'
 
@@ -82,7 +81,9 @@ async def test_validate_rng_with_invalid_xml_without_xinclude(tmp_path: Path):
     <start><element name="root"><text/></element></start>
 </grammar>""")
 
-    returncode, message = await validate_rng(xmlfile, rng_schema, xinclude=False)
+    returncode, message = await process_mod.validate_rng(
+        xmlfile, rng_schema, xinclude=False
+    )
 
     assert returncode is False, f'Expected False, got {returncode}'
     assert 'element "wrong_root" not allowed anywhere' in message
@@ -98,11 +99,11 @@ async def test_validate_rng_jing_failure():
 
     # Mock the run_command method to simulate jing failure
     with patch.object(
-        process_validation,
+        process_mod,
         'run_command',
         new=AsyncMock(return_value=(1, 'Error in jing', '')),
     ) as mock_run_command:
-        success, output = await validate_rng(
+        success, output = await process_mod.validate_rng(
             xmlfile, rng_schema_path=rng_schema, xinclude=False
         )
 
@@ -127,9 +128,9 @@ async def test_validate_rng_command_not_found():
     error.filename = 'jing'
 
     with patch.object(
-        process_validation, 'run_command', new_callable=AsyncMock, side_effect=error
+        process_mod, 'run_command', new_callable=AsyncMock, side_effect=error
     ):
-        success, output = await validate_rng(
+        success, output = await process_mod.validate_rng(
             xmlfile, rng_schema_path=rng_schema, xinclude=False
         )
 
@@ -147,9 +148,11 @@ async def test_validate_rng_command_not_found_no_filename():
     error.filename = None
 
     with patch.object(
-        process_validation, 'run_command', new_callable=AsyncMock, side_effect=error
+        process_mod, 'run_command', new_callable=AsyncMock, side_effect=error
     ):
-        success, output = await validate_rng(xmlfile, rng_schema, xinclude=False)
+        success, output = await process_mod.validate_rng(
+            xmlfile, rng_schema, xinclude=False
+        )
 
     assert not success, 'Expected validation to fail.'
     assert (
@@ -157,62 +160,66 @@ async def test_validate_rng_command_not_found_no_filename():
     )
 
 
-async def test_process_file_with_validation_issues(capsys):
+async def test_process_file_with_validation_issues(capsys, tmp_path):
     """Test process_file with validation issues."""
     with patch.object(
-        process_validation,
+        process_mod,
         'validate_rng',
         new=AsyncMock(return_value=(False, 'Validation error')),
     ) as mock_validate_rng:
-        xmlfile = MagicMock(spec=Path, name='test.xml')
-        xmlfile.__str__.return_value = 'path/to/file.xml'
-        xmlfile.parts = ('path', 'to', 'file.xml')
+        # Use a real file path to avoid issues with Path(MagicMock)
+        dir_path = tmp_path / 'path' / 'to'
+        dir_path.mkdir(parents=True)
+        xmlfile = dir_path / 'file.xml'
+        xmlfile.touch()
 
         mock_context = Mock(spec=DocBuildContext)
+        mock_context.verbose = 2  # to get output with details
 
-        result = await process_validation.process_file(xmlfile, mock_context, 40)
+        result = await process_mod.process_file(xmlfile, mock_context, 40)
 
-        assert result != 0, (
+        assert result == 10, (
             'Expected process_file to return 10 due to validation issues.'
         )
-        # mock_validate_rng.assert_called_once_with(xmlfile, rng_schema_path=rng_schema, xinclude=True)
-        mock_validate_rng.assert_awaited_once()
+        mock_validate_rng.assert_awaited_once_with(xmlfile)
 
     captured = capsys.readouterr()
-    assert 'RNG validation => failed' in captured.err
+    assert 'to/file.xml' in captured.err
+    assert 'RNG validation' in captured.err
     assert 'Validation error' in captured.err
 
 
-async def test_process_file_with_xmlsyntax_error(capsys):
+async def test_process_file_with_xmlsyntax_error(capsys, tmp_path):
     """Test process_file with XML syntax error."""
-    xmlfile = MagicMock(spec=Path, name='test.xml')
-    xmlfile.__str__.return_value = 'path/to/file.xml'
-    xmlfile.parts = ('path', 'to', 'file.xml')
-    xmlfile.exists.return_value = True
-    xmlfile.is_file.return_value = True
-    xmlfile.read_text.return_value = """<root><invalid></root>"""
+    # Use a real file path to avoid issues with Path(MagicMock)
+    dir_path = tmp_path / 'path' / 'to'
+    dir_path.mkdir(parents=True)
+    xmlfile = dir_path / 'file.xml'
+    xmlfile.write_text("""<root><invalid></root>""")
 
     mock_context = Mock(spec=DocBuildContext)
+    mock_context.verbose = 2
 
     with (
         patch.object(
-            process_validation.etree,
+            process_mod.etree,
             'parse',
             new=Mock(
-                side_effect=process_validation.etree.XMLSyntaxError(
-                    'XML syntax error', code=None, line=0, column=0, filename='fake.xml'
+                side_effect=process_mod.etree.XMLSyntaxError(
+                    'XML syntax error', None, 0, 0, 'fake.xml'
                 )
             ),
         ) as mock_etree_parse,
         patch.object(
-            process_validation, 'validate_rng', new=AsyncMock(return_value=(True, ''))
+            process_mod, 'validate_rng', new=AsyncMock(return_value=(True, ''))
         ) as mock_validate_rng,
     ):
-        result = await process_validation.process_file(xmlfile, mock_context, 40)
+        result = await process_mod.process_file(xmlfile, mock_context, 40)
 
-        assert result != 0, (
-            'Expected process_file to return 10 due to XML syntax error.'
+        assert result == 20, (
+            'Expected process_file to return 20 due to XML syntax error.'
         )
-        mock_validate_rng.assert_awaited_once()
+        mock_validate_rng.assert_awaited_once_with(xmlfile)
         capture = capsys.readouterr()
+        assert 'to/file.xml' in capture.err
         assert 'XML syntax error' in capture.err
