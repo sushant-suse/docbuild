@@ -79,7 +79,7 @@ class Repo:
 
         if 'https://' in value or 'http://' in value:
             parsed_original = urlparse(value)
-            name = parsed_original.path.strip('/').lower().split('.git')[0]
+            name = parsed_original.path.strip('/').lower().rsplit('.git', 1)[0]
             name = name.rstrip('/')
             url = f'{parsed_original.scheme}://{parsed_original.netloc}/{name}.git'
             host = f'{parsed_original.scheme}://{parsed_original.netloc}'
@@ -103,7 +103,7 @@ class Repo:
 
         elif '/' in value:
             value = value.lower()
-            name = value.split('.git')[0].rstrip('/')
+            name = value.rsplit('.git', 1)[0].rstrip('/')
             url = f'{self.DEFAULT_HOST}/{name}.git'
             surl = f'gh://{name}'
 

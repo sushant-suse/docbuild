@@ -23,6 +23,12 @@ def repo_url() -> str:
         ('https://github.com/org/repo', 'org/repo', 'https://github.com/org/repo.git'),
         # 4
         ('https://github.com/org/repo/', 'org/repo', 'https://github.com/org/repo.git'),
+        # 5
+        (
+            'https://github.com/ORG/repo_git.git/',
+            'org/repo_git',
+            'https://github.com/org/repo_git.git',
+        ),
     ],
 )
 def test_repo_https(input_value, name, url):
@@ -42,6 +48,8 @@ def test_repo_https(input_value, name, url):
         ('git@github.com:org/repo', 'org/repo', 'https://github.com/org/repo.git'),
         # 4
         ('git@github.com:org/repo/', 'org/repo', 'https://github.com/org/repo.git'),
+        # 5
+        ('git@github.com:org/repo_git/', 'org/repo_git', 'https://github.com/org/repo_git.git'),
     ],
 )
 def test_repo_ssh(input_value, name, url):
@@ -61,6 +69,8 @@ def test_repo_ssh(input_value, name, url):
         ('gh://org/repo/', 'org/repo', 'https://github.com/org/repo.git'),
         # 4
         ('gh://org/repo.git', 'org/repo', 'https://github.com/org/repo.git'),
+        # 5
+        ('gh://ORG/repo_git.git', 'org/repo_git', 'https://github.com/org/repo_git.git'),
     ],
 )
 def test_repo_abbreviation(input_value, name, url):
@@ -86,6 +96,8 @@ def test_repo_abbreviation(input_value, name, url):
         ('gh://org/repo/', 'gh://org/repo'),
         # 7
         ('gh://org/repo.git', 'gh://org/repo'),
+        # 8
+        ('gh://ORG/repo_git.git', 'gh://org/repo_git'),
     ],
 )
 def test_repo_with_surl(input_value, surl):
@@ -105,6 +117,9 @@ def test_repo_with_unknown_abbreviation():
         ('org/repo', 'org/repo', 'https://github.com/org/repo.git'),
         # 2
         ('ORG/repo', 'org/repo', 'https://github.com/org/repo.git'),
+        # 3
+        ('org/repo_git.git', 'org/repo_git', 'https://github.com/org/repo_git.git'),
+        # 4
     ],
 )
 def test_repo_abbreviated(input_value, name, url):
