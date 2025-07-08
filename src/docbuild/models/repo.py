@@ -1,9 +1,9 @@
 """A repository model that can be initialized from a URL or a short name."""
 
 from dataclasses import dataclass, field
+import re
 from typing import ClassVar
 from urllib.parse import urlparse
-import re
 
 
 @dataclass(frozen=True, init=False)

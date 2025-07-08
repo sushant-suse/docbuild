@@ -1,1 +1,0 @@
-Replace placeholders in :command:`cli` main command. This ensures that the placeholders in the environment or application configuration are replaced before the subcommands are executed. This is necessary because the subcommands might rely on these placeholders being resolved.

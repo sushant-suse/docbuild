@@ -49,7 +49,11 @@ def test_repo_https(input_value, name, url):
         # 4
         ('git@github.com:org/repo/', 'org/repo', 'https://github.com/org/repo.git'),
         # 5
-        ('git@github.com:org/repo_git/', 'org/repo_git', 'https://github.com/org/repo_git.git'),
+        (
+            'git@github.com:org/repo_git/',
+            'org/repo_git',
+            'https://github.com/org/repo_git.git',
+        ),
     ],
 )
 def test_repo_ssh(input_value, name, url):
@@ -70,7 +74,11 @@ def test_repo_ssh(input_value, name, url):
         # 4
         ('gh://org/repo.git', 'org/repo', 'https://github.com/org/repo.git'),
         # 5
-        ('gh://ORG/repo_git.git', 'org/repo_git', 'https://github.com/org/repo_git.git'),
+        (
+            'gh://ORG/repo_git.git',
+            'org/repo_git',
+            'https://github.com/org/repo_git.git',
+        ),
     ],
 )
 def test_repo_abbreviation(input_value, name, url):

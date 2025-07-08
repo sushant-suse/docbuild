@@ -20,6 +20,51 @@ Changes for the upcoming release can be found in the
 
 .. towncrier release notes start
 
+Version 0.10.0
+==============
+
+Bug Fixes
+---------
+
+- Replace placeholders in :command:`cli` main command. This ensures that the placeholders in the environment or application configuration are replaced before the subcommands are executed. This is necessary because the subcommands might rely on these placeholders being resolved. (:gh:`20`)
+- Correctly convert ``'*'`` for products in :func:`docbuild.model.doctype.Doctype.xpath`
+
+  An XPath ``//*`` created a syntactically correct XPath, but with an
+  additional and unnecessary ``[@productid='*']`` predicate. (:gh:`31`)
+
+
+Improved Documentation
+----------------------
+
+- Docs: Improve development and user docs (:gh:`18`)
+
+
+Features
+--------
+
+- Implement cloning of Git repositories
+
+  All repos are "bare" clones, meaning they do not have a working directory.
+  This was needed to avoid issues with branches.
+
+  The internal logic is available through some CLI commands:
+
+  * :command:`docbuild repo clone` - Clone a repository into the permanent storage.
+    With the help of the :class:`~docbuild.cli.models.repo.Repo` class,
+    it can handle different notations of repositories, such as HTTP URLs, SSH URLS, or abbreviated URLs (like ``gh://org/repo``).
+  * :command:`docbuild repo dir` - Shows the directory path for permanent storage.
+    This is useful for debugging and manual operations.
+  * :command:`docbuild repo list` - List all repositories in the permanent storage. (:gh:`3`)
+- Support ``.xpath`` method in :class:`~docbuild.model.doctype.Doctype` (:gh:`23`)
+
+
+Code Refactoring
+----------------
+
+- Introduce new :file:`callback.py` file to separate :func:`validate_doctypes` function from the build command. (:gh:`19`)
+- Refactor subcommands into packages (:gh:`30`)
+
+
 Version 0.9.0
 =============
 

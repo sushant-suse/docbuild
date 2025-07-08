@@ -6,7 +6,6 @@ from collections.abc import Callable, Sequence
 from copy import deepcopy
 import importlib
 import inspect
-import os
 from pathlib import Path
 
 from lxml import etree

@@ -1,9 +1,8 @@
-from collections.abc import Callable
 
 from lxml import etree
 import pytest
 
-from docbuild.utils.decorators import F, RegistryDecorator, factory_registry
+from docbuild.utils.decorators import factory_registry
 
 
 def test_register_check_registers_function():
@@ -38,7 +37,7 @@ def test_multiple_functions_registered():
 
     assert len(registry) == 2
 
-    for func, name in zip(registry, ('foo', 'bar')):
+    for func, name in zip(registry, ('foo', 'bar'), strict=False):
         assert callable(func)
         assert func.__name__ == name
 

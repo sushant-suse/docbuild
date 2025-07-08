@@ -1,5 +1,6 @@
-from docbuild.utils.paths import calc_max_len
 from pathlib import Path
+
+from docbuild.utils.paths import calc_max_len
 
 
 def test_calc_max_len():

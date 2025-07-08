@@ -119,6 +119,7 @@ def make_path_mock(**members: Any | Callable[[], Any]) -> MagicMock:
             exists=lambda: True,
             read_text=lambda: "file contents"
         )
+
     """
     mock = MagicMock(spec=Path)
 

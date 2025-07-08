@@ -1,4 +1,3 @@
-import logging
 from unittest.mock import AsyncMock, Mock, call
 
 import pytest
@@ -7,7 +6,6 @@ import pytest
 from docbuild.cli.cmd_repo import process as process_module
 from docbuild.cli.cmd_repo.process import clone_repo, process
 from docbuild.cli.context import DocBuildContext
-from docbuild.logging import GITLOGGERNAME
 from docbuild.models.repo import Repo
 
 

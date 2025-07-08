@@ -5,12 +5,10 @@ from unittest.mock import AsyncMock
 
 import pytest
 
-from docbuild.cli.cmd_repo import cmd_clone
 from docbuild.cli.cmd_repo.cmd_clone import clone
 import docbuild.cli.cmd_repo.process as mod_process
 from docbuild.cli.context import DocBuildContext
-from docbuild.logging import GITLOGGERNAME, setup_logging
-from docbuild.models.repo import Repo
+from docbuild.logging import GITLOGGERNAME
 
 #
 # @pytest.fixture
