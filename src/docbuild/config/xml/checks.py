@@ -4,12 +4,10 @@
 from collections import Counter
 from collections.abc import Generator
 from dataclasses import dataclass, field
-import logging
 
 from lxml import etree
 
 from ...constants import ALLOWED_LANGUAGES
-from ...logging import LOGGERNAME
 from ...utils.convert import convert2bool
 from ...utils.decorators import factory_registry
 

@@ -283,7 +283,7 @@ async def process(
 
     # Filter for files that passed the initial validation
     successful_files_paths = [
-        xmlfile for xmlfile, result in zip(xmlfiles, results) if result == 0
+        xmlfile for xmlfile, result in zip(xmlfiles, results, strict=False) if result == 0
     ]
 
     # After validating individual files, perform a stitch validation to

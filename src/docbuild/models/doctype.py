@@ -244,7 +244,7 @@ class Doctype(BaseModel):
             deliverables that match this Doctype.
         """
         # Example: /sles/15-SP6@supported/en-us,de-de
-        product = "product"
+        product = 'product'
         if self.product != Product.ALL:
             product += f'[@productid={self.product.value!r}]'
 
@@ -252,24 +252,24 @@ class Doctype(BaseModel):
 
         setids_str = ' or '.join(setids)
         if setids_str:
-            docset = f"docset[{setids_str}]"
+            docset = f'docset[{setids_str}]'
         else:
             docset = 'docset'
 
         lifecycle = ' or '.join(
-            [f'@lifecycle={lc.name!r}'
-             for lc in self.lifecycle
-             if lc != LifecycleFlag.UNKNOWN ]
+            [
+                f'@lifecycle={lc.name!r}'
+                for lc in self.lifecycle
+                if lc != LifecycleFlag.UNKNOWN
+            ]
         )
         if lifecycle:
-            docset += f"[{lifecycle}]"
+            docset += f'[{lifecycle}]'
 
         if '*' in self.langs:
             language = 'language'
         else:
-            language = ' or '.join(
-                [f"@lang={lang.language!r}" for lang in self.langs]
-            )
-            language = f"language[{language}]"
+            language = ' or '.join([f'@lang={lang.language!r}' for lang in self.langs])
+            language = f'language[{language}]'
 
         return f'{product}/{docset}/builddocs/{language}'

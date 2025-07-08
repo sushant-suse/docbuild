@@ -1,4 +1,3 @@
-import pytest
 
 from docbuild.utils.doc import docstring
 

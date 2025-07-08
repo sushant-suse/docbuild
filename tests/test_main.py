@@ -1,10 +1,6 @@
-from pathlib import Path
 import os
-import sys
 import subprocess
 import sys
-
-import pytest
 
 
 def test_main_invokes_cli(monkeypatch):

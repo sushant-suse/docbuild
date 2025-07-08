@@ -8,7 +8,6 @@ from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
-import docbuild.cli.cmd_validate as cmd_validate
 from docbuild.cli.cmd_validate import validate
 import docbuild.cli.cmd_validate.process as process_mod
 from docbuild.cli.context import DocBuildContext

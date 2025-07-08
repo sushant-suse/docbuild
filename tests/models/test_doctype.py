@@ -258,7 +258,7 @@ def test_sorted_langs_in_doctype_instantiation():
         # 6: many products + many docsets + many lifecycles + English
         ('//en-us', "product/docset/builddocs/language[@lang='en-us']"),
         # 7: all products, docsets, lifecycles, and languages
-        ('//*', "product/docset/builddocs/language"),
+        ('//*', 'product/docset/builddocs/language'),
     ],
 )
 def test_xpath_in_doctype(string, xpath):

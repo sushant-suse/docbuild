@@ -1,7 +1,6 @@
 """Useful decorators for XML checks."""
 
 from collections.abc import Callable
-from contextlib import contextmanager
 from functools import wraps
 from typing import TYPE_CHECKING, TypeVar, cast
 

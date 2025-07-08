@@ -1,6 +1,4 @@
-from pathlib import Path
 
-import pytest
 
 from docbuild.cli.cmd_repo.cmd_list import cmd_list
 from docbuild.cli.context import DocBuildContext
