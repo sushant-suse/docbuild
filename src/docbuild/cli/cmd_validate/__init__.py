@@ -7,9 +7,8 @@ from pathlib import Path
 
 import click
 
-from ..config.app import replace_placeholders
-from .context import DocBuildContext
-from .process_validation import process
+from ..context import DocBuildContext
+from . import process as process_mod
 
 log = logging.getLogger(__name__)
 
@@ -47,6 +46,6 @@ def validate(ctx: click.Context, xmlfiles: tuple | Iterator[Path]) -> None:
 
     log.info('Validating XML configuration files')
 
-    result = asyncio.run(process(context, xmlfiles=xml_files_to_process))
+    result = asyncio.run(process_mod.process(context, xmlfiles=xml_files_to_process))
 
     ctx.exit(result)  # Use the result as the exit code for the CLI

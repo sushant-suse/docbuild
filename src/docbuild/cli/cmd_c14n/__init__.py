@@ -2,8 +2,6 @@
 
 import click
 
-from .context import DocBuildContext
-
 
 @click.command(help=__doc__)
 @click.pass_context
