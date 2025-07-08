@@ -42,6 +42,21 @@ docbuild.cli.cmd_build
 
 
 
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /reference/_autoapi/docbuild/cli/cmd_build/Doctype
+   /reference/_autoapi/docbuild/cli/cmd_build/DocBuildContext
+
+.. autoapisummary::
+
+   docbuild.cli.cmd_build.Doctype
+   docbuild.cli.cmd_build.DocBuildContext
+
+
 Functions
 ---------
 
@@ -51,8 +66,8 @@ Functions
    docbuild.cli.cmd_build.build
 
 
-Module Contents
----------------
+Package Contents
+----------------
 
 .. py:function:: validate_doctypes(ctx: click.Context, param: click.Parameter | None, doctypes: tuple[str, Ellipsis]) -> list[docbuild.models.doctype.Doctype]
 
