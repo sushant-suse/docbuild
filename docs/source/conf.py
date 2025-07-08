@@ -92,7 +92,7 @@ extlinks = {
     # Example for linking to a specific directory in the repo:
     'gh_tree': (f'{gh_repo_url}/tree/main/%s', '%s'),
     # Linking to the GH issue tracker:
-    'issue': (f'{gh_repo_url}/issues/%s', 'issue #%s'),
+    'gh': (f'{gh_repo_url}/issues/%s', 'GH #%s'),
 }
 
 
