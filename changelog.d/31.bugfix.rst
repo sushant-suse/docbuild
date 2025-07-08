@@ -1,0 +1,4 @@
+Correctly convert ``'*'`` for products in :func:`docbuild.model.doctype.Doctype.xpath`
+
+An XPath ``//*`` created a syntactically correct XPath, but with an
+additional and unnecessary ``[@productid='*']`` predicate.
