@@ -10,6 +10,10 @@ title_format = "Version {version}"
 # issue_format = "`#{issue} <https://github.com/python-attrs/attrs/issues/{issue}>`_"
 issue_format = ":gh:`{issue}`"
 
+
+# HINT:
+# If you change one of the types, make sure you document them in the
+# file docs/source/developer/add-newsfragments.txt
 [tool.towncrier.fragment.breaking]
 name = "Breaking Changes"
 
