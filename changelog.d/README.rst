@@ -3,8 +3,6 @@ The ``changelog.d`` Directory
 
 .. This file is also included into the documentation
 
-.. -text-begin-
-
 A "Changelog" is a record of all notable changes made to a project. Such
 a changelog, in our case the :file:`CHANGELOG.rst`, is read by our *users*.
 Therefor, any description should be aimed to users instead of describing
@@ -14,10 +12,11 @@ The directory :file:`changelog.d` contains "newsfragments" which are short
 ReST-formatted files. Each newsfragment describes a change in the project. A change is usually from a pull request or issue.
 On release, those news fragments are compiled into our :file:`CHANGELOG.rst`.
 
-We recommend to follow the steps to make a smooth integration of your changes:
+.. -text-begin-
 
-#. After you have created a new pull request (PR), add a new file into the
-   directory :file:`changelog.d`. Each filename follows the syntax::
+We recommend to follow the steps to make a smooth integration of your changes after you have created a new pull request (PR):
+
+#. Make yourself familiar with the syntax of the news fragments. Each filename follows the syntax::
 
     <ISSUE>.<TYPE>.rst
 
@@ -37,7 +36,7 @@ We recommend to follow the steps to make a smooth integration of your changes:
 
    For example, these are valid filenames: ``123.feature.rst``, ``456.bugfix.rst``, ``+add-json.feature.rst`` etc.
 
-   Create the new file with the command:
+#. Create the new file with the command, for example for a feature in issue 123:
 
    .. code-block:: shell
       :caption: Create a new newsfragment file
@@ -45,15 +44,17 @@ We recommend to follow the steps to make a smooth integration of your changes:
 
       towncrier create -c "Description" 123.feature.rst
 
-   The file is created int the :file:`changelog.d/` directory.
+   The file is created in the :file:`changelog.d/` directory.
 
-#. Open the file and describe your changes in RST format.
+#. If neccessary, open the file and describe your changes in RST format.
 
    * Wrap symbols like modules, functions, or classes into double backticks
-     so they are rendered in a ``monospace font``.
+     to render them in a ``monospace font``.
    * Prefer simple past tense or constructions with "now".
 
-#. Check your changes with::
+   Try to keep the description short.
+
+#. Check your changes::
 
      towncrier check
 
@@ -65,6 +66,8 @@ We recommend to follow the steps to make a smooth integration of your changes:
 
 
 This finishes your steps.
+
+.. -text-end-
 
 On release, the maintainer compiles a new :file:`CHANGELOG.rst` file by running::
 
