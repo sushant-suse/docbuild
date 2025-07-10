@@ -142,6 +142,12 @@ html_theme_options = {
             'icon': 'fa-brands fa-square-gitlab',
             'type': 'fontawesome',
         },
+        {
+            'name': 'Kanban board',
+            'url': 'https://github.com/orgs/openSUSE/projects/27/',
+            'icon': 'fa-solid fa-table-columns',
+            'type': 'fontawesome',
+        },
     ],
     #
     'use_edit_page_button': True,
