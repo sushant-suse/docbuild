@@ -3,7 +3,7 @@
 Pass any of the following URLs to clone:
 
 \b
-* HTTPS URLs like https://github.com/org/repo.git
+* HTTPS URLs like ``https://github.com/org/repo.git``
 * SSH URLS like git@github.com:org/repo.git
 * Abbreviated URLs like 'org/repo'
 """  # noqa: D301
