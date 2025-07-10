@@ -33,18 +33,24 @@ rst_prolog = f"""
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
+    # Include documentation from docstrings
     'sphinx.ext.autodoc',
+    # Link to other projects' documentation
     'sphinx.ext.intersphinx',
+    # Test code snippets in the documentation
     'sphinx.ext.doctest',
+    # Create short aliases for external links
     'sphinx.ext.extlinks',
-    # For documenting click CLI commands:
+    # Document Click command-line interfaces
     'sphinx_click',
-    # Copy button in code blocks:
+    # Add a "copy" button to code blocks
     'sphinx_copybutton',
-    # For automatic API documentation generation:
+    # Render type hints in signatures
     'sphinx_autodoc_typehints',
-    # For generating API documentation from docstrings:
+    # Generate API documentation from source code
     'autoapi.extension',
+    # Embed Graphviz graphs
+    'sphinx.ext.graphviz',
 ]
 
 templates_path = ['_templates']
@@ -170,3 +176,20 @@ intersphinx_mapping = {
     'click': ('https://click.palletsprojects.com/en/latest/', None),
     'jinja2': ('https://jinja.palletsprojects.com/en/latest/', None),
 }
+
+# -- Options for linkcheck builder --------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-the-linkcheck-builder
+
+linkcheck_ignore = [
+    # Ignore links to the internal GitLab server, which may require a VPN or login.
+    r'https://gitlab\.suse\.de/.*',
+    # Ignore links to local development servers.
+    r'http://127\.0\.0\.1:\d+/',
+    r'http://localhost:\d+/',
+    # Ignore mailto links
+    r'mailto:.*',
+    # Ignore settings page as only admins have access
+    rf'https://github\.com/{gh_user}/{project}/settings/rules',
+    # Just ignore useless example URLs
+    r'https://github\.com/org/repo',
+]

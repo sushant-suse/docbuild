@@ -8,7 +8,7 @@ The format is based on `Keep a Changelog <https://keepachangelog.com/en/1.0.0/>`
 
 
 Changes for the upcoming release can be found in the
-`"changelog.d" directory <https://github.com/tomschr/docbuild/tree/main/changelog.d>`_ of the repository.
+`"changelog.d" directory <https://github.com/openSUSE/docbuild/tree/main/changelog.d>`_ of the repository.
 
 ..
    Do *NOT* add changelog entries here!
@@ -108,8 +108,8 @@ Infrastructure
   Use prefix ``cmd_`` for real Click commands to distinguish them
   from helper files (like :file:`context.py` which isn't a command).
 - Refactor Deliverable to use ``.findtext()``
-- Use ``--frozen`` option in aliases to avoid updating :filename:`uv.lock`.
-  Add new alias :command:`towncrier` (see :filename:`devel/activate-aliases.sh`).
+- Use ``--frozen`` option in aliases to avoid updating :file:`uv.lock`.
+  Add new alias :command:`towncrier` (see :file:`devel/activate-aliases.sh`).
 
 
 Code Refactoring
