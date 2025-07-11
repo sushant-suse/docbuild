@@ -77,10 +77,10 @@ autoapi_add_toctree_entry = False
 autoapi_options = [
     'members',
     # "undoc-members",
-    'inherited-members',
+    # 'inherited-members',
     'show-inheritance',
     'show-module-summary',
-    'imported-members',
+    # 'imported-members',
     'special-members',
     'show-inheritance-diagram',  # needs sphinx.ext.inheritance_diagram & graphviz
     # "private-members",
@@ -88,7 +88,7 @@ autoapi_options = [
 autoapi_keep_files = True
 autodoc_typehints = 'signature'
 autoapi_own_page_level = 'class'
-
+#autoapi_python_use_implicit_namespaces = True
 
 # -- Options for extlinks extension ------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/extensions/extlinks.html
