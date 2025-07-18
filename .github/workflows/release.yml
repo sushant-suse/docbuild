@@ -47,7 +47,11 @@ jobs:
 
       - name: Setup uv
         id: setup-uv
-        uses: astral-sh/setup-uv@v1
+        uses: astral-sh/setup-uv@v6
+        with:
+            version: "latest"
+            enable-cache: true
+            cache-suffix: "docbuild"
 
       - name: Print the installed version
         run: |
