@@ -11,6 +11,7 @@ __pycache__/
 # Distribution / packaging
 .Python
 /build/
+/docs/_build/
 /docs/build/
 # Sphinx warnings
 /docs/*.log
@@ -72,9 +73,6 @@ instance/
 
 # Scrapy stuff:
 .scrapy
-
-# Sphinx documentation
-docs/_build/
 
 # PyBuilder
 .pybuilder/
@@ -260,8 +258,6 @@ fabric.properties
 #/--- JetBrains
 
 # --------
-
-
 # Ignore files in the project's root:
 /*.patch
 /*.diff
@@ -269,19 +265,15 @@ fabric.properties
 # but not this file:
 !/setup.py
 
-docs/_api
-!docs/_api/semver.__about__.rst
-
 # For node
 node_modules/
 
 ## ---- Toms' own rules
 #
 # Ignore files in the project's root:
-/*.patch
-/*.diff
-/*.py
 /tmp
+/.tmp
+/contrib
 
 # Ignore all of .ipython except startup scripts
 .ipython/*
