@@ -1,7 +1,42 @@
+# Version control
 .git
+.gitignore
+
+# Dependencies & build artifacts
 __pycache__
+dist
+build
+
 *.pyc
 *.pyo
 *.pyd
+
+# Development files
+contrib/
+tmp/
 .env
+.env.local
+*.log
+coverage
 .venv
+
+
+# IDE files
+.vscode
+.idea
+*.swp
+*.swo
+*.code-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Documentation
+docs/
+changelog.d/
+*.rst
+*.md
+
+# Test files
+tests/
