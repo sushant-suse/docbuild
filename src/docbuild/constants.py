@@ -45,7 +45,7 @@ VALID_PRODUCTS: dict[str, str] = {
     key.strip(): value.strip()
     for key, value in (
         line.split(' ', 1)
-        # Syntax acronym <SPACE> full name:
+        # Syntax: acronym <SPACE> full name:
         for line in """appliance Appliance building
 cloudnative Cloud Native
 compliance Compliance Documentation
@@ -93,17 +93,6 @@ MULTIPLE_LANG_REGEX = re.compile(
 
 LIFECYCLES_STR = '|'.join(ALLOWED_LIFECYCLES)
 """Regex for lifecycle states, separated by pipe (|)."""
-
-# Syntax for a single doctype
-#
-# <product-value|*>/<docset-value|*>@<lifecycle-value>/<lang-value1,lang-value2,...|*>
-#
-SEPARATORS = r'[ :;]+'
-"""Regex string for separators used in doctype strings."""
-
-
-RE_SEPARATORS = re.compile(SEPARATORS)
-"""Compiled regex for separators used in doctype strings."""
 
 
 # --- PATHS AND CONFIGURATION CONSTANTS ---
