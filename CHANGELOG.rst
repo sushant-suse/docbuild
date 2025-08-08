@@ -4,7 +4,8 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
-The format is based on `Keep a Changelog <https://keepachangelog.com/en/1.0.0/>`_, and this project adheres to `Semantic Versioning <https://semver.org/spec/v2.0.0.html>`_.
+The format is based on `Keep a Changelog <https://keepachangelog.com/en/1.0.0/>`_
+and adheres to `Semantic Versioning <https://semver.org/spec/v2.0.0.html>`_.
 
 
 Changes for the upcoming release can be found in the
@@ -15,7 +16,7 @@ Changes for the upcoming release can be found in the
 
    This changelog is managed by towncrier and is compiled at release time.
 
-   See https://python-semver.rtd.io/en/latest/development.html#changelog
+   See https://opensuse.github.io/docbuild/developer/create-release.html
    for details.
 
 .. towncrier release notes start
@@ -30,7 +31,8 @@ Improved Documentation
 - Clarify some steps when creating a release. (:gh:`59`)
 - Improve documentation clarity and usability:
 
-  * Update external links for ``uv``, ``towncrier``, ``reStructuredText``, Sphinx, ``jing``, and RNC schema to official resources.
+  * Update external links for ``uv``, ``towncrier``, ``reStructuredText``,
+    Sphinx, ``jing``, and RNC schema to official resources.
   * Remove ``$`` prefixes from shell command examples for easier copy-pasting.
   * Add a brief explanation for the ``--frozen`` flag usage with :command:`uv sync`.
   * Enhance descriptions and links in the "External tools" section. (:gh:`62`)
