@@ -14,11 +14,12 @@ import logging
 import click
 
 from ...cli.context import DocBuildContext
-from ...logging import GITLOGGERNAME
 from .process import process
+from ...constants import GITLOGGER_NAME
 
-log = logging.getLogger(GITLOGGERNAME)
+log = logging.getLogger(__name__)
 
+git_logger = logging.getLogger(GITLOGGER_NAME)
 
 @click.command(help=__doc__)
 @click.argument(

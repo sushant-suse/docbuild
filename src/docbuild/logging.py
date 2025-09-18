@@ -1,34 +1,70 @@
 """Set up logging for the documentation build process."""
 
 import atexit
+import copy
+import importlib
 import logging
 import logging.handlers
 import os
-from pathlib import Path
 import queue
+import time
+from pathlib import Path
+from typing import Any
 
-from .constants import APP_NAME, BASE_LOG_DIR
+from .constants import APP_NAME, BASE_LOG_DIR, GITLOGGER_NAME
 
-LOGGERNAME = f'{APP_NAME}'
-"""Name of the main logger for the application."""
-
-LOGFILE = f'{LOGGERNAME}.log'
-"""Filename for the main log file."""
-
-KEEP_LOGS = 4
-""" Number of log files to keep before rolling over."""
-
-JINJALOGGERNAME = f'{LOGGERNAME}.jinja'
-XPATHLOGGERNAME = f'{LOGGERNAME}.xpath'
-GITLOGGERNAME = f'{LOGGERNAME}.git'
+# --- Default Logging Configuration ---
+# This dictionary provides a flexible, default setup that can be easily
+# overridden by a user's configuration file.
+DEFAULT_LOGGING_CONFIG = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "standard": {
+            "format": "[%(asctime)s] [%(levelname)s] %(name)s: %(message)s",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
+        "git_formatter": {
+            "format": "[%(asctime)s] [%(levelname)s] [Git] - %(message)s",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "standard",
+            "level": "INFO",
+        },
+        "file": {
+            "class": "logging.FileHandler",
+            "formatter": "standard",
+            "filename": "",
+            "level": "DEBUG",
+        },
+    },
+    "loggers": {
+        APP_NAME: {
+            "handlers": ["console", "file"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+        GITLOGGER_NAME: { # Use the constant here
+            "handlers": ["console", "file"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+    },
+    "root": {
+        "handlers": ["console", "file"],
+        "level": "DEBUG",
+    },
+}
 
 LOGLEVELS = {
-    None: logging.WARNING,  # fallback
     0: logging.WARNING,
     1: logging.INFO,
     2: logging.DEBUG,
-}  # """Map of verbosity levels to logging levels."""
-
+}
 
 def create_base_log_dir(base_log_dir: str | Path = BASE_LOG_DIR) -> Path:
     """Create the base log directory if it doesn't exist.
@@ -40,128 +76,81 @@ def create_base_log_dir(base_log_dir: str | Path = BASE_LOG_DIR) -> Path:
         Considers the `XDG_STATE_HOME` environment variable if set.
     :return: The path to the base log directory.
     """
-    log_dir = Path(os.getenv('XDG_STATE_HOME', base_log_dir))
+    log_dir = Path(os.getenv("XDG_STATE_HOME", base_log_dir))
     log_dir.mkdir(mode=0o700, parents=True, exist_ok=True)
     return log_dir
 
+def _resolve_class(path: str):
+    """Dynamically imports and returns a class from a string path."""
+    module_name, class_name = path.rsplit(".", 1)
+    module = importlib.import_module(module_name)
+    return getattr(module, class_name)
 
 def setup_logging(
-    cliverbosity: int | None,
-    fmt: str = '[%(levelname)s] %(funcName)s: %(message)s',
-    logdir: str | Path | None = None,
-    default_logdir: str | Path = BASE_LOG_DIR,
-    use_queue: bool = True,
+    cliverbosity: int,
+    user_config: dict[str, Any] | None = None,
 ) -> None:
-    """Set up logging for the application.
-
-    :param cliverbosity: The verbosity level from the command line.
-    :param fmt: The format string for log messages.
-    :param logdir: The directory where log files should be stored.
-    :param default_logdir: The default directory for logs.
-    :param use_queue: Whether to use QueueHandler and QueueListener (for production).
+    """Sets up a non-blocking, configurable logging system.
+    
+    :param cliverbosity: ...
+    :param user_config: ...
     """
-    log_dir = create_base_log_dir(logdir or default_logdir)
+    config = copy.deepcopy(DEFAULT_LOGGING_CONFIG)
 
-    verbosity_index = min((cliverbosity or 0), 2)
-    verbosity = LOGLEVELS.get(verbosity_index, logging.WARNING)
+    if user_config and "logging" in user_config:
+        # Use a more robust deep merge approach
+        def deep_merge(target, source):
+            for k, v in source.items():
+                if k in target and isinstance(target[k], dict) and isinstance(v, dict):
+                    deep_merge(target[k], v)
+                else:
+                    target[k] = v
+        
+        deep_merge(config, user_config.get("logging", {}))
 
-    jinja_index = verbosity_index
-    xpath_index = verbosity_index + 1
-    git_index = verbosity_index + 2
+    # --- Verbosity & Log File Path Setup ---
+    # The handler's level determines what gets printed/written.
+    verbosity_level = LOGLEVELS.get(min(cliverbosity, 2), logging.WARNING)
+    config["handlers"]["console"]["level"] = logging.getLevelName(verbosity_level)
 
-    jinja_level = (
-        logging.DEBUG
-        if jinja_index > 2
-        else LOGLEVELS.get(
-            min(jinja_index, 2),
-            logging.INFO,
-        )
+    log_dir = create_base_log_dir()
+    # Use a timestamp to generate a unique filename for each run.
+    timestamp = time.strftime("%Y-%m-%d_%H-%M-%S")
+    log_filename = f"{APP_NAME}_{timestamp}.log"
+    log_path = log_dir / log_filename
+    config["handlers"]["file"]["filename"] = str(log_path)
+
+    # --- Handler and Listener Initialization ---
+    built_handlers = []
+    for hname, hconf in config["handlers"].items():
+        cls = _resolve_class(hconf["class"])
+        handler_args = {
+            k: v for k, v in hconf.items() if k not in ["class", "formatter", "level"]
+        }
+        handler = cls(**handler_args)
+        
+        handler.setLevel(hconf.get("level", "NOTSET"))
+        fmt_conf = config["formatters"][hconf["formatter"]]
+        handler.setFormatter(logging.Formatter(fmt_conf["format"], fmt_conf.get("datefmt")))
+        built_handlers.append(handler)
+    
+    log_queue = queue.Queue(-1)
+    queue_handler = logging.handlers.QueueHandler(log_queue)
+    listener = logging.handlers.QueueListener(
+        log_queue, *built_handlers, respect_handler_level=True
     )
-    xpath_level = (
-        logging.DEBUG
-        if xpath_index > 2
-        else LOGLEVELS.get(
-            min(xpath_index, 2),
-            logging.INFO,
-        )
-    )
-    git_level = (
-        logging.DEBUG
-        if git_index > 2
-        else LOGLEVELS.get(
-            min(git_index, 2),
-            logging.INFO,
-        )
-    )
+    listener.start()
+    atexit.register(listener.stop)
 
-    standard_formatter = logging.Formatter(fmt)
-    git_formatter = logging.Formatter('[%(levelname)s] [Git] - %(message)s')
-
-    console_handler = logging.StreamHandler()
-    console_handler.setLevel(verbosity)
-    console_handler.setFormatter(standard_formatter)
-
-    git_console_handler = logging.StreamHandler()
-    git_console_handler.setLevel(git_level)
-    git_console_handler.setFormatter(git_formatter)
-
-    log_path = log_dir / LOGFILE
-    need_roll = log_path.exists()
-
-    rotating_file_handler = logging.handlers.RotatingFileHandler(
-        log_path,
-        backupCount=KEEP_LOGS,
-    )
-    rotating_file_handler.setLevel(logging.DEBUG)
-    rotating_file_handler.setFormatter(standard_formatter)
-
-    handlers = []
-    listener = None
-
-    if use_queue:
-        log_queue = queue.Queue(-1)
-        queue_handler = logging.handlers.QueueHandler(log_queue)
-        handlers = [queue_handler]
-        listener = logging.handlers.QueueListener(
-            log_queue,
-            console_handler,
-            rotating_file_handler,
-            respect_handler_level=True,
-        )
-        listener.start()
-        atexit.register(listener.stop)
-    else:
-        handlers = [console_handler, rotating_file_handler]
-
-    def configure_logger(name: str, level: int) -> None:
-        logger = logging.getLogger(name)
-        logger.setLevel(level)
-        for handler in handlers:
-            logger.addHandler(handler)
-        logger.propagate = False
-
-    configure_logger(LOGGERNAME, verbosity)
-    configure_logger(JINJALOGGERNAME, jinja_level)
-    configure_logger(XPATHLOGGERNAME, xpath_level)
-
-    git_logger = logging.getLogger(GITLOGGERNAME)
-    git_logger.setLevel(git_level)
-    git_logger.addHandler(git_console_handler)
-    git_logger.propagate = False
-
-    if need_roll:
-        rotating_file_handler.doRollover()
-
-
-def get_effective_level(verbosity: int | None, offset: int = 0) -> int:
-    """Return a valid log level, clamped safely.
-
-    :param verbosity: The verbosity level, typically from command
-      line arguments (range 0..8)
-    :param offset: An offset to apply to the verbosity level.
-    :return: The effective log level.
-    """
-    effective = (verbosity or 0) + offset
-    max_key = max(k for k in LOGLEVELS if isinstance(k, int))
-    clamped = min(effective, max_key)
-    return LOGLEVELS.get(clamped, logging.WARNING)
+    # --- Logger Initialization ---
+    # Attach the QueueHandler to all loggers and set their levels.
+    for lname, lconf in config["loggers"].items():
+        logger = logging.getLogger(lname)
+        logger.setLevel(lconf["level"])
+        logger.addHandler(queue_handler)
+        logger.propagate = lconf.get("propagate", False)
+    
+    # Configure the root logger separately
+    root_logger = logging.getLogger()
+    root_logger.setLevel(config["root"]["level"])
+    root_logger.addHandler(queue_handler)
