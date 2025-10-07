@@ -1,24 +1,13 @@
 """Language model for representing language codes."""
 
-from functools import total_ordering
+from functools import total_ordering, cached_property
 import re
 from typing import Any, ClassVar
 
-from pydantic import BaseModel, Field, computed_field
+from pydantic import BaseModel, Field, computed_field, model_validator, field_validator
 from pydantic.config import ConfigDict
-from pydantic.functional_validators import field_validator
 
 from ..constants import ALLOWED_LANGUAGES
-
-# Old definition:
-# Language allows all the definied languages, but also "*" (=ALL).
-# We only define "ALL" as uppercase to denote a constant, the rest is lowercase.
-# Language = StrEnum(
-#     "Language",
-#     # The dict is mapped like "de_de": "de-de"
-#     {"ALL": "*"} | {item.replace("-", "_"): item
-#                     for item in sorted(ALLOWED_LANGUAGES)},
-# )
 
 
 @total_ordering
@@ -52,13 +41,13 @@ class LanguageCode(BaseModel):
     )
     """Class variable containing all allowed languages."""
 
-    def __init__(self, language: str, **kwargs: dict[Any, Any]) -> None:
-        """Initialize the LanguageCode instance."""
-        super().__init__(language=language.replace('_', '-'), **kwargs)
-        if language == '*':
-            self._lang, self._country = ('*', '*')
-        else:
-            self._lang, self._country = re.split(r'[_-]', language)
+    @model_validator(mode='before')
+    @classmethod
+    def _convert_str_to_dict(cls, data: Any) -> Any:
+        """Allow initializing LanguageCode from a plain string."""
+        if isinstance(data, str):
+            return {'language': data}
+        return data
 
     def __str__(self) -> str:
         """Implement str(self)."""
@@ -129,12 +118,19 @@ class LanguageCode(BaseModel):
         return (
             self.language == '*' or other_value == '*' or self.language == other_value
         )
+    
+    @field_validator('language', mode='before')
+    @classmethod
+    def _normalize_language_separator(cls, value: str) -> str:
+        """Normalize separator from _ to -."""
+        if isinstance(value, str):
+            return value.replace('_', '-')
+        return value
 
     @field_validator('language')
     @classmethod
     def validate_language(cls, value: str) -> str:
         """Check if the passed language adheres to the allowed language."""
-        # value = value.replace("_", "-")
         if value not in cls.ALLOWED_LANGS:
             raise ValueError(
                 (
@@ -144,6 +140,24 @@ class LanguageCode(BaseModel):
             )
         return value
 
+    @cached_property
+    def _parts(self) -> tuple[str, str] | tuple[str]:
+        """Split the `language` code into language and country.
+
+        This method parses the :attr:`language` string into its parts
+        and caches the result per instance to avoid redundant parsing operations.
+
+        :returns: A tuple containing:
+          - ``(language, country)`` if both parts are present.
+          - ``('*',)`` if the language code is ``"*"``
+        """
+        if self.language == '*':
+            return ('*',)
+        
+        # Use split('-') as the separator is already normalized
+        parts = self.language.split('-')
+        return (parts[0], parts[1]) if len(parts) > 1 else (parts[0],)
+
     @computed_field(
         repr=False,
         title='The language part of the language code',
@@ -151,7 +165,7 @@ class LanguageCode(BaseModel):
     )
     def lang(self) -> str:
         """Extract the language part of the language code (property)."""
-        return self._lang
+        return self._parts[0]
 
     @computed_field(
         repr=False,
@@ -160,4 +174,4 @@ class LanguageCode(BaseModel):
     )
     def country(self) -> str:
         """Extract the country part of the language code (property)."""
-        return self._country
+        return self._parts[1] if len(self._parts) > 1 else '*'
