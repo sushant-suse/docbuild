@@ -206,9 +206,19 @@ def edit_json(path: Path | str) -> Iterator[dict[str, Any]]:
     path = Path(path)
     parent = path.parent
 
-    # Load JSON
+    # Guard: ensure file exists
+    if not path.exists():
+        raise FileNotFoundError(f'JSON file not found: {path}')
+
+    # Load JSON with better error context
     with path.open('r', encoding=encoding) as f:
-        data = json.load(f)
+        try:
+            data = json.load(f)
+        except json.JSONDecodeError as e:
+            # Re-raise with file path context while preserving original info
+            raise json.JSONDecodeError(
+                f'Invalid JSON in {path}: {e.msg}', e.doc, e.pos
+            ) from e
 
     # Hand control to the user
     try:

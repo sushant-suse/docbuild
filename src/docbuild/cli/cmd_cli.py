@@ -9,7 +9,7 @@ import rich.logging
 from rich.pretty import install
 from rich.traceback import install as install_traceback
 from pydantic import ValidationError
-from typing import Any, cast 
+from typing import Any, cast
 
 from ..__about__ import __version__
 from ..config.app import replace_placeholders
@@ -112,7 +112,6 @@ def cli(
     :param env_config: Filename to a environment's TOML config file.
     :param kwargs: Additional keyword arguments.
     """
-
     if ctx.invoked_subcommand is None:
         # If no subcommand is invoked, show the help message
         click.echo(10 * '-')
@@ -127,9 +126,9 @@ def cli(
     context.verbose = verbose
     context.dry_run = dry_run
     context.debug = debug
-    
+
     # --- PHASE 1: Load and Validate Application Config (and setup logging) ---
-    
+    #
     # 1. Load the raw application config dictionary
     (
         context.appconfigfiles,
@@ -162,7 +161,7 @@ def cli(
     setup_logging(cliverbosity=verbose, user_config={'logging': logging_config})
 
     # --- PHASE 2: Load Environment Config, Validate, and Acquire Lock ---
-    
+    #
     # 1. Load raw Environment Config
     (
         context.envconfigfiles,
@@ -175,10 +174,10 @@ def cli(
         DEFAULT_ENV_CONFIG_FILENAME,
         DEFAULT_ENV_CONFIG,
     )
-    
+
     # Explicitly cast the raw_envconfig type to silence Pylance
     raw_envconfig = cast(dict[str, Any], raw_envconfig)
-    
+
     # 2. VALIDATE the raw environment config dictionary using Pydantic
     try:
         # Pydantic validation handles placeholder replacement via @model_validator
@@ -191,14 +190,14 @@ def cli(
              context.envconfigfiles, e
         )
         ctx.exit(1)
-    
+
     env_config_path = context.envconfigfiles[0] if context.envconfigfiles else None
-    
+
     # --- CONCURRENCY CONTROL: Use explicit __enter__ and cleanup registration ---
     if env_config_path:
         # 1. Instantiate the lock object
         ctx.obj.env_lock = PidFileLock(resource_path=env_config_path)
-        
+
         try:
             # 2. Acquire the lock by explicitly calling the __enter__ method.
             ctx.obj.env_lock.__enter__()
@@ -212,12 +211,12 @@ def cli(
             # Handles critical errors
             log.error("Failed to set up environment lock: %s", e)
             ctx.exit(1)
-        
+
         # 3. Register the lock's __exit__ method to be called when the context terminates.
         # We use a lambda to supply the three mandatory positional arguments (None)
         # expected by __exit__, satisfying the click.call_on_close requirement.
         ctx.call_on_close(lambda: ctx.obj.env_lock.__exit__(None, None, None))
-    
+
 # Add subcommand
 cli.add_command(build)
 cli.add_command(c14n)

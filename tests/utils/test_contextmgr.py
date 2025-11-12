@@ -238,3 +238,24 @@ def test_edit_json_cleans_up_temp_file_on_dump_error(tmp_path, monkeypatch):
     # We look for any file starting with ".json_tmp_" in the directory
     temp_files = list(tmp_path.glob('.json_tmp_*.tmp'))
     assert temp_files == [], f'Found leftover temp files: {temp_files}'
+
+
+def test_edit_json_raises_on_missing_file(tmp_path):
+    """If the target JSON file does not exist, a FileNotFoundError is raised."""
+    f = tmp_path / 'missing.json'
+
+    with pytest.raises(FileNotFoundError, match=str(f)):
+        with edit_json(f) as data:
+            data['x'] = 1
+
+
+def test_edit_json_invalid_json_raises_with_path(tmp_path):
+    """If the file contains invalid JSON, a JSONDecodeError with file path is raised."""
+    f = tmp_path / 'bad.json'
+    f.write_text('{ invalid json }', encoding='utf-8')
+
+    with pytest.raises(json.JSONDecodeError) as excinfo:
+        with edit_json(f) as data:
+            data['x'] = 1
+
+    assert str(f) in str(excinfo.value)
