@@ -11,4 +11,8 @@ This document lists some links that may be helpful for this project.
 
 * [Python's asyncio: A Hands-On Walkthrough](https://realpython.com/async-io-python/)
 
+## Locking files/PIDs
 
+* [pid](https://github.com/trbs/pid/)
+* [filelock](https://github.com/tox-dev/py-filelock)
+* [Portalocker](https://portalocker.readthedocs.io/en/latest/)
