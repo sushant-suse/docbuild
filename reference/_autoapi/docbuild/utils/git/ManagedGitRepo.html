@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.models.lifecycle.BaseLifecycleFlag &#8212; docbuild 0.13.0 documentation</title>
+    <title>docbuild.utils.git.ManagedGitRepo &#8212; docbuild 0.14.0 documentation</title>
   
   
   
@@ -41,17 +41,17 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../../../_static/documentation_options.js?v=1019fba8"></script>
+    <script src="../../../../../_static/documentation_options.js?v=9e420a66"></script>
     <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../../../_static/copybutton.js?v=f281be69"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'reference/_autoapi/docbuild/models/lifecycle/BaseLifecycleFlag';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'reference/_autoapi/docbuild/utils/git/ManagedGitRepo';</script>
     <link rel="icon" href="../../../../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" />
-    <link rel="next" title="docbuild.models.metadata" href="../metadata/index.html" />
-    <link rel="prev" title="docbuild.models.lifecycle" href="index.html" />
+    <link rel="next" title="docbuild.utils.merge" href="../merge/index.html" />
+    <link rel="prev" title="docbuild.utils.git" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -446,59 +446,74 @@
 </details></li>
 <li class="toctree-l2"><a class="reference internal" href="../../constants/index.html">docbuild.constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../logging/index.html">docbuild.logging</a></li>
-<li class="toctree-l2 current active has-children"><a class="reference internal" href="../index.html">docbuild.models</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l3 has-children"><a class="reference internal" href="../deliverable/index.html">docbuild.models.deliverable</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../deliverable/Deliverable.html">docbuild.models.deliverable.Deliverable</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../models/index.html">docbuild.models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/config_model/index.html">docbuild.models.config_model</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../models/config_model/app/index.html">docbuild.models.config_model.app</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../models/config_model/env/index.html">docbuild.models.config_model.env</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../doctype/index.html">docbuild.models.doctype</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../doctype/Doctype.html">docbuild.models.doctype.Doctype</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/deliverable/index.html">docbuild.models.deliverable</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../models/deliverable/Deliverable.html">docbuild.models.deliverable.Deliverable</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../language/index.html">docbuild.models.language</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../language/LanguageCode.html">docbuild.models.language.LanguageCode</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/doctype/index.html">docbuild.models.doctype</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../models/doctype/Doctype.html">docbuild.models.doctype.Doctype</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 current active has-children"><a class="reference internal" href="index.html">docbuild.models.lifecycle</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l4 current active"><a class="current reference internal" href="#">docbuild.models.lifecycle.BaseLifecycleFlag</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/language/index.html">docbuild.models.language</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../models/language/LanguageCode.html">docbuild.models.language.LanguageCode</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../metadata/index.html">docbuild.models.metadata</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../metadata/Metadata.html">docbuild.models.metadata.Metadata</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/lifecycle/index.html">docbuild.models.lifecycle</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../models/lifecycle/LifecycleFlag.html">docbuild.models.lifecycle.LifecycleFlag</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../product/index.html">docbuild.models.product</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../product/StrEnumMeta.html">docbuild.models.product.StrEnumMeta</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../product/BaseProductEnum.html">docbuild.models.product.BaseProductEnum</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/metadata/index.html">docbuild.models.metadata</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../models/metadata/Metadata.html">docbuild.models.metadata.Metadata</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../repo/index.html">docbuild.models.repo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../repo/Repo.html">docbuild.models.repo.Repo</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/path/index.html">docbuild.models.path</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../models/path/EnsureWritableDirectory.html">docbuild.models.path.EnsureWritableDirectory</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../serverroles/index.html">docbuild.models.serverroles</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../serverroles/ServerRole.html">docbuild.models.serverroles.ServerRole</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/product/index.html">docbuild.models.product</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../models/product/StrEnumMeta.html">docbuild.models.product.StrEnumMeta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../models/product/BaseProductEnum.html">docbuild.models.product.BaseProductEnum</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/repo/index.html">docbuild.models.repo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../models/repo/Repo.html">docbuild.models.repo.Repo</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/serverroles/index.html">docbuild.models.serverroles</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../models/serverroles/ServerRole.html">docbuild.models.serverroles.ServerRole</a></li>
 </ul>
 </details></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../utils/index.html">docbuild.utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../utils/contextmgr/index.html">docbuild.utils.contextmgr</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../utils/contextmgr/TimerData.html">docbuild.utils.contextmgr.TimerData</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../utils/contextmgr/PersistentOnErrorTemporaryDirectory.html">docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory</a></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../index.html">docbuild.utils</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 has-children"><a class="reference internal" href="../contextmgr/index.html">docbuild.utils.contextmgr</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../contextmgr/TimerData.html">docbuild.utils.contextmgr.TimerData</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../contextmgr/PersistentOnErrorTemporaryDirectory.html">docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utils/convert/index.html">docbuild.utils.convert</a></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../utils/decorators/index.html">docbuild.utils.decorators</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../utils/decorators/RegistryDecorator.html">docbuild.utils.decorators.RegistryDecorator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../convert/index.html">docbuild.utils.convert</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../decorators/index.html">docbuild.utils.decorators</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../decorators/RegistryDecorator.html">docbuild.utils.decorators.RegistryDecorator</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utils/merge/index.html">docbuild.utils.merge</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utils/paths/index.html">docbuild.utils.paths</a></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../utils/pidlock/index.html">docbuild.utils.pidlock</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../utils/pidlock/PidFileLock.html">docbuild.utils.pidlock.PidFileLock</a></li>
+<li class="toctree-l3 current active has-children"><a class="reference internal" href="index.html">docbuild.utils.git</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4 current active"><a class="current reference internal" href="#">docbuild.utils.git.ManagedGitRepo</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3"><a class="reference internal" href="../merge/index.html">docbuild.utils.merge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../paths/index.html">docbuild.utils.paths</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../pidlock/index.html">docbuild.utils.pidlock</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../pidlock/LockAcquisitionError.html">docbuild.utils.pidlock.LockAcquisitionError</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pidlock/PidFileLock.html">docbuild.utils.pidlock.PidFileLock</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../shell/index.html">docbuild.utils.shell</a></li>
 </ul>
 </details></li>
 </ul>
@@ -550,12 +565,12 @@
     <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">docbuild</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">docbuild.models</a></li>
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">docbuild.utils</a></li>
     
     
-    <li class="breadcrumb-item"><a href="index.html" class="nav-link">docbuild.models.lifecycle</a></li>
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">docbuild.utils.git</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">docbuild.models.lifecycle.BaseLifecycleFlag</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">docbuild.utils.git.ManagedGitRepo</span></li>
   </ul>
 </nav>
 </div>
@@ -572,47 +587,63 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="docbuild-models-lifecycle-baselifecycleflag">
-<h1>docbuild.models.lifecycle.BaseLifecycleFlag<a class="headerlink" href="#docbuild-models-lifecycle-baselifecycleflag" title="Link to this heading">#</a></h1>
+  <section id="docbuild-utils-git-managedgitrepo">
+<h1>docbuild.utils.git.ManagedGitRepo<a class="headerlink" href="#docbuild-utils-git-managedgitrepo" title="Link to this heading">#</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="docbuild.models.lifecycle.BaseLifecycleFlag">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docbuild.models.lifecycle.</span></span><span class="sig-name descname"><span class="pre">BaseLifecycleFlag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docbuild.models.lifecycle.BaseLifecycleFlag" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Flag" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">enum.Flag</span></code></a></p>
-<div class="graphviz"><img src="../../../../../_images/inheritance-751eeaeaecc7ed6877f91edf555b026eb74611e3.png" alt="Inheritance diagram of docbuild.models.lifecycle.BaseLifecycleFlag" usemap="#inheritancefca7862ce1" class="inheritance graphviz" /></div>
-<map id="inheritancefca7862ce1" name="inheritancefca7862ce1">
-<area shape="rect" id="node1" href="#docbuild.models.lifecycle.BaseLifecycleFlag" target="_top" title="Base class for LifecycleFlag." alt="" coords="245,5,385,31"/>
-<area shape="rect" id="node2" href="https://docs.python.org/3/library/enum.html#enum.Flag" target="_top" title="Support for flags" alt="" coords="125,5,197,31"/>
-<area shape="rect" id="node3" href="https://docs.python.org/3/library/enum.html#enum.Enum" target="_top" title="Create a collection of name/value pairs." alt="" coords="5,5,77,31"/>
-</map><p>Base class for LifecycleFlag.</p>
+<dt class="sig sig-object py" id="docbuild.utils.git.ManagedGitRepo">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docbuild.utils.git.</span></span><span class="sig-name descname"><span class="pre">ManagedGitRepo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">remote_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">permanent_root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docbuild.utils.git.ManagedGitRepo" title="Link to this definition">#</a></dt>
+<dd><p>Manages a bare repository and its temporary worktrees.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="docbuild.models.lifecycle.BaseLifecycleFlag.from_str">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#docbuild.models.lifecycle.BaseLifecycleFlag" title="docbuild.models.lifecycle.BaseLifecycleFlag"><span class="pre">BaseLifecycleFlag</span></a></span></span><a class="headerlink" href="#docbuild.models.lifecycle.BaseLifecycleFlag.from_str" title="Link to this definition">#</a></dt>
-<dd><p>Convert a string to a LifecycleFlag object.</p>
-<p>The string accepts the values ‘supported’, ‘beta’, ‘hidden’,
-‘unsupported’, or a combination of them separated by a comma or pipe.
-Addtionally, the class knows the values “UNKNOWN” and “unknown”.
-An empty string, “”, is equivalent to “UNKNOWN”.</p>
-<p>Examples:
-&gt;&gt;&gt; LifecycleFlag.from_str(“supported”)
-&lt;LifecycleFlag.supported: 2&gt;
-&gt;&gt;&gt; LifecycleFlag.from_str(“supported|beta”)
-&lt;LifecycleFlag.supported|beta: 6&gt;
-&gt;&gt;&gt; LifecycleFlag.from_str(“beta,supported|beta”)
-&lt;LifecycleFlag.supported|beta: 6&gt;
-&gt;&gt;&gt; LifecycleFlag.from_str(“”)
-&lt;LifecycleFlag.unknown: 0&gt;</p>
+<dt class="sig sig-object py" id="docbuild.utils.git.ManagedGitRepo.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.utils.git.ManagedGitRepo.__repr__" title="Link to this definition">#</a></dt>
+<dd><p>Return a string representation of the ManagedGitRepo.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="docbuild.utils.git.ManagedGitRepo.slug">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">slug</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#docbuild.utils.git.ManagedGitRepo.slug" title="Link to this definition">#</a></dt>
+<dd><p>Return the slug of the repository.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="docbuild.utils.git.ManagedGitRepo.remote_url">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">remote_url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#docbuild.utils.git.ManagedGitRepo.remote_url" title="Link to this definition">#</a></dt>
+<dd><p>Return the remote URL of the repository.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="docbuild.utils.git.ManagedGitRepo.permanent_root">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">permanent_root</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a></em><a class="headerlink" href="#docbuild.utils.git.ManagedGitRepo.permanent_root" title="Link to this definition">#</a></dt>
+<dd><p>Return the permanent root directory for the repository.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="docbuild.models.lifecycle.BaseLifecycleFlag.__contains__">
-<span class="sig-name descname"><span class="pre">__contains__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Flag" title="(in Python v3.14)"><span class="pre">enum.Flag</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#docbuild.models.lifecycle.BaseLifecycleFlag.__contains__" title="Link to this definition">#</a></dt>
-<dd><p>Return True if self has at least one of same flags set as other.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="s2">&quot;supported&quot;</span> <span class="ow">in</span> <span class="n">Lifecycle</span><span class="o">.</span><span class="n">beta</span>
-<span class="go">False</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="s2">&quot;supported|beta&quot;</span> <span class="ow">in</span> <span class="n">Lifecycle</span><span class="o">.</span><span class="n">beta</span>
-<span class="go">True</span>
-</pre></div>
-</div>
+<dt class="sig sig-object py" id="docbuild.utils.git.ManagedGitRepo.clone_bare">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">clone_bare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#docbuild.utils.git.ManagedGitRepo.clone_bare" title="Link to this definition">#</a></dt>
+<dd><p>Clone the remote repository as a bare repository.</p>
+<p>If the repository already exists, it logs a message and returns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docbuild.utils.git.ManagedGitRepo.create_worktree">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_worktree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">branch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_local</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.utils.git.ManagedGitRepo.create_worktree" title="Link to this definition">#</a></dt>
+<dd><p>Create a temporary worktree from the bare repository.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docbuild.utils.git.ManagedGitRepo.fetch_updates">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fetch_updates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#docbuild.utils.git.ManagedGitRepo.fetch_updates" title="Link to this definition">#</a></dt>
+<dd><p>Fetch updates from the remote to the bare repository.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -635,15 +666,15 @@ An empty string, “”, is equivalent to “UNKNOWN”.</p>
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">docbuild.models.lifecycle</p>
+        <p class="prev-next-title">docbuild.utils.git</p>
       </div>
     </a>
     <a class="right-next"
-       href="../metadata/index.html"
+       href="../merge/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">docbuild.models.metadata</p>
+        <p class="prev-next-title">docbuild.utils.merge</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -666,9 +697,14 @@ An empty string, “”, is equivalent to “UNKNOWN”.</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.lifecycle.BaseLifecycleFlag"><code class="docutils literal notranslate"><span class="pre">docbuild.models.lifecycle.BaseLifecycleFlag</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.lifecycle.BaseLifecycleFlag.from_str"><code class="docutils literal notranslate"><span class="pre">docbuild.models.lifecycle.BaseLifecycleFlag.from_str()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.lifecycle.BaseLifecycleFlag.__contains__"><code class="docutils literal notranslate"><span class="pre">docbuild.models.lifecycle.BaseLifecycleFlag.__contains__()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.git.ManagedGitRepo"><code class="docutils literal notranslate"><span class="pre">docbuild.utils.git.ManagedGitRepo</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.git.ManagedGitRepo.__repr__"><code class="docutils literal notranslate"><span class="pre">docbuild.utils.git.ManagedGitRepo.__repr__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.git.ManagedGitRepo.slug"><code class="docutils literal notranslate"><span class="pre">docbuild.utils.git.ManagedGitRepo.slug</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.git.ManagedGitRepo.remote_url"><code class="docutils literal notranslate"><span class="pre">docbuild.utils.git.ManagedGitRepo.remote_url</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.git.ManagedGitRepo.permanent_root"><code class="docutils literal notranslate"><span class="pre">docbuild.utils.git.ManagedGitRepo.permanent_root</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.git.ManagedGitRepo.clone_bare"><code class="docutils literal notranslate"><span class="pre">docbuild.utils.git.ManagedGitRepo.clone_bare()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.git.ManagedGitRepo.create_worktree"><code class="docutils literal notranslate"><span class="pre">docbuild.utils.git.ManagedGitRepo.create_worktree()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.git.ManagedGitRepo.fetch_updates"><code class="docutils literal notranslate"><span class="pre">docbuild.utils.git.ManagedGitRepo.fetch_updates()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -678,7 +714,7 @@ An empty string, “”, is equivalent to “UNKNOWN”.</p>
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/reference/_autoapi/docbuild/models/lifecycle/BaseLifecycleFlag.rst">
+    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/reference/_autoapi/docbuild/utils/git/ManagedGitRepo.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
@@ -694,7 +730,7 @@ An empty string, “”, is equivalent to “UNKNOWN”.</p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../../../../../_sources/reference/_autoapi/docbuild/models/lifecycle/BaseLifecycleFlag.rst.txt"
+      <li><a href="../../../../../_sources/reference/_autoapi/docbuild/utils/git/ManagedGitRepo.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>
