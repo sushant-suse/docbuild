@@ -46,7 +46,8 @@ Module Contents
    more robust for complex XInclude statements, including those with XPointer.
 
    :param xmlfile: The path to the XML file to validate.
-   :param rng_schema_path: The path to the RELAX NG schema file. It supports both RNC and RNG formats.
+   :param rng_schema_path: The path to the RELAX NG schema file.
+       It supports both RNC and RNG formats.
    :param xinclude: If True, resolve XIncludes with `xmllint` before validation.
    :param idcheck: If True, perform ID uniqueness checks.
    :return: A tuple containing a boolean success status and any output message.
