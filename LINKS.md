@@ -10,6 +10,11 @@ This document lists some links that may be helpful for this project.
 ## Async I/O
 
 * [Python's asyncio: A Hands-On Walkthrough](https://realpython.com/async-io-python/)
+* [joblib](https://joblib.readthedocs.io)
+
+## Performance / Benchmarks
+
+* [Scalene](https://www.python4data.science/en/24.3.0/performance/scalene.html)
 
 ## Locking files/PIDs
 
