@@ -52,7 +52,7 @@ def load_and_merge_configs(
             'Please provide at least one path to load the config files.',
         )
 
-    # Create a carthesian product of paths and default filenames:
+    # Create a cartesian product of paths and default filenames:
     for path, cfgfile in product(paths, defaults):
         path = Path(path).expanduser().resolve() / cfgfile
 

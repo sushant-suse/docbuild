@@ -36,7 +36,7 @@ class TimerData:
 def make_timer(
     name: str, method: Callable[[], float] = time.perf_counter
 ) -> Callable[[], AbstractContextManager[TimerData]]:
-    """Create independant context managers to measure elapsed time.
+    """Create independent context managers to measure elapsed time.
 
     Each timer is independent and can be used in a context manager.
     The name is used to identify the timer.

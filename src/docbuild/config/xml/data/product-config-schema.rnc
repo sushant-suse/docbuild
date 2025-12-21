@@ -309,7 +309,7 @@ ds.acronym =
   }
 
 ds.maintainers =
-  ## Collection of email addresses to send mail about buld failures to
+  ## Collection of email addresses to send mail about build failures to
   element maintainers {
     ds.contact+
   }
