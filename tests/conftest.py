@@ -229,3 +229,39 @@ def fake_validate_options(
             mock_load_and_merge_configs,
             mock_load_single_config,
         )
+
+
+@pytest.fixture
+def app_config_file(tmp_path: Path) -> Path:
+    """Create a simple `app.toml` file and return its path."""
+    app = tmp_path / "app.toml"
+    app.write_text("[logging]\nversion=1\n")
+    return app
+
+
+@pytest.fixture
+def env_config_file(tmp_path: Path) -> Path:
+    """Create a simple `env.toml` file and return its path."""
+    env = tmp_path / "env.toml"
+    env.write_text("[paths]\nrepo_dir = '/tmp/repos'\nconfig_dir = '/etc/docbuild'\n")
+    return env
+
+
+@pytest.fixture
+def fake_handle_config(monkeypatch: pytest.MonkeyPatch) -> Callable[
+    [Callable[[Any], tuple]], None
+]:
+    """Return a helper that installs a resolver as the `handle_config` implementation.
+
+    The resolver should be a callable accepting `user_path` and returning
+    `(files_tuple, raw_dict, from_defaults_bool)`.
+    Example usage in a test:
+
+        fake_handle_config(lambda p: ((p,), {'logging': {...}}, False))
+    """
+
+    def install(resolver: Callable[[Any], tuple]) -> None:
+        monkeypatch.setattr(cli, 'handle_config',
+                            lambda user_path, *a, **kw: resolver(user_path))
+
+    return install
