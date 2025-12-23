@@ -39,7 +39,7 @@ def mock_execute_git(monkeypatch) -> AsyncMock:
 @pytest.fixture(autouse=True)
 def clear_managed_repo_cache():
     """Clear the ManagedGitRepo._is_updated cache before each test."""
-    ManagedGitRepo._is_updated.clear()
+    ManagedGitRepo.clear_cache()
 
 
 async def test_managed_repo_clone_bare_new(
