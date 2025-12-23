@@ -263,7 +263,7 @@ def test_deliverable_base_format_path(deliverable_de: etree._Element):
         # docsetid="15-SP6",
         # lang="de-de"
     )
-    assert deli._base_format_path('html') == '/de-de/sles/15-SP6/html/foo/'
+    assert deli.html_path == '/de-de/sles/15-SP6/html/foo/'
 
 
 def test_deliverable_base_format_path_rootid_none(deliverable_de: etree._Element):
@@ -275,7 +275,7 @@ def test_deliverable_base_format_path_rootid_none(deliverable_de: etree._Element
         # lang="de-de"
     )
     # If rootid is None, fallback to the deliverable's basefile
-    assert deli._base_format_path('html') == (
+    assert deli.html_path == (
         '/de-de/sles/15-SP6/html/SLES-administration/'
     )
 
