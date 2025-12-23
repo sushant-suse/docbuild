@@ -284,3 +284,4 @@ node_modules/
 /env.*.toml
 /.config.toml
 /config.toml
+scalene-profile.*
