@@ -63,6 +63,9 @@ class EnsureWritableDirectory:
         Expands user, checks if path exists. If not, creates it. Then checks permissions.
         """
 
+        # Ensure user expansion happens before any filesystem operations
+        path = path.expanduser()
+
         # 1. Auto-Creation Logic
         if not path.exists():
             try:
