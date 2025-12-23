@@ -12,6 +12,12 @@ This document lists some links that may be helpful for this project.
 * [Python's asyncio: A Hands-On Walkthrough](https://realpython.com/async-io-python/)
 * [joblib](https://joblib.readthedocs.io)
 
+## Tests
+
+* [Pytest with Eric](https://pytest-with-eric.com)
+* [Top pytest plugins](https://pythontest.com/top-pytest-plugins/)
+* [Awesome pytest](https://github.com/augustogoulart/awesome-pytest)
+
 ## Performance / Benchmarks
 
 * [Scalene](https://www.python4data.science/en/24.3.0/performance/scalene.html)
