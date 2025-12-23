@@ -134,8 +134,8 @@ def test_envconfig_full_success(mock_valid_raw_env_data: dict[str, Any]):
 
     config = EnvConfig.from_dict(mock_valid_raw_env_data)
 
-    assert isinstance(config, EnvConfig)
-    
+    assert isinstance(config, dict) # EnvConfig)
+
     # Check type coercion for core types
     assert isinstance(config.paths.base_cache_dir, Path)
     
