@@ -17,6 +17,16 @@ class ManagedGitRepo:
     #: Class variable to indicate the update state of a repo
     _is_updated: ClassVar[dict[Repo, bool]] = {}
 
+    @classmethod
+    def clear_cache(cls) -> None:
+        """Clear the internal update-state cache.
+
+        This is a small, explicit API intended primarily for tests
+        to reset class-level state between test cases. It avoids
+        tests touching the private `_is_updated` attribute directly.
+        """
+        cls._is_updated.clear()
+
     def __init__(self: Self,
                  remote_url: str,
                  permanent_root: Path,

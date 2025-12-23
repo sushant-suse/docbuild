@@ -9,6 +9,8 @@ from docbuild.config.app import (
     PlaceholderResolver,
     replace_placeholders,
 )
+from docbuild.models.config.app import AppConfig
+from pydantic import ValidationError
 
 
 def test_replace_placeholders():
@@ -267,15 +269,63 @@ def test_placeholder_wrong_type():
     config = 42
     assert replace_placeholders(config) == 42, 'Non-dict input should return unchanged'
 
+def test_appconfig_resolve_placeholders_non_dict_validator_runs():
+    """Ensure the AppConfig model validator runs for non-dict input.
 
+    We exercise the validator branch that returns the input unchanged by
+    calling the public `model_validate` API with a non-mapping value. The
+    validation itself should raise a `ValidationError` for the wrong type,
+    but the validator ran and the branch is covered without calling private
+    methods directly.
+    """
+    with pytest.raises(ValidationError):
+        AppConfig.model_validate(123)
+
+# @pytest.mark.skip(reason="Private method test; not typically needed.")
 def test_get_container_name_with_none_key():
     """Test _get_container_name when _current_key is None."""
     config = {'test': 'value'}
     resolver = PlaceholderResolver(config)
+    # This should return 'unknown' via the public accessor
+    assert resolver.get_container_name() == 'unknown'
 
-    # Initially _current_key is None
-    assert resolver._current_key is None
 
-    # This should return 'unknown'
-    container_name = resolver._get_container_name()
-    assert container_name == 'unknown'
+def test_list_items_are_processed_and_resolved():
+    """Ensure list items (dict and str) are pushed onto the stack and processed.
+
+    This targets the branch that appends list items to the processing stack.
+    """
+    config = {
+        'global': {'val': 'G'},
+        'items': [
+            {'inner': '{global.val}'},
+            '{global.val}',
+            42,  # non-processable should be left untouched
+        ],
+    }
+
+    result = replace_placeholders(config)
+
+    assert result['items'][0]['inner'] == 'G'
+    assert result['items'][1] == 'G'
+    assert result['items'][2] == 42
+
+
+def test_nested_list_processing_appends_stack_items():
+    """Explicitly target the code path that appends list items to the stack.
+
+    The root-level key 'seq' holds a list with a dict and a string placeholder.
+    This ensures the `elif isinstance(value, list)` branch runs and the
+    inner `stack.append((value, i, context))` line is executed.
+    """
+    config = {
+        'seq': [
+            {'inner': '{global.v}'},
+            '{global.v}',
+        ],
+        'global': {'v': 'VAL'},
+    }
+
+    out = replace_placeholders(config)
+    assert out['seq'][0]['inner'] == 'VAL'
+    assert out['seq'][1] == 'VAL'
