@@ -114,6 +114,15 @@ class PlaceholderResolver:
             else f'list item at index {self._current_key}'
         )
 
+    def get_container_name(self) -> str:
+        """Public accessor for the current container/key name.
+
+        This provides a stable, public way to retrieve the human-readable
+        container name for diagnostics and tests without reaching into
+        private attributes.
+        """
+        return self._get_container_name()
+
     def replace(self) -> dict[str, Any]:
         """Replace all placeholders in the configuration.
 
