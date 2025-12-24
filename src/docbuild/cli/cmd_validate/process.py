@@ -9,6 +9,7 @@ import tempfile
 
 from lxml import etree
 from rich.console import Console
+from subprocess import CompletedProcess
 
 from ...config.xml.checks import CheckResult, register_check
 from ...config.xml.stitch import create_stitchfile
@@ -83,7 +84,7 @@ async def validate_rng(
     *,
     xinclude: bool = True,
     idcheck: bool = True
-) -> tuple[bool, str]:
+) -> CompletedProcess:
     """Validate an XML file against a RELAX NG schema using jing.
 
     If `xinclude` is True (the default), this function resolves XIncludes by
@@ -107,8 +108,6 @@ async def validate_rng(
     try:
         if xinclude:
             # Use a temporary file to store the output of xmllint.
-            # This is more robust than piping, especially if jing doesn't
-            # correctly handle stdin (the command "jing schema.rng -" does NOT work.)
             with tempfile.NamedTemporaryFile(
                 prefix='jing-validation',
                 suffix='.xml',
@@ -119,33 +118,33 @@ async def validate_rng(
                 tmp_filepath = Path(tmp_file.name)
 
                 # 1. Run xmllint to resolve XIncludes and save to temp file
-                process = await run_command(
-                    ['xmllint', '--xinclude', '--output',
-                     str(tmp_filepath), str(xmlfile)]
+                xmllint_proc = await run_command(
+                    ['xmllint', '--xinclude', '--output', str(tmp_filepath), str(xmlfile)]
                 )
-                if process.returncode != 0:
-                    return False, f'xmllint failed: {process.stderr}'
+                if xmllint_proc.returncode != 0:
+                    # Construct a CompletedProcess representing failure from xmllint
+                    return CompletedProcess(
+                        args=['xmllint', str(xmlfile)],
+                        returncode=xmllint_proc.returncode,
+                        stdout=xmllint_proc.stdout,
+                        stderr=f'xmllint failed: {xmllint_proc.stderr}',
+                    )
 
                 # 2. Run jing on the resolved temporary file
                 jing_cmd.append(str(tmp_filepath))
-                process = await run_command(jing_cmd)
-                if process.returncode != 0:
-                    return False, (process.stdout + process.stderr).strip()
-
-                return True, ''
+                return await run_command(jing_cmd)
         else:
             # Validate directly with jing, no XInclude resolution.
             jing_cmd.append(str(xmlfile))
-            process = await run_command(jing_cmd)
-            if process.returncode == 0:
-                return True, ''
-            return False, (process.stdout + process.stderr).strip()
+            return await run_command(jing_cmd)
 
     except FileNotFoundError as e:
         tool = e.filename or 'xmllint/jing'
-        return (
-            False,
-            f'{tool} command not found. Please install it to run validation.',
+        return CompletedProcess(
+            args=[tool],
+            returncode=1,
+            stdout='',
+            stderr=f'{tool} command not found. Please install it to run validation.',
         )
 
 
@@ -203,6 +202,7 @@ async def run_python_checks(
         try:
             result = await asyncio.to_thread(check, tree)
             check_results.append((check.__name__, result))
+
         except Exception as e:
             error_result = CheckResult(success=False, messages=[f'error: {e}'])
             check_results.append((check.__name__, error_result))
@@ -229,7 +229,7 @@ async def process_file(
     )
 
     # IDEA: Should we replace jing and validate with etree.RelaxNG?
-
+    #
     # 1. RNG Validation
     validation_method = context.validation_method
 
@@ -242,7 +242,7 @@ async def process_file(
         )
     elif validation_method == 'jing':
         # Use existing jing-based validator (.rnc or .rng)
-        rng_success, rng_output = await validate_rng(path_obj, idcheck=True)
+        jing_result = await validate_rng(path_obj, idcheck=True)
     else:
         console_err.print(
             f'{shortname:<{max_len}}: RNG validation => [red]failed[/red]'
@@ -250,14 +250,26 @@ async def process_file(
         console_err.print(f'  [bold red]Error:[/] Unknown validation method: {validation_method}')
         return 11  # Custom error code for unknown validation method
 
-    # Handle validation result
-    if not rng_success:
-        console_err.print(
-            f'{shortname:<{max_len}}: RNG validation => [red]failed[/red]'
-        )
-        if rng_output:
-            console_err.print(f'  [bold red]Error:[/] {rng_output}')
-        return 10  # Specific error code for RNG failure
+    # Handle validation result for jing
+    if validation_method == 'jing':
+        if jing_result.returncode != 0:
+            console_err.print(
+                f'{shortname:<{max_len}}: RNG validation => [red]failed[/red]'
+            )
+            output = (jing_result.stdout or '') + (jing_result.stderr or '')
+            if output:
+                console_err.print(f'  [bold red]Error:[/] {output.strip()}')
+            return 10  # Specific error code for RNG failure
+
+    # Handle validation result for lxml
+    if validation_method == 'lxml':
+        if not rng_success:
+            console_err.print(
+                f'{shortname:<{max_len}}: RNG validation => [red]failed[/red]'
+            )
+            if rng_output:
+                console_err.print(f'  [bold red]Error:[/] {rng_output}')
+            return 10
 
     # 2. Python-based checks
     try:
