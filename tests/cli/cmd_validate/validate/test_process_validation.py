@@ -37,9 +37,9 @@ async def test_validate_rng_with_rng_suffix(tmp_path: Path):
   <start><element name="root"><text/></element></start>
 </grammar>""")
 
-    returncode, _ = await process_mod.validate_rng(xmlfile, rng_schema)
+    proc = await process_mod.validate_rng(xmlfile, rng_schema)
 
-    assert returncode, f'Expected True, got {returncode}'
+    assert proc.returncode == 0, f'Expected return code 0, got {proc.returncode}'
 
 
 @pytest.mark.skipif(not is_jing_installed(), reason="jing command not found")
@@ -54,9 +54,9 @@ async def test_validate_rng_with_invalid_xml(tmp_path: Path):
     <start><element name="root"><text/></element></start>
 </grammar>""")
 
-    returncode, message = await process_mod.validate_rng(xmlfile, rng_schema)
-    assert returncode is False, f'Expected False, got {returncode}'
-    assert 'error: element "wrong_root"' in message
+    proc = await process_mod.validate_rng(xmlfile, rng_schema)
+    assert proc.returncode != 0, f'Expected non-zero return code, got {proc.returncode}'
+    assert 'error: element "wrong_root"' in (proc.stdout + proc.stderr)
 
 
 @pytest.mark.skipif(not is_jing_installed(), reason="jing command not found")
@@ -71,9 +71,9 @@ async def test_validate_rng_without_xinclude(tmp_path: Path):
     <start><element name="root"><text/></element></start>
 </grammar>""")
 
-    returncode, _ = await process_mod.validate_rng(xmlfile, rng_schema, xinclude=False)
+    proc = await process_mod.validate_rng(xmlfile, rng_schema, xinclude=False)
 
-    assert returncode, f'Expected True, got {returncode}'
+    assert proc.returncode == 0, f'Expected return code 0, got {proc.returncode}'
 
 
 @pytest.mark.skipif(not is_jing_installed(), reason="jing command not found")
@@ -88,12 +88,10 @@ async def test_validate_rng_with_invalid_xml_without_xinclude(tmp_path: Path):
     <start><element name="root"><text/></element></start>
 </grammar>""")
 
-    returncode, message = await process_mod.validate_rng(
-        xmlfile, rng_schema, xinclude=False
-    )
+    proc = await process_mod.validate_rng(xmlfile, rng_schema, xinclude=False)
 
-    assert returncode is False, f'Expected False, got {returncode}'
-    assert 'element "wrong_root" not allowed anywhere' in message
+    assert proc.returncode != 0, f'Expected non-zero return code, got {proc.returncode}'
+    assert 'element "wrong_root" not allowed anywhere' in (proc.stdout + proc.stderr)
 
 
 async def test_validate_rng_jing_failure():
@@ -112,12 +110,12 @@ async def test_validate_rng_jing_failure():
                       stdout='Error in jing',
                       stderr=''))
     ) as mock_run_command:
-        success, output = await process_mod.validate_rng(
+        proc = await process_mod.validate_rng(
             xmlfile, rng_schema_path=rng_schema, xinclude=False, idcheck=False
         )
 
-        assert not success, 'Expected validation to fail.'
-        assert output == 'Error in jing', f'Unexpected output: {output}'
+        assert proc.returncode != 0, 'Expected validation to fail.'
+        assert proc.stdout == 'Error in jing', f'Unexpected stdout: {proc.stdout}'
 
         mock_run_command.assert_called_once_with(
             ['jing', str(rng_schema), str(xmlfile)]
@@ -137,12 +135,12 @@ async def test_validate_rng_command_not_found():
     with patch.object(
         process_mod, 'run_command', new_callable=AsyncMock, side_effect=error
     ):
-        success, output = await process_mod.validate_rng(
+        proc = await process_mod.validate_rng(
             xmlfile, rng_schema_path=rng_schema, xinclude=False
         )
 
-    assert not success, 'Expected validation to fail.'
-    assert output == 'jing command not found. Please install it to run validation.'
+    assert proc.returncode != 0, 'Expected validation to fail.'
+    assert proc.stderr == 'jing command not found. Please install it to run validation.'
 
 
 async def test_validate_rng_command_not_found_no_filename():
@@ -155,13 +153,13 @@ async def test_validate_rng_command_not_found_no_filename():
     with patch.object(
         process_mod, 'run_command', new_callable=AsyncMock, side_effect=error
     ):
-        success, output = await process_mod.validate_rng(
+        proc = await process_mod.validate_rng(
             xmlfile, rng_schema, xinclude=False
         )
 
-    assert not success, 'Expected validation to fail.'
+    assert proc.returncode != 0, 'Expected validation to fail.'
     assert (
-        output == 'xmllint/jing command not found. Please install it to run validation.'
+        proc.stderr == 'xmllint/jing command not found. Please install it to run validation.'
     )
 
 
@@ -169,7 +167,7 @@ async def test_process_file_with_validation_issues(capsys, tmp_path):
     with patch.object(
         process_mod,
         'validate_rng',
-        new=AsyncMock(return_value=(False, 'Validation error')),
+        new=AsyncMock(return_value=CompletedProcess(args=['jing'], returncode=1, stdout='', stderr='Validation error')),
     ) as mock_validate_rng:
         dir_path = tmp_path / 'path' / 'to'
         dir_path.mkdir(parents=True)
@@ -207,7 +205,7 @@ async def test_process_file_with_xmlsyntax_error(capsys, tmp_path):
             ),
         ) as mock_etree_parse,
         patch.object(
-            process_mod, 'validate_rng', new=AsyncMock(return_value=(True, ''))
+            process_mod, 'validate_rng', new=AsyncMock(return_value=CompletedProcess(args=['jing'], returncode=0, stdout='', stderr=''))
         ) as mock_validate_rng,
     ):
         result = await process_mod.process_file(xmlfile, mock_context, 40)

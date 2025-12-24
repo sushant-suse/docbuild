@@ -35,7 +35,10 @@ def mock_context() -> DocBuildContext:
 
 
 @patch.object(process_module, 'validate_rng',
-              new_callable=AsyncMock, return_value=(True, ''))
+              new_callable=AsyncMock,
+              return_value=CompletedProcess(args=['jing'],
+                                            returncode=0, stdout='', stderr='')
+)
 @patch.object(process_module.etree, 'parse', side_effect=ValueError('Generic test error'))
 async def test_process_file_with_generic_parsing_error(
     mock_etree_parse, mock_validate_rng, mock_context, tmp_path, capsys
@@ -129,10 +132,10 @@ async def test_validate_rng_with_idcheck_success(mock_run_command, tmp_path):
     rng_schema = tmp_path / 'schema.rnc'
     rng_schema.touch()
 
-    is_valid, message = await validate_rng(xml_file, rng_schema, xinclude=False, idcheck=True)
+    proc = await validate_rng(xml_file, rng_schema, xinclude=False, idcheck=True)
 
-    assert is_valid is True
-    assert message == ''
+    assert proc.returncode == 0
+    assert proc.stdout == '' and proc.stderr == ''
     # Ensure -i flag is passed to jing
     assert "-i" in mock_run_command.call_args.args[0]
 
@@ -151,10 +154,10 @@ async def test_validate_rng_with_idcheck_duplicate_failure(mock_run_command, tmp
     rng_schema = tmp_path / 'schema.rnc'
     rng_schema.touch()
 
-    is_valid, message = await validate_rng(xml_file, rng_schema, xinclude=False, idcheck=True)
+    proc = await validate_rng(xml_file, rng_schema, xinclude=False, idcheck=True)
 
-    assert is_valid is False
-    assert 'duplicate ID' in message
+    assert proc.returncode != 0
+    assert 'duplicate ID' in proc.stderr
     # Ensure -i flag is passed to jing
     assert '-i' in mock_run_command.call_args.args[0]
 
@@ -173,9 +176,9 @@ async def test_validate_rng_without_idcheck_success(mock_run_command, tmp_path):
     rng_schema = tmp_path / 'schema.rnc'
     rng_schema.touch()
 
-    is_valid, message = await validate_rng(xml_file, rng_schema, xinclude=False, idcheck=False)
+    proc = await validate_rng(xml_file, rng_schema, xinclude=False, idcheck=False)
 
-    assert is_valid is True
-    assert message == ''
+    assert proc.returncode == 0
+    assert proc.stdout == '' and proc.stderr == ''
     # Ensure -i flag is NOT passed to jing
     assert '-i' not in mock_run_command.call_args.args[0]
