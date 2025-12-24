@@ -33,8 +33,8 @@ Docbuild builds documentation from DocBook 5/ASCIIDoc, manages XML configs, clon
 
 Run tests:
 
-* Complete tests with `upytest` from the alias script.
-* Single tests with `upytest tests/path/to/test_file.py::test_function_name`
+* Run the complete test suite with `uv run --frozen pytest`.
+* Single tests with `uv run --frozen pytest tests/path/to/test_file.py::test_function_name`.
 
 
 ## Constraints & Safety
