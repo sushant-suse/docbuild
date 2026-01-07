@@ -1,6 +1,6 @@
 name: Documentation Update
 description: Propose improvements or corrections to the documentation.
-labels: [documentation]
+labels: ["area:documentation"]
 type: task
 
 
