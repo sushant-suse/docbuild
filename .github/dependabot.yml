@@ -14,4 +14,4 @@ updates:
     assignees:
       - "tomschr"
     labels:
-      - "dependencies"
+      - "area:dependencies"
