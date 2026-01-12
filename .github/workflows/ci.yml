@@ -13,12 +13,15 @@ on:
     paths:
       - 'src/**'
       - 'tests/**'
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
 permissions:
   contents: read
   packages: read
+  pull-requests: write
 
 jobs:
   test-ubuntu:
@@ -56,7 +59,7 @@ jobs:
             jq \
             rsvg-convert \
             openssh-clients || true
-            
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -79,19 +82,51 @@ jobs:
           # CRITICAL FIX: Ensure coverage tools are installed for the CI runner
           pip install coverage pytest-cov
 
-      - name: Run tests and Report Coverage # Unified step for test execution and reporting
+      - name: Run tests and Report Coverage
         run: |
           source .venv/bin/activate
           # 1. Run tests and collect coverage for src/ and tests/
-          pytest --cov=src --cov=tests --cov-report=term-missing -vv 
-          
-          # 2. Combine and report data (needed after parallel execution)
+          pytest --cov=src --cov=tests --cov-report=term-missing -vv
+
+          # 2. Combine data
           python -m coverage combine --append || true
-          python -m coverage report
+
+          # 3. Generate report and save to file (using tee to see it in logs too)
+          python -m coverage report | tee coverage.txt
+
+          # 4. Cleanup coverage data
           python -m coverage erase # Final cleanup
         env:
           PYTHONSTARTMETHOD: spawn
-          
+
+      - name: Create Coverage Comment for ${{ github.event.pull_request.head.sha || github.sha }}
+        if: success() && github.event_name == 'pull_request' && matrix.python-version == '3.12'
+        env:
+          # Use the PR head if available, otherwise fallback to the workflow SHA
+          COMMIT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          # Get the short SHA (e.g., a1b2c3d)
+          SHORT_SHA=${COMMIT_SHA::7}
+          # Create the comment content with markdown formatting:
+          echo "## Coverage Report" > coverage_comment.txt
+          echo "For commit $SHORT_SHA" >>  coverage_comment.txt
+          echo "" >> coverage_comment.txt
+
+          echo "<details><summary>Click to expand Coverage Report</summary>" >> coverage_comment.txt
+          echo "" >> coverage_comment.txt
+          echo "\`\`\`" >> coverage_comment.txt
+          cat coverage.txt >> coverage_comment.txt
+          echo "\`\`\`" >> coverage_comment.txt
+          echo "</details>" >> coverage_comment.txt
+          cat coverage_comment.txt
+
+      - name: Post Coverage Comment
+        if: success() && github.event_name == 'pull_request' && matrix.python-version == '3.12'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          path: coverage_comment.txt
+          header: coverage
+
   test-macos:
     name: macos-python-${{ matrix.python-version }}
     runs-on: macos-latest
@@ -102,13 +137,13 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+
       # Set up Python on macOS environment
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      
+
       # Install uv and project dependencies inside a virtual environment
       - name: Install uv and dependencies
         run: |
@@ -116,7 +151,7 @@ jobs:
           source .venv/bin/activate
           pip install uv
           uv pip install --editable . --group devel
-      
+
       # Install macOS-specific external tools (such as XML parsers and Java)
       - name: Install external tools (macOS)
         run: |
@@ -128,7 +163,7 @@ jobs:
 
           # Download jing.jar file for XML validation
           curl -sL -f $JING_URL -o jing.jar
-          
+
           # Ensures the jar file is successfully downloaded, else exit with error
           if [ ! -f jing.jar ]; then
               echo "::error file=$JING_URL:: Failed to download jing.jar"
@@ -150,6 +185,6 @@ jobs:
       - name: Run tests
         run: |
           source .venv/bin/activate
-          pytest --cov=src -vv 
+          pytest --cov=src -vv
         env:
           PYTHONSTARTMETHOD: spawn
