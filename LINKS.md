@@ -30,3 +30,8 @@ This document lists some links that may be helpful for this project.
 * [pid](https://github.com/trbs/pid/)
 * [filelock](https://github.com/tox-dev/py-filelock)
 * [Portalocker](https://portalocker.readthedocs.io/en/latest/)
+
+## Docserv
+* [Docserv Action steps](https://confluence.suse.com/spaces/documentation/pages/1137311916/Docserv+Action+steps)
+* [Docserv repo](https://github.com/openSUSE/docserv)
+
