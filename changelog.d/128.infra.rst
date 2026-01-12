@@ -1,0 +1,1 @@
+Add coverage for GitHub Action CI workflow. Whenever a pull request is made, the CI will add a coverage report comment. If there are new commits, the comment will be updated.
