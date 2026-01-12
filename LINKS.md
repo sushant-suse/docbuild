@@ -12,6 +12,9 @@ This document lists some links that may be helpful for this project.
 * [Python's asyncio: A Hands-On Walkthrough](https://realpython.com/async-io-python/)
 * [joblib](https://joblib.readthedocs.io)
 
+## Task Queues
+* [Taskiq](https://taskiq-python.github.io)
+
 ## Tests
 
 * [Pytest with Eric](https://pytest-with-eric.com)
