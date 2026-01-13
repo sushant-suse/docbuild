@@ -1,0 +1,1 @@
+Colorize the coverage report in the GitHub Actions comment based on a threshold.
