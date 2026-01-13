@@ -104,21 +104,58 @@ jobs:
         env:
           # Use the PR head if available, otherwise fallback to the workflow SHA
           COMMIT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          COVERAGE_THRESHOLD: 90
         run: |
           # Get the short SHA (e.g., a1b2c3d)
           SHORT_SHA=${COMMIT_SHA::7}
-          # Create the comment content with markdown formatting:
+
+          # 1. Header
           echo "## Coverage Report" > coverage_comment.txt
           echo "For commit $SHORT_SHA" >>  coverage_comment.txt
           echo "" >> coverage_comment.txt
 
+          # 2. Open the collapsible section
           echo "<details><summary>Click to expand Coverage Report</summary>" >> coverage_comment.txt
           echo "" >> coverage_comment.txt
-          echo "\`\`\`" >> coverage_comment.txt
-          cat coverage.txt >> coverage_comment.txt
+
+          # 3. Open a diff code block
+          echo "\`\`\`diff" >> coverage_comment.txt
+
+          # 4. Run awk to parse percentages and add colors
+          awk -v threshold="$COVERAGE_THRESHOLD" '{
+            # Flag to track if we found a percentage in this line
+            is_coverage_row = 0
+
+            # 1. Scan all fields to find the one ending in "%"
+            # (Crucial for "term-missing" where the last column might be line numbers "1-5")
+            for (i=1; i<=NF; i++) {
+                if ($i ~ /%$/) {
+                    # Remove "%" and force numeric type by adding 0
+                    val = $i
+                    gsub("%", "", val)
+                    val = val + 0 # Force numeric conversion
+                    is_coverage_row = 1
+                    break; # Stop once we find the percentage
+                }
+            }
+
+            # 2. Logic: Colorize rows with %, indent everything else
+            if (is_coverage_row) {
+               if (val < threshold) {
+                 print "- " $0; # Red
+               } else {
+                 print "+ " $0; # Green
+               }
+            } else {
+               # Headers and Separators (------) fall here.
+               # We add two spaces so they appear Gray and aligned.
+               print "  " $0;
+            }
+          }' coverage.txt >> coverage_comment.txt
+
+          # 5. Close the block
           echo "\`\`\`" >> coverage_comment.txt
           echo "</details>" >> coverage_comment.txt
-          cat coverage_comment.txt
 
       - name: Post Coverage Comment
         if: success() && github.event_name == 'pull_request' && matrix.python-version == '3.12'
