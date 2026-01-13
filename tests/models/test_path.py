@@ -185,3 +185,32 @@ def test_writable_directory_attribute_access(tmp_path: Path):
     # Test string representation
     assert str(model.writable_dir) == str(test_dir.resolve())
     assert repr(model.writable_dir).startswith("EnsureWritableDirectory")
+
+
+@pytest.mark.parametrize(
+    "path_consumer, expected_factory",
+    [
+        (os.fspath, lambda p: str(p.resolve())),
+        (Path, lambda p: p.resolve()),
+        (lambda p: (p / "test.txt").read_text(), lambda p: "hello"),
+    ],
+    ids=["os.fspath", "Path constructor", "open and read"],
+)
+def test_fspath_protocol_compatibility(
+    request: pytest.FixtureRequest,
+    tmp_path: Path,
+    path_consumer, expected_factory
+):
+    """Test that EnsureWritableDirectory works with functions expecting os.PathLike."""
+    test_dir = tmp_path / "fspath_test"
+    model = PathTestModel(writable_dir=test_dir)  # type: ignore
+    custom_path_obj = model.writable_dir
+
+    # Pre-condition for the open() test case
+    if request.node.callspec.id == "open and read":
+        (test_dir / "test.txt").write_text("hello")
+
+    # Execute the function that consumes the path-like object
+    result = path_consumer(custom_path_obj)
+    expected = expected_factory(test_dir)
+    assert result == expected
