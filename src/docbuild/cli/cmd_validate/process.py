@@ -2,6 +2,7 @@
 
 import asyncio
 from collections.abc import Iterator
+from dataclasses import dataclass
 from datetime import date
 import logging
 from pathlib import Path
@@ -215,6 +216,85 @@ async def run_python_checks(
     return check_results
 
 
+@dataclass
+class ValidationResult:
+    """Normalized result of RNG validation.
+
+    :ivar success: True when validation passed.
+    :ivar exit_code: Exit code to return when validation fails (0 for success).
+    :ivar message: Optional human-readable message describing the failure.
+    """
+
+    success: bool
+    exit_code: int
+    message: str = ""
+
+
+def build_shortname(filepath: Path | str) -> str:
+    """Return a shortened display name for ``filepath``.
+
+    :param filepath: Path-like object to shorten.
+    :returns: Shortened display name (last two path components or full path).
+    """
+    path_obj = Path(filepath)
+    return "/".join(path_obj.parts[-2:]) if len(path_obj.parts) >= 2 else str(filepath)
+
+
+async def run_validation(filepath: Path | str, method: str) -> ValidationResult:
+    """Run RNG validation using the selected method and normalize result.
+
+    :param filepath: Path to the XML file to validate.
+    :param method: Validation method name ("jing" or "lxml").
+    :returns: A :class:`ValidationResult` describing the outcome.
+    """
+    path_obj = Path(filepath)
+    if method == "lxml":
+        rng_success, rng_output = await asyncio.to_thread(
+            validate_rng_lxml, path_obj, XMLDATADIR / "product-config-schema.rng"
+        )
+        if rng_success:
+            return ValidationResult(True, 0, "")
+        return ValidationResult(False, 10, rng_output or "")
+
+    if method == "jing":
+        jing_result = await validate_rng(path_obj, idcheck=True)
+        if jing_result.returncode != 0:
+            output = (jing_result.stdout or "") + (jing_result.stderr or "")
+            return ValidationResult(False, 10, output.strip())
+        return ValidationResult(True, 0, "")
+
+    return ValidationResult(False, 11, f"Unknown validation method: {method}")
+
+
+async def parse_tree(filepath: Path | str) -> etree._ElementTree:
+    """Parse XML file using lxml in a background thread.
+
+    Exceptions from :func:`lxml.etree.parse` (for example
+    :class:`lxml.etree.XMLSyntaxError`) are propagated to the caller.
+
+    :param filepath: Path to the XML file to parse.
+    :returns: Parsed :class:`lxml.etree._ElementTree`.
+    """
+    return await asyncio.to_thread(etree.parse, str(filepath), parser=None)
+
+
+async def run_checks_and_display(
+    tree: etree._ElementTree, shortname: str, context: DocBuildContext, max_len: int
+) -> bool:
+    """Execute registered Python checks and print formatted results.
+
+    :param tree: Parsed XML tree to check.
+    :param shortname: Short name used for display output.
+    :param context: :class:`DocBuildContext` used to read verbosity.
+    :param max_len: Maximum length used for aligned output.
+    :returns: True when all checks succeeded (or when no checks are registered).
+    """
+    check_results = await run_python_checks(tree)
+    if check_results:
+        display_results(shortname, check_results, context.verbose, max_len)
+    return all(result.success for _, result in check_results)
+
+
 async def process_file(
     filepath: Path | str,
     context: DocBuildContext,
@@ -228,63 +308,23 @@ async def process_file(
     :param rng_schema_path: Optional path to an RNG schema for validation.
     :return: An exit code (0 for success, non-zero for failure).
     """
-    # Shorten the filename to last two parts for display
-    path_obj = Path(filepath)
-    shortname = (
-        "/".join(path_obj.parts[-2:]) if len(path_obj.parts) >= 2 else str(filepath)
-    )
+    shortname = build_shortname(filepath)
 
-    # IDEA: Should we replace jing and validate with etree.RelaxNG?
-    #
-    # 1. RNG Validation
-    validation_method = context.validation_method
-
-    if validation_method == "lxml":
-        # Use lxml-based validator (requires .rng schema)
-        rng_success, rng_output = await asyncio.to_thread(
-            validate_rng_lxml,
-            path_obj,
-            XMLDATADIR / "product-config-schema.rng",
-        )
-    elif validation_method == "jing":
-        # Use existing jing-based validator (.rnc or .rng)
-        jing_result = await validate_rng(path_obj, idcheck=True)
-    else:
+    # 1. RNG Validation (normalized)
+    validation = await run_validation(filepath, context.validation_method)
+    if not validation.success:
         console_err.print(
             f"{shortname:<{max_len}}: RNG validation => [red]failed[/red]"
         )
-        console_err.print(
-            f"  [bold red]Error:[/] Unknown validation method: {validation_method}"
-        )
-        return 11  # Custom error code for unknown validation method
+        if validation.message:
+            console_err.print(f"  [bold red]Error:[/] {validation.message}")
+        return validation.exit_code
 
-    # Handle validation result for jing
-    if validation_method == "jing":
-        if jing_result.returncode != 0:
-            console_err.print(
-                f"{shortname:<{max_len}}: RNG validation => [red]failed[/red]"
-            )
-            output = (jing_result.stdout or "") + (jing_result.stderr or "")
-            if output:
-                console_err.print(f"  [bold red]Error:[/] {output.strip()}")
-            return 10  # Specific error code for RNG failure
-
-    # Handle validation result for lxml
-    if validation_method == "lxml":
-        if not rng_success:
-            console_err.print(
-                f"{shortname:<{max_len}}: RNG validation => [red]failed[/red]"
-            )
-            if rng_output:
-                console_err.print(f"  [bold red]Error:[/] {rng_output}")
-            return 10
-
-    # 2. Python-based checks
+    # 2. Parse XML and run Python checks
     try:
-        tree = await asyncio.to_thread(etree.parse, str(filepath), parser=None)
+        tree = await parse_tree(filepath)
 
     except etree.XMLSyntaxError as err:
-        # This can happen if xmllint passes but lxml's parser is stricter.
         console_err.print(
             f"{shortname:<{max_len}}: XML Syntax Error => [red]failed[/red]"
         )
@@ -295,14 +335,8 @@ async def process_file(
         console_err.print(f"  [bold red]Error:[/] {err}")
         return 200
 
-    # Run all checks for this file
-    check_results = await run_python_checks(tree)
-
-    if check_results:
-        # Display results based on verbosity level
-        display_results(shortname, check_results, context.verbose, max_len)
-
-    return 0 if all(result.success for _, result in check_results) else 1
+    success = await run_checks_and_display(tree, shortname, context, max_len)
+    return 0 if success else 1
 
 
 async def process(

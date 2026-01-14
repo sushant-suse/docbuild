@@ -223,3 +223,79 @@ async def test_process_file_with_xmlsyntax_error(capsys, tmp_path):
         result = await process_mod.process_file(xmlfile, mock_context, 40)
 
     assert result == 20
+
+
+def test_validate_rng_lxml_success(monkeypatch):
+    """When RelaxNG validates the XML, function returns (True, '')."""
+    fake_xml_doc = object()
+
+    # parse called twice: first for schema, second for xml file
+    calls = {"n": 0}
+
+    def fake_parse(path):
+        calls["n"] += 1
+        return object() if calls["n"] == 1 else fake_xml_doc
+
+    monkeypatch.setattr(process_mod.etree, "parse", fake_parse)
+
+    fake_relaxng = Mock()
+    fake_relaxng.validate.return_value = True
+    monkeypatch.setattr(process_mod.etree, "RelaxNG", lambda doc: fake_relaxng)
+
+    ok, msg = process_mod.validate_rng_lxml(Path("/tmp/f.xml"), Path("/tmp/schema.rng"))
+    assert ok is True
+    assert msg == ""
+
+
+def test_validate_rng_lxml_validation_failure(monkeypatch):
+    """When RelaxNG.validate() returns False, function returns (False, error_log)."""
+    monkeypatch.setattr(process_mod.etree, "parse", lambda p: object())
+    fake_relaxng = Mock()
+    fake_relaxng.validate.return_value = False
+    fake_relaxng.error_log = "some relaxng errors"
+    monkeypatch.setattr(process_mod.etree, "RelaxNG", lambda doc: fake_relaxng)
+
+    ok, msg = process_mod.validate_rng_lxml(Path("/tmp/f.xml"), Path("/tmp/schema.rng"))
+    assert ok is False
+    assert "some relaxng errors" in msg
+
+
+def test_validate_rng_lxml_xml_syntax_error(monkeypatch):
+    """If lxml raises XMLSyntaxError, function returns a descriptive message."""
+
+    def raise_syntax(path):
+        raise process_mod.etree.XMLSyntaxError("bad xml", None, 0, 0, "file")
+
+    monkeypatch.setattr(process_mod.etree, "parse", raise_syntax)
+
+    ok, msg = process_mod.validate_rng_lxml(Path("/tmp/f.xml"), Path("/tmp/schema.rng"))
+    assert ok is False
+    assert "XML or RNG syntax error" in msg
+
+
+def test_validate_rng_lxml_relaxng_parse_error(monkeypatch):
+    """If RelaxNG constructor raises RelaxNGParseError, return an error message."""
+    monkeypatch.setattr(process_mod.etree, "parse", lambda p: object())
+
+    def raise_relaxng(doc):
+        raise process_mod.etree.RelaxNGParseError("schema parse failure")
+
+    monkeypatch.setattr(process_mod.etree, "RelaxNG", raise_relaxng)
+
+    ok, msg = process_mod.validate_rng_lxml(Path("/tmp/f.xml"), Path("/tmp/schema.rng"))
+    assert ok is False
+    assert "RELAX NG schema parsing error" in msg
+
+
+def test_validate_rng_lxml_generic_exception(monkeypatch):
+    """Any other exception is caught and reported as an unexpected error."""
+    monkeypatch.setattr(process_mod.etree, "parse", lambda p: object())
+
+    def raise_generic(doc):
+        raise Exception("boom")
+
+    monkeypatch.setattr(process_mod.etree, "RelaxNG", raise_generic)
+
+    ok, msg = process_mod.validate_rng_lxml(Path("/tmp/f.xml"), Path("/tmp/schema.rng"))
+    assert ok is False
+    assert "An unexpected error occurred during validation" in msg
