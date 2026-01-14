@@ -6,7 +6,6 @@ import json
 import logging
 from pathlib import Path
 import shlex
-import tempfile
 from typing import Any
 
 from lxml import etree
@@ -22,7 +21,7 @@ from ..context import DocBuildContext
 
 # Set up rich consoles for output
 stdout = Console()
-console_err = Console(stderr=True, style='red')
+console_err = Console(stderr=True, style="red")
 
 # Set up logging
 log = logging.getLogger(__name__)
@@ -40,17 +39,18 @@ def get_deliverable_from_doctype(
     """
     # stdout.print(f'Getting deliverable for doctype: {doctype}')
     # stdout.print(f'XPath for {doctype}: {doctype.xpath()}')
-    languages = root.getroot().xpath(f'./{doctype.xpath()}')
+    languages = root.getroot().xpath(f"./{doctype.xpath()}")
 
     return [
         Deliverable(node)
         for language in languages
-        for node in language.findall('deliverable')
+        for node in language.findall("deliverable")
     ]
 
 
 def collect_files_flat(
-    doctypes: Sequence[Doctype], basedir: Path | str,
+    doctypes: Sequence[Doctype],
+    basedir: Path | str,
 ) -> Generator[tuple[Doctype, str, list[Path]], Any, None]:
     """Group files by (Product, Docset).
 
@@ -70,7 +70,7 @@ def collect_files_flat(
         files = [
             f
             for lang in dt.langs
-            for f in (basedir / lang.language / dt.product.value / docset).glob('DC-*')
+            for f in (basedir / lang.language / dt.product.value / docset).glob("DC-*")
         ]
 
         # Only yield if we found something
@@ -107,14 +107,14 @@ async def process_deliverable(
     :return: True if successful, False otherwise.
     :raises ValueError: If required configuration paths are missing.
     """
-    log.info('> Processing deliverable: %s', deliverable.full_id)
+    log.info("> Processing deliverable: %s", deliverable.full_id)
 
     meta_cache_dir = Path(meta_cache_dir)
 
     bare_repo_path = repo_dir / deliverable.git.slug
     if not bare_repo_path.is_dir():
         log.error(
-            f'Bare repository not found for {deliverable.git.name} at {bare_repo_path}'
+            f"Bare repository not found for {deliverable.git.name} at {bare_repo_path}"
         )
         return False
 
@@ -122,8 +122,8 @@ async def process_deliverable(
     outputdir.mkdir(parents=True, exist_ok=True)
 
     prefix = (
-        f'{deliverable.productid}-{deliverable.docsetid}-'
-        f'{deliverable.lang}--{deliverable.dcfile}'
+        f"{deliverable.productid}-{deliverable.docsetid}-"
+        f"{deliverable.lang}--{deliverable.dcfile}"
     )
 
     outputjson = outputdir / deliverable.dcfile
@@ -131,7 +131,7 @@ async def process_deliverable(
     try:
         async with PersistentOnErrorTemporaryDirectory(
             dir=str(temp_repo_dir),
-            prefix=f'clone-{prefix}_',
+            prefix=f"clone-{prefix}_",
         ) as worktree_dir:
             # 1. Ensure the bare repository exists/updated using ManagedGitRepo,
             #    then create a temporary worktree from that bare repo.
@@ -140,8 +140,8 @@ async def process_deliverable(
             cloned = await mg.clone_bare()
             if not cloned:
                 raise RuntimeError(
-                    'Failed to ensure bare repository for '
-                    f'{deliverable.full_id} ({deliverable.git.url})'
+                    "Failed to ensure bare repository for "
+                    f"{deliverable.full_id} ({deliverable.git.url})"
                 )
 
             try:
@@ -175,34 +175,34 @@ async def process_deliverable(
             if daps_process.returncode != 0:
                 # Raise an exception on failure.
                 raise RuntimeError(
-                    f'DAPS command {" ".join(cmd)!r} failed for {deliverable.full_id}: '
-                    f'{stderr.decode().strip()}'
+                    f"DAPS command {' '.join(cmd)!r} failed for {deliverable.full_id}: "
+                    f"{stderr.decode().strip()}"
                 )
 
         fmt = deliverable.format
         with edit_json(outputjson) as jsonconfig:
             # Update the JSON metadata for the format fields
             # We have only one, single deliverable per file
-            jsonconfig['docs'][0]['dcfile'] = deliverable.dcfile
-            jsonconfig['docs'][0]['format']['html'] = deliverable.html_path
-            if fmt.get('pdf'):
-                jsonconfig['docs'][0]['format']['pdf'] = deliverable.pdf_path
-            if fmt.get('single-html'):
-                jsonconfig['docs'][0]['format']['single-html'] = (
+            jsonconfig["docs"][0]["dcfile"] = deliverable.dcfile
+            jsonconfig["docs"][0]["format"]["html"] = deliverable.html_path
+            if fmt.get("pdf"):
+                jsonconfig["docs"][0]["format"]["pdf"] = deliverable.pdf_path
+            if fmt.get("single-html"):
+                jsonconfig["docs"][0]["format"]["single-html"] = (
                     deliverable.singlehtml_path
                 )
-            if not jsonconfig['docs'][0]['lang']:
+            if not jsonconfig["docs"][0]["lang"]:
                 # If lang is empty, set it and use only the language (no country)
-                jsonconfig['docs'][0]['lang'] = deliverable.language
+                jsonconfig["docs"][0]["lang"] = deliverable.language
 
-        log.debug('Updated metadata JSON for %s at %s', deliverable.full_id, outputjson)
+        log.debug("Updated metadata JSON for %s at %s", deliverable.full_id, outputjson)
 
         # stdout.print(f'> Processed deliverable: {deliverable.pdlangdc}')
         return True
 
     except RuntimeError as e:
         # console_err.print(f'Error processing {deliverable.full_id}: {e}')
-        log.error('Error processing %s: %s', deliverable.full_id, str(e) )
+        log.error("Error processing %s: %s", deliverable.full_id, str(e))
         return False
 
 
@@ -214,7 +214,7 @@ async def update_repositories(
     :param deliverables: A list of Deliverable objects.
     :param bare_repo_dir: The root directory for storing permanent bare clones.
     """
-    log.info('Updating Git repositories...')
+    log.info("Updating Git repositories...")
     unique_urls = {d.git.url for d in deliverables}
     repos = [ManagedGitRepo(url, bare_repo_dir) for url in unique_urls]
 
@@ -222,9 +222,9 @@ async def update_repositories(
     results = await asyncio.gather(*tasks, return_exceptions=True)
 
     res = True
-    for repo, result in zip(repos, results):
+    for repo, result in zip(repos, results, strict=False):
         if isinstance(result, Exception) or not result:
-            log.error('Failed to update repository %s', repo.slug)
+            log.error("Failed to update repository %s", repo.slug)
             res = False
 
     return res
@@ -271,7 +271,7 @@ async def process_doctype(
     )
 
     if skip_repo_update:  # pragma: no cover
-        log.info('Skipping repository %s updates as requested.', repo_dir)
+        log.info("Skipping repository %s updates as requested.", repo_dir)
     else:
         await update_repositories(deliverables, repo_dir)
 
@@ -312,16 +312,18 @@ async def process_doctype(
         results = await asyncio.gather(*tasks, return_exceptions=True)
         failed_deliverables.extend(
             deliverable
-            for deliverable, success in zip(deliverables, results)
+            for deliverable, success in zip(deliverables, results, strict=False)
             if not success
         )
 
     return failed_deliverables
 
 
-def store_productdocset_json(context: DocBuildContext,
-        doctypes: Sequence[Doctype],
-        stitchnode: etree._ElementTree) -> None:
+def store_productdocset_json(
+    context: DocBuildContext,
+    doctypes: Sequence[Doctype],
+    stitchnode: etree._ElementTree,
+) -> None:
     """Collect all JSON file for product/docset and create a single file.
 
     :param context: Beschreibung
@@ -335,16 +337,16 @@ def store_productdocset_json(context: DocBuildContext,
     for doctype, docset, files in collect_files_flat(doctypes, meta_cache_dir):
         # files: list[Path]
         product = doctype.product.value
-        stdout.print(f' > Processed group: {doctype} / {docset}')
+        stdout.print(f" > Processed group: {doctype} / {docset}")
         # TODO: This XPath should be done in the Doctype model
         # For the time being, it doesn't add to the coverage
-        productxpath = './product'
-        if product != '*':  # pragma: no cover
+        productxpath = "./product"
+        if product != "*":  # pragma: no cover
             productxpath += f'[@productid="{product}"]'
 
         productnode = stitchnode.find(productxpath)
-        docsetxpath = './docset'
-        if docset != '*':  # pragma: no cover
+        docsetxpath = "./docset"
+        if docset != "*":  # pragma: no cover
             docsetxpath += f'[@setid="{docset}"]'
 
         docsetnode = productnode.find(docsetxpath)
@@ -352,19 +354,19 @@ def store_productdocset_json(context: DocBuildContext,
 
         # Create a new structure for each group of product/docset
         structure = {
-            'productname': productnode.find('name').text,
-            'acronym': product,
-            'version': docset,
-            'lifecycle': docsetnode.attrib.get('lifecycle'),
-            'hide-productname': False,
-            'descriptions': [
+            "productname": productnode.find("name").text,
+            "acronym": product,
+            "version": docset,
+            "lifecycle": docsetnode.attrib.get("lifecycle"),
+            "hide-productname": False,
+            "descriptions": [
                 # TODO
                 # { "lang", "...",
                 #   "default": True|False,
                 #   "description": "..."
                 # }
             ],
-            'categories': [
+            "categories": [
                 # TODO
                 # {
                 #  "categoryId": "...",
@@ -377,8 +379,8 @@ def store_productdocset_json(context: DocBuildContext,
                 #    }
                 #  ]
             ],
-            'documents': [],  # Will be filled below
-            'archives': [
+            "documents": [],  # Will be filled below
+            "archives": [
                 # TODO
                 # {
                 #   "lang": "...",
@@ -388,34 +390,35 @@ def store_productdocset_json(context: DocBuildContext,
             ],
         }
         for f in files:
-            stdout.print(f' {f}')
+            stdout.print(f" {f}")
             try:
                 with (meta_cache_dir / f).open() as fh:
                     doc = json.load(fh)
                 if not doc:
-                    console_err.print(f'Warning: Empty metadata file {f}')
+                    console_err.print(f"Warning: Empty metadata file {f}")
                     continue
 
-                structure['documents'].extend(doc.get('docs', []))
+                structure["documents"].extend(doc.get("docs", []))
 
             except Exception as e:
-                console_err.print(f'Error reading metadata file {f}: {e}')
+                console_err.print(f"Error reading metadata file {f}: {e}")
 
         # stdout.print(json.dumps(structure, indent=2), markup=True)
         jsondir = meta_cache_dir / product
         jsondir.mkdir(parents=True, exist_ok=True)
-        jsonfile = jsondir / f'{docset}.json'
+        jsonfile = jsondir / f"{docset}.json"
         jsonfile.write_text(json.dumps(structure, indent=2))
-        log.info('Wrote merged metadata JSON for %s/%s => %s',
-                   product, docset, jsonfile)
+        log.info(
+            "Wrote merged metadata JSON for %s/%s => %s", product, docset, jsonfile
+        )
 
 
 async def process(
     context: DocBuildContext,
-    doctypes: Sequence[Doctype]|None,
+    doctypes: Sequence[Doctype] | None,
     *,
-    exitfirst: bool=False,
-    skip_repo_update: bool=False,
+    exitfirst: bool = False,
+    skip_repo_update: bool = False,
 ) -> int:
     """Asynchronous function to process metadata retrieval.
 
@@ -428,25 +431,25 @@ async def process(
     :return: 0 if all files passed validation, 1 if any failures occurred.
     """
     configdir = Path(context.envconfig.paths.config_dir).expanduser()
-    stdout.print(f'Config path: {configdir}')
-    xmlconfigs = tuple(configdir.rglob('[a-z]*.xml'))
+    stdout.print(f"Config path: {configdir}")
+    xmlconfigs = tuple(configdir.rglob("[a-z]*.xml"))
     stitchnode: etree._ElementTree = await create_stitchfile(xmlconfigs)
 
     tmp_metadata_dir = context.envconfig.paths.tmp.tmp_metadata_dir
     # TODO: Is this necessary here?
     tmp_metadata_dir.mkdir(parents=True, exist_ok=True)
 
-    stitchfilename = tmp_metadata_dir / 'stitched-metadata.xml'
+    stitchfilename = tmp_metadata_dir / "stitched-metadata.xml"
     stitchfilename.write_text(
         etree.tostring(
             stitchnode,
             pretty_print=True,
             # xml_declaration=True,
-            encoding='unicode',
+            encoding="unicode",
         )  # .decode('utf-8')
     )
 
-    log.info('Stitched metadata XML written to %s', str(stitchfilename))
+    log.info("Stitched metadata XML written to %s", str(stitchfilename))
 
     # stdout.print(f'Stitch node: {stitchnode.getroot().tag}')
     # stdout.print(f'Deliverables: {len(stitchnode.xpath(".//deliverable"))}')
@@ -456,23 +459,24 @@ async def process(
 
     tasks = [
         process_doctype(
-            stitchnode, context, dt,
+            stitchnode,
+            context,
+            dt,
             exitfirst=exitfirst,
-            skip_repo_update=skip_repo_update
+            skip_repo_update=skip_repo_update,
         )
         for dt in doctypes
     ]
     results_per_doctype = await asyncio.gather(*tasks)
 
     all_failed_deliverables = [
-        d for failed_list in results_per_doctype
-        for d in failed_list
+        d for failed_list in results_per_doctype for d in failed_list
     ]
 
     if all_failed_deliverables:
-        console_err.print(f'Found {len(all_failed_deliverables)} failed deliverables:')
+        console_err.print(f"Found {len(all_failed_deliverables)} failed deliverables:")
         for d in all_failed_deliverables:
-            console_err.print(f'- {d.full_id}')
+            console_err.print(f"- {d.full_id}")
         return 1
 
     # Collect all JSON files and merge them into a single file.

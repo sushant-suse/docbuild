@@ -13,7 +13,6 @@ import sys
 
 from lxml import etree
 
-from ...constants import XMLDATADIR
 from .references import check_stitched_references
 
 log = logging.getLogger(__name__)
@@ -21,12 +20,12 @@ log = logging.getLogger(__name__)
 
 def load_check_functions() -> list[Callable]:
     """Load all check functions from :mod:`docbuild.config.xml.checks`."""
-    xmlchecks = importlib.import_module('docbuild.config.xml.checks')
+    xmlchecks = importlib.import_module("docbuild.config.xml.checks")
 
     return [
         func
         for name, func in inspect.getmembers(xmlchecks, inspect.isfunction)
-        if name.startswith('check_')
+        if name.startswith("check_")
     ]
 
 
@@ -42,7 +41,7 @@ def log_memory_usage() -> int:
     memory_in_kb = usage.ru_maxrss
 
     # Adjustment for macOS to keep units consistent (convert to KB)
-    if sys.platform == 'darwin':
+    if sys.platform == "darwin":
         # Use integer division to match the function's return type hint
         memory_in_kb //= 1024
 
@@ -89,7 +88,7 @@ async def create_stitchfile(
         return tree
 
     # Step 1: Concurrently parse all XML files
-    docservconfig = etree.Element('docservconfig', attrib=None, nsmap=None)
+    docservconfig = etree.Element("docservconfig", attrib=None, nsmap=None)
     tasks = [parse_and_xinclude(Path(xmlfile)) for xmlfile in xmlfiles]
     parsed_trees = await asyncio.gather(*tasks)
 
@@ -100,20 +99,20 @@ async def create_stitchfile(
         del tree  # Explicitly delete the tree to free memory
 
     # Step 2: Check for unique IDs
-    product_ids = docservconfig.xpath('//@productid')
+    product_ids = docservconfig.xpath("//@productid")
     if len(product_ids) > len(set(product_ids)):
         duplicates = [item for item, count in Counter(product_ids).items() if count > 1]
-        raise ValueError(f'Duplicate product IDs found: {", ".join(duplicates)}')
+        raise ValueError(f"Duplicate product IDs found: {', '.join(duplicates)}")
 
     # Step 3: Check references
     if with_ref_check:
         result = check_stitchfile(docservconfig)
         if not result:
             raise ValueError(
-                'Unresolved references found in stitch file. '
-                'Run the validate subcommand'
+                "Unresolved references found in stitch file. "
+                "Run the validate subcommand"
             )
 
-    log.debug('Memory usage: %.1f MB', log_memory_usage() / 1024)
+    log.debug("Memory usage: %.1f MB", log_memory_usage() / 1024)
 
     return etree.ElementTree(docservconfig)

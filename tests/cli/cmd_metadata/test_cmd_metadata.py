@@ -32,13 +32,13 @@ def mock_envconfig(tmp_path: Path) -> Mock:
     nested configurations like `env.paths.repo_dir` and `env.build.daps.meta`.
     """
     mock_paths = Mock()
-    mock_paths.repo_dir = tmp_path / 'repos'
-    mock_paths.base_cache_dir = tmp_path / 'cache'
-    mock_paths.meta_cache_dir = tmp_path / 'cache' / 'metadata'
-    mock_paths.temp_repo_dir = tmp_path / 'temp_repos'
+    mock_paths.repo_dir = tmp_path / "repos"
+    mock_paths.base_cache_dir = tmp_path / "cache"
+    mock_paths.meta_cache_dir = tmp_path / "cache" / "metadata"
+    mock_paths.temp_repo_dir = tmp_path / "temp_repos"
 
     mock_build = Mock()
-    mock_build.daps.meta = 'daps-command-template'
+    mock_build.daps.meta = "daps-command-template"
 
     mock_envconfig = Mock()
     mock_envconfig.paths = mock_paths
@@ -55,11 +55,11 @@ def xmlconfig(request) -> etree.ElementTree:
     If used without, it provides a default empty <config/> tree.
     """
     xml_string = None
-    if hasattr(request, 'param'):
+    if hasattr(request, "param"):
         xml_string = request.param
 
     if not xml_string:
-        xml_string = '<docservconfig/>'
+        xml_string = "<docservconfig/>"
     root = etree.fromstring(xml_string)
     return etree.ElementTree(root)
 
@@ -74,13 +74,13 @@ def mock_context_with_config_dir(
     for scenarios requiring a `config_dir` and `tmp.tmp_metadata_dir`.
     """
     context = Mock(spec=DocBuildContext)
-    config_dir = tmp_path / 'config'
-    tmp_metadata_dir = tmp_path / 'tmp' / 'metadata'
+    config_dir = tmp_path / "config"
+    tmp_metadata_dir = tmp_path / "tmp" / "metadata"
 
     config_dir.mkdir()
     tmp_metadata_dir.mkdir(parents=True)
 
-    (config_dir / 'dummy.xml').write_text('<docservconfig/>')
+    (config_dir / "dummy.xml").write_text("<docservconfig/>")
 
     # Customize the mock_envconfig for this fixture's needs
     mock_envconfig.paths.config_dir = config_dir
@@ -101,48 +101,105 @@ def mock_context_with_config_dir(
         (
             """
             <docservconfig>
-              <product productid="sles"><docset setid="15-sp6"><builddocs><language lang="en-us">
-                <deliverable><dc>DC-SLE-Micro-5.5-admin</dc><format html="1"/></deliverable>
-              </language></builddocs></docset></product>
-              <product productid="other"><docset setid="1.0"><builddocs><language lang="en-us">
-                <deliverable><dc>DC-Micro-5.4-cockpit</dc><format html="1"/></deliverable>
-                <deliverable><dc>DC-Micro-5.5-cockpit</dc><format html="1"/></deliverable>
-              </language></builddocs></docset></product>
+              <product productid="sles">
+                <docset setid="15-sp6">
+                  <builddocs>
+                    <language lang="en-us">
+                        <deliverable>
+                            <dc>DC-SLE-Micro-5.5-admin</dc>
+                            <format html="1"/>
+                        </deliverable>
+                    </language>
+                  </builddocs>
+                </docset>
+              </product>
+              <product productid="other">
+                <docset setid="1.0">
+                   <builddocs>
+                     <language lang="en-us">
+                        <deliverable>
+                            <dc>DC-Micro-5.4-cockpit</dc>
+                            <format html="1"/>
+                        </deliverable>
+                        <deliverable>
+                            <dc>DC-Micro-5.5-cockpit</dc>
+                            <format html="1"/>
+                        </deliverable>
+                    </language>
+                   </builddocs>
+                </docset>
+              </product>
             </docservconfig>
             """,
-            "sles/15-sp6/en-us", 1, {'sles/15-sp6/en-us:DC-SLE-Micro-5.5-admin'}
+            "sles/15-sp6/en-us",
+            1,
+            {"sles/15-sp6/en-us:DC-SLE-Micro-5.5-admin"},
         ),
         (
             """
             <docservconfig>
-              <product productid="sles"><docset setid="15-sp6"><builddocs><language lang="en-us">
-                <deliverable><dc>DC-SLE-Micro-5.5-admin</dc><format html="1"/></deliverable>
-              </language></builddocs></docset></product>
-              <product productid="other"><docset setid="1.0"><builddocs><language lang="en-us">
-                <deliverable><dc>DC-Micro-5.4-cockpit</dc><format html="1"/></deliverable>
-              </language></builddocs></docset></product>
+              <product productid="sles">
+                <docset setid="15-sp6">
+                    <builddocs>
+                        <language lang="en-us">
+                            <deliverable>
+                                <dc>DC-SLE-Micro-5.5-admin</dc>
+                                <format html="1"/>
+                            </deliverable>
+                        </language>
+                    </builddocs>
+                </docset>
+              </product>
+              <product productid="other">
+              <docset setid="1.0">
+                  <builddocs>
+                    <language lang="en-us">
+                      <deliverable>
+                        <dc>DC-Micro-5.4-cockpit</dc>
+                        <format html="1"/>
+                      </deliverable>
+                    </language>
+                  </builddocs>
+                </docset>
+              </product>
             </docservconfig>
             """,
-            "//en-us", 2, {'other/1.0/en-us:DC-Micro-5.4-cockpit', 'sles/15-sp6/en-us:DC-SLE-Micro-5.5-admin'}
+            "//en-us",
+            2,
+            {
+                "other/1.0/en-us:DC-Micro-5.4-cockpit",
+                "sles/15-sp6/en-us:DC-SLE-Micro-5.5-admin",
+            },
         ),
+        ("<docservconfig/>", "nonexistent/1.0/en-us", 0, set()),
         (
-            "<docservconfig/>", "nonexistent/1.0/en-us", 0, set()
-        ),
-        (
-            "<docservconfig><product productid='sles'><docset setid='15-sp6'/></product></docservconfig>",
-            "sles/15-sp6/de-de", 0, set()
+            """<docservconfig>
+                 <product productid='sles'>
+                    <docset setid='15-sp6'/>
+                 </product>
+               </docservconfig>""",
+            "sles/15-sp6/de-de",
+            0,
+            set(),
         ),
     ],
     indirect=["xmlconfig"],
-    ids=["specific_doctype", "wildcard_doctype", "nonexistent_product", "nonexistent_lang"]
+    ids=[
+        "specific_doctype",
+        "wildcard_doctype",
+        "nonexistent_product",
+        "nonexistent_lang",
+    ],
 )
-def test_get_deliverable_from_doctype(xmlconfig, doctype_str, expected_count, expected_ids):
+def test_get_deliverable_from_doctype(
+    xmlconfig, doctype_str, expected_count, expected_ids
+):
     """Verify deliverables are correctly extracted for various doctypes."""
     # Arrange & Act
     if "nonexistent" in doctype_str:
         with pytest.raises(ValueError):
             Doctype.from_str(doctype_str)
-        return # Test passes if validation error is raised
+        return  # Test passes if validation error is raised
     else:
         doctype = Doctype.from_str(doctype_str)
 
@@ -178,7 +235,7 @@ def deliverable() -> Deliverable:
     </docservconfig>
     """
     root = etree.fromstring(xml_string)
-    deliverable_node = root.find('.//deliverable')
+    deliverable_node = root.find(".//deliverable")
     return Deliverable(deliverable_node)
 
 
@@ -188,12 +245,12 @@ def stitchnode(deliverable: Deliverable) -> etree._ElementTree:
 
     Provides the common product/docset/name/acronym structure used by tests.
     """
-    prod_node = etree.Element('product', productid=deliverable.productid)
-    name_el = etree.SubElement(prod_node, 'name')
-    name_el.text = 'SUSE Linux Enterprise Server'
-    etree.SubElement(prod_node, 'acronym').text = 'SLES'
-    etree.SubElement(prod_node, 'docset', setid=deliverable.docsetid)
-    root = etree.Element('docservconfig')
+    prod_node = etree.Element("product", productid=deliverable.productid)
+    name_el = etree.SubElement(prod_node, "name")
+    name_el.text = "SUSE Linux Enterprise Server"
+    etree.SubElement(prod_node, "acronym").text = "SLES"
+    etree.SubElement(prod_node, "docset", setid=deliverable.docsetid)
+    root = etree.Element("docservconfig")
     root.append(prod_node)
     return etree.ElementTree(root)
 
@@ -206,7 +263,9 @@ class TestProcessDeliverable:
     def mock_subprocess(self) -> Iterator[AsyncMock]:
         """Fixture to mock asyncio.create_subprocess_exec."""
         # 'docbuild.cli.cmd_metadata.asyncio.create_subprocess_exec',
-        with patch.object(metaprocess_pkg.asyncio, 'create_subprocess_exec',
+        with patch.object(
+            metaprocess_pkg.asyncio,
+            "create_subprocess_exec",
             new_callable=AsyncMock,
         ) as mock:
             yield mock
@@ -215,10 +274,10 @@ class TestProcessDeliverable:
     def setup_paths(self, tmp_path: Path, deliverable: Deliverable) -> dict:
         """Set up common paths and directories for tests."""
         paths = {
-            'repo_dir': tmp_path / 'repos',
-            'temp_repo_dir': tmp_path / 'temp_repos',
-            'base_cache_dir': tmp_path / 'cache',
-            'meta_cache_dir': tmp_path / 'cache' / 'metadata',
+            "repo_dir": tmp_path / "repos",
+            "temp_repo_dir": tmp_path / "temp_repos",
+            "base_cache_dir": tmp_path / "cache",
+            "meta_cache_dir": tmp_path / "cache" / "metadata",
         }
         for path in paths.values():
             path.mkdir(parents=True, exist_ok=True)
@@ -238,30 +297,35 @@ class TestProcessDeliverable:
             ),
             (
                 "bare_repo_not_found",
-                lambda mocks: mocks['managed_git_repo'].side_effect,
+                lambda mocks: mocks["managed_git_repo"].side_effect,
                 False,
                 "Bare repository not found",
             ),
             (
                 "clone_fails",
-                lambda mocks: setattr(mocks['repo_instance'], 'clone_bare', AsyncMock(return_value=False)),
+                lambda mocks: setattr(
+                    mocks["repo_instance"], "clone_bare", AsyncMock(return_value=False)
+                ),
                 False,
                 "Failed to ensure bare repository",
             ),
             (
                 "daps_fails",
-                lambda mocks: mocks['subprocess'].__setattr__(
-                    'return_value',
-                    AsyncMock(returncode=1, communicate=AsyncMock(return_value=(b'', b'DAPS Error'))),
+                lambda mocks: mocks["subprocess"].__setattr__(
+                    "return_value",
+                    AsyncMock(
+                        returncode=1,
+                        communicate=AsyncMock(return_value=(b"", b"DAPS Error")),
+                    ),
                 ),
                 False,
                 "Error processing",
             ),
         ],
-        ids=["success", "bare_repo_not_found", "clone_fails", "daps_fails"]
+        ids=["success", "bare_repo_not_found", "clone_fails", "daps_fails"],
     )
-    @patch.object(metaprocess_pkg, 'edit_json')
-    @patch.object(metaprocess_pkg, 'ManagedGitRepo')
+    @patch.object(metaprocess_pkg, "edit_json")
+    @patch.object(metaprocess_pkg, "ManagedGitRepo")
     async def test_process_deliverable_scenarios(
         self,
         mock_managed_git_repo: Mock,
@@ -283,22 +347,26 @@ class TestProcessDeliverable:
         mock_repo_instance.create_worktree.return_value = None
 
         mock_daps_proc = AsyncMock()
-        mock_daps_proc.communicate.return_value = (b'', b'')
+        mock_daps_proc.communicate.return_value = (b"", b"")
         mock_daps_proc.returncode = 0
         mock_subprocess.return_value = mock_daps_proc
 
-        mock_json_data = {'docs': [{'format': {}, 'lang': ''}]}
+        mock_json_data = {"docs": [{"format": {}, "lang": ""}]}
         mock_edit_json.return_value.__aenter__.return_value = mock_json_data
         mock_edit_json.return_value.__enter__.return_value = mock_json_data
 
         # Dynamically set up mocks for the specific scenario
-        mocks = {'managed_git_repo': mock_managed_git_repo, 'repo_instance': mock_repo_instance, 'subprocess': mock_subprocess}
+        mocks = {
+            "managed_git_repo": mock_managed_git_repo,
+            "repo_instance": mock_repo_instance,
+            "subprocess": mock_subprocess,
+        }
         setup_mocks(mocks)
 
         if scenario != "bare_repo_not_found":
-            (setup_paths['repo_dir'] / deliverable.git.slug).mkdir()
+            (setup_paths["repo_dir"] / deliverable.git.slug).mkdir()
 
-        dapstmpl = 'daps --dc-file={dcfile} --output={output}'
+        dapstmpl = "daps --dc-file={dcfile} --output={output}"
 
         # Act
         result = await process_deliverable(
@@ -326,10 +394,10 @@ class TestProcessDoctype:
     @pytest.fixture
     def mock_root(self) -> etree._ElementTree:
         """Provide a mock XML root element for testing."""
-        return etree.ElementTree(etree.fromstring('<docservconfig/>'))
+        return etree.ElementTree(etree.fromstring("<docservconfig/>"))
 
-    @patch.object(metaprocess_pkg, 'process_deliverable', new_callable=AsyncMock)
-    @patch.object(metaprocess_pkg, 'get_deliverable_from_doctype')
+    @patch.object(metaprocess_pkg, "process_deliverable", new_callable=AsyncMock)
+    @patch.object(metaprocess_pkg, "get_deliverable_from_doctype")
     async def test_success_with_deliverables(
         self,
         mock_get_deliverables: Mock,
@@ -338,12 +406,12 @@ class TestProcessDoctype:
         mock_context: DocBuildContext,
     ):
         """Test successful processing when deliverables are found."""
-        doctype = Doctype.from_str('sles/15/en-us')
+        doctype = Doctype.from_str("sles/15/en-us")
         # Correctly mock the nested git.url attribute
-        mock_deliverable = Mock(spec=Deliverable, git=Mock(spec=Repo, url='gh://SUSE/doc-test'))
-        mock_deliverables = [
-            mock_deliverable, mock_deliverable
-        ]
+        mock_deliverable = Mock(
+            spec=Deliverable, git=Mock(spec=Repo, url="gh://SUSE/doc-test")
+        )
+        mock_deliverables = [mock_deliverable, mock_deliverable]
         mock_get_deliverables.return_value = mock_deliverables
         # Ensure the mock returns an awaitable result
         mock_process_deliverable.return_value = True
@@ -356,8 +424,8 @@ class TestProcessDoctype:
         mock_get_deliverables.assert_called_once_with(mock_root, doctype)
         assert mock_process_deliverable.call_count == 2
 
-    @patch.object(metaprocess_pkg, 'process_deliverable', new_callable=AsyncMock)
-    @patch.object(metaprocess_pkg, 'get_deliverable_from_doctype')
+    @patch.object(metaprocess_pkg, "process_deliverable", new_callable=AsyncMock)
+    @patch.object(metaprocess_pkg, "get_deliverable_from_doctype")
     async def test_no_deliverables_found(
         self,
         mock_get_deliverables: Mock,
@@ -366,7 +434,7 @@ class TestProcessDoctype:
         mock_context: DocBuildContext,
     ):
         """Test behavior when no deliverables are found for the doctype."""
-        doctype = Doctype.from_str('sles/15/en-us')
+        doctype = Doctype.from_str("sles/15/en-us")
         mock_get_deliverables.return_value = []
 
         result = await process_doctype(mock_root, mock_context, doctype)
@@ -375,29 +443,32 @@ class TestProcessDoctype:
         mock_get_deliverables.assert_called_once_with(mock_root, doctype)
         mock_process_deliverable.assert_not_called()
 
-    @patch.object(metaprocess_pkg, 'get_deliverable_from_doctype')
+    @patch.object(metaprocess_pkg, "get_deliverable_from_doctype")
     async def test_missing_paths_in_config_raises_error(
-        self, mock_get_deliverables: Mock, mock_root: etree._ElementTree
-        , mock_envconfig: Mock):
+        self,
+        mock_get_deliverables: Mock,
+        mock_root: etree._ElementTree,
+        mock_envconfig: Mock,
+    ):
         """Test that an AttributeError is raised if required paths are missing."""
-        doctype = Doctype.from_str('sles/15/en-us')
+        doctype = Doctype.from_str("sles/15/en-us")
         mock_get_deliverables.return_value = [Mock(spec=Deliverable)]
         context_missing_path = Mock(spec=DocBuildContext)
 
         # Use the mock_envconfig and then delete the attribute to simulate missing
         del mock_envconfig.paths.repo_dir
         # Ensure other paths are set, even if repo_dir is missing
-        mock_envconfig.paths.base_cache_dir = Path('/fake/cache')
-        mock_envconfig.paths.meta_cache_dir = Path('/fake/cache/meta')
-        mock_envconfig.paths.temp_repo_dir = Path('/fake/temp')
+        mock_envconfig.paths.base_cache_dir = Path("/fake/cache")
+        mock_envconfig.paths.meta_cache_dir = Path("/fake/cache/meta")
+        mock_envconfig.paths.temp_repo_dir = Path("/fake/temp")
         context_missing_path.envconfig = mock_envconfig
 
         with pytest.raises(AttributeError):
             await process_doctype(mock_root, context_missing_path, doctype)
 
-    @patch.object(metaprocess_pkg, 'process_deliverable', new_callable=AsyncMock)
-    @patch.object(metaprocess_pkg, 'get_deliverable_from_doctype')
-    @patch.object(metaprocess_pkg, 'update_repositories', new_callable=AsyncMock)
+    @patch.object(metaprocess_pkg, "process_deliverable", new_callable=AsyncMock)
+    @patch.object(metaprocess_pkg, "get_deliverable_from_doctype")
+    @patch.object(metaprocess_pkg, "update_repositories", new_callable=AsyncMock)
     async def test_exitfirst_fails_fast(
         self,
         mock_update_repositories: AsyncMock,
@@ -407,18 +478,18 @@ class TestProcessDoctype:
         mock_context: DocBuildContext,
     ):
         """When `exitfirst=True`, process_doctype should stop on first failure."""
-        doctype = Doctype.from_str('sles/15/en-us')
+        doctype = Doctype.from_str("sles/15/en-us")
 
         # Create two mock deliverables
         d1 = Mock(spec=Deliverable)
-        d1.full_id = 'sles/15/en-us:DC-ONE'
+        d1.full_id = "sles/15/en-us:DC-ONE"
         d2 = Mock(spec=Deliverable)
-        d2.full_id = 'sles/15-en-us:DC-TWO'
+        d2.full_id = "sles/15-en-us:DC-TWO"
 
         mock_get_deliverables.return_value = [d1, d2]
 
         # First call returns a failing tuple, second would be successful
-        mock_process_deliverable.side_effect = [ (False, d1), (True, d2) ]
+        mock_process_deliverable.side_effect = [(False, d1), (True, d2)]
 
         # Prevent update_repositories from attempting real repo work
         mock_update_repositories.return_value = None
@@ -433,10 +504,10 @@ class TestProcessDoctype:
 class TestProcessEmptyDoctypes:
     """Tests for the case when no doctypes are passed to process."""
 
-    @patch.object(metaprocess_pkg, 'store_productdocset_json', new_callable=Mock)
-    @patch.object(metaprocess_pkg, 'collect_files_flat', new_callable=Mock)
-    @patch.object(metaprocess_pkg, 'create_stitchfile', new_callable=AsyncMock)
-    @patch.object(metaprocess_pkg, 'process_doctype', new_callable=AsyncMock)
+    @patch.object(metaprocess_pkg, "store_productdocset_json", new_callable=Mock)
+    @patch.object(metaprocess_pkg, "collect_files_flat", new_callable=Mock)
+    @patch.object(metaprocess_pkg, "create_stitchfile", new_callable=AsyncMock)
+    @patch.object(metaprocess_pkg, "process_doctype", new_callable=AsyncMock)
     async def test_process_empty_doctypes(
         self,
         mock_process_doctype: AsyncMock,
@@ -467,7 +538,7 @@ class TestProcessEmptyDoctypes:
         mock_create_stitchfile.return_value = mock_stitch_node
 
         mock_collect_files_flat.return_value = [
-            (Doctype.from_str(DEFAULT_DELIVERABLES), '*', [Path('dummy.xml')])
+            (Doctype.from_str(DEFAULT_DELIVERABLES), "*", [Path("dummy.xml")])
         ]
 
         await process(mock_context_with_config_dir, doctypes=())
@@ -479,10 +550,10 @@ class TestProcessEmptyDoctypes:
         # Assert that store_productdocset_json was called
         mock_store_json.assert_called()
 
-    @patch.object(metaprocess_pkg, 'store_productdocset_json', new_callable=Mock)
-    @patch.object(metaprocess_pkg, 'collect_files_flat', new_callable=Mock)
-    @patch.object(metaprocess_pkg, 'create_stitchfile', new_callable=AsyncMock)
-    @patch.object(metaprocess_pkg, 'process_doctype', new_callable=AsyncMock)
+    @patch.object(metaprocess_pkg, "store_productdocset_json", new_callable=Mock)
+    @patch.object(metaprocess_pkg, "collect_files_flat", new_callable=Mock)
+    @patch.object(metaprocess_pkg, "create_stitchfile", new_callable=AsyncMock)
+    @patch.object(metaprocess_pkg, "process_doctype", new_callable=AsyncMock)
     async def test_no_doctypes_uses_default(
         self,
         mock_process_doctype: AsyncMock,
@@ -511,11 +582,11 @@ class TestProcessEmptyDoctypes:
         mock_create_stitchfile.return_value = mock_stitch_node
         mock_process_doctype.return_value = []
         mock_collect_files_flat.return_value = [
-            (Doctype.from_str(DEFAULT_DELIVERABLES), '*', [Path('dummy.xml')])
+            (Doctype.from_str(DEFAULT_DELIVERABLES), "*", [Path("dummy.xml")])
         ]
 
         # Act and suppress console output during the test
-        with patch.object(metaprocess_pkg, 'stdout'):
+        with patch.object(metaprocess_pkg, "stdout"):
             result = await process(mock_context_with_config_dir, doctypes=tuple())
 
         # Assert
@@ -524,13 +595,17 @@ class TestProcessEmptyDoctypes:
         mock_store_json.assert_called()
         default_doctype = Doctype.from_str(DEFAULT_DELIVERABLES)
         mock_process_doctype.assert_awaited_once_with(
-            mock_stitch_node, mock_context_with_config_dir, default_doctype, exitfirst=False, skip_repo_update=False
+            mock_stitch_node,
+            mock_context_with_config_dir,
+            default_doctype,
+            exitfirst=False,
+            skip_repo_update=False,
         )
 
-    @patch.object(metaprocess_pkg, 'store_productdocset_json', new_callable=Mock)
-    @patch.object(metaprocess_pkg, 'collect_files_flat', new_callable=Mock)
-    @patch.object(metaprocess_pkg, 'create_stitchfile', new_callable=AsyncMock)
-    @patch.object(metaprocess_pkg, 'process_doctype', new_callable=AsyncMock)
+    @patch.object(metaprocess_pkg, "store_productdocset_json", new_callable=Mock)
+    @patch.object(metaprocess_pkg, "collect_files_flat", new_callable=Mock)
+    @patch.object(metaprocess_pkg, "create_stitchfile", new_callable=AsyncMock)
+    @patch.object(metaprocess_pkg, "process_doctype", new_callable=AsyncMock)
     async def test_process_reports_failed_deliverables_and_returns_one(
         self,
         mock_process_doctype: AsyncMock,
@@ -551,14 +626,17 @@ class TestProcessEmptyDoctypes:
 
         # Simulate a failing deliverable returned by process_doctype
         mock_deliverable = Mock(spec=Deliverable)
-        mock_deliverable.full_id = f"{deliverable.productid}/{deliverable.docsetid}/{deliverable.lang}:DC-FAIL"
+        mock_deliverable.full_id = (
+            f"{deliverable.productid}/{deliverable.docsetid}/{deliverable.lang}:DC-FAIL"
+        )
         mock_process_doctype.return_value = [mock_deliverable]
 
-        # collect_files_flat won't be reached when failures exist, but provide an empty list
+        # collect_files_flat won't be reached when failures exist, but
+        # provide an empty list
         mock_collect_files_flat.return_value = []
 
         # Act: call process and capture console_err output
-        with patch.object(metaprocess_pkg, 'console_err') as mock_console_err:
+        with patch.object(metaprocess_pkg, "console_err") as mock_console_err:
             result = await process(mock_context_with_config_dir, doctypes=tuple())
 
         # Assert: process should return 1 and console_err should have been used
@@ -571,11 +649,11 @@ def test_store_productdocset_json_merges_and_writes(
     deliverable: Deliverable,
     stitchnode: etree._ElementTree,
 ):
-    """store_productdocset_json should merge docs from metadata files and write product/docset JSON."""
+    """Merge docs from metadata files and write product/docset JSON."""
     # Use the fixture's meta cache dir and create a metadata file there
     meta_cache_dir = mock_context_with_config_dir.envconfig.paths.meta_cache_dir
-    meta_file = Path(meta_cache_dir) / 'meta1.json'
-    meta_file.write_text(json.dumps({'docs': [{'title': 'Doc1'}]}), encoding='utf-8')
+    meta_file = Path(meta_cache_dir) / "meta1.json"
+    meta_file.write_text(json.dumps({"docs": [{"title": "Doc1"}]}), encoding="utf-8")
 
     doctype = Doctype.from_str(
         f"{deliverable.productid}/{deliverable.docsetid}/{deliverable.lang}"
@@ -584,19 +662,21 @@ def test_store_productdocset_json_merges_and_writes(
     # Patch collect_files_flat to return our file (relative path)
     with patch.object(
         metaprocess_pkg,
-        'collect_files_flat',
-        return_value=[(doctype, deliverable.docsetid, [Path('meta1.json')])],
+        "collect_files_flat",
+        return_value=[(doctype, deliverable.docsetid, [Path("meta1.json")])],
     ):
         metaprocess_pkg.store_productdocset_json(
             mock_context_with_config_dir, [doctype], stitchnode
         )
 
     # Assert written JSON exists and contains merged document
-    out_file = Path(meta_cache_dir) / deliverable.productid / f"{deliverable.docsetid}.json"
+    out_file = (
+        Path(meta_cache_dir) / deliverable.productid / f"{deliverable.docsetid}.json"
+    )
     assert out_file.exists()
-    merged = json.loads(out_file.read_text(encoding='utf-8'))
-    assert 'documents' in merged
-    assert merged['documents'][0]['title'] == 'Doc1'
+    merged = json.loads(out_file.read_text(encoding="utf-8"))
+    assert "documents" in merged
+    assert merged["documents"][0]["title"] == "Doc1"
 
 
 def test_store_productdocset_json_warns_on_empty_metadata(
@@ -606,19 +686,21 @@ def test_store_productdocset_json_warns_on_empty_metadata(
 ):
     """If a metadata file is empty ({}), a warning is printed to console_err."""
     meta_cache_dir = mock_context_with_config_dir.envconfig.paths.meta_cache_dir
-    meta_file = Path(meta_cache_dir) / 'empty.json'
-    meta_file.write_text('{}', encoding='utf-8')
-
+    meta_file = Path(meta_cache_dir) / "empty.json"
+    meta_file.write_text("{}", encoding="utf-8")
 
     doctype = Doctype.from_str(
         f"{deliverable.productid}/{deliverable.docsetid}/{deliverable.lang}"
     )
 
-    with patch.object(
-        metaprocess_pkg,
-        'collect_files_flat',
-        return_value=[(doctype, deliverable.docsetid, [Path('empty.json')])],
-    ), patch.object(metaprocess_pkg, 'console_err') as mock_console_err:
+    with (
+        patch.object(
+            metaprocess_pkg,
+            "collect_files_flat",
+            return_value=[(doctype, deliverable.docsetid, [Path("empty.json")])],
+        ),
+        patch.object(metaprocess_pkg, "console_err") as mock_console_err,
+    ):
         metaprocess_pkg.store_productdocset_json(
             mock_context_with_config_dir, [doctype], stitchnode
         )
@@ -634,20 +716,22 @@ def test_store_productdocset_json_handles_read_error(
 ):
     """If reading a metadata file raises, it should be caught and an error printed."""
     meta_cache_dir = mock_context_with_config_dir.envconfig.paths.meta_cache_dir
-    bad_file = Path(meta_cache_dir) / 'bad.json'
+    bad_file = Path(meta_cache_dir) / "bad.json"
     # Write invalid JSON to cause json.load to raise
-    bad_file.write_text('{ not json }', encoding='utf-8')
-
+    bad_file.write_text("{ not json }", encoding="utf-8")
 
     doctype = Doctype.from_str(
         f"{deliverable.productid}/{deliverable.docsetid}/{deliverable.lang}"
     )
 
-    with patch.object(
-        metaprocess_pkg,
-        'collect_files_flat',
-        return_value=[(doctype, deliverable.docsetid, [Path('bad.json')])],
-    ), patch.object(metaprocess_pkg, 'console_err') as mock_console_err:
+    with (
+        patch.object(
+            metaprocess_pkg,
+            "collect_files_flat",
+            return_value=[(doctype, deliverable.docsetid, [Path("bad.json")])],
+        ),
+        patch.object(metaprocess_pkg, "console_err") as mock_console_err,
+    ):
         metaprocess_pkg.store_productdocset_json(
             mock_context_with_config_dir, [doctype], stitchnode
         )
@@ -659,30 +743,32 @@ def test_store_productdocset_json_handles_read_error(
     "setup_files, doctype_str, expected_file_count",
     [
         (
-            {'en-us/sles/15-SP4': ['DC-file1', 'DC-file2', 'ignored.xml']},
-            'sles/15-SP4/en-us',
-            2
+            {"en-us/sles/15-SP4": ["DC-file1", "DC-file2", "ignored.xml"]},
+            "sles/15-SP4/en-us",
+            2,
         ),
         (
             {
-                'en-us/sles/15-SP4': ['DC-file-foo', 'DC-file-bar'],
-                'de-de/sles/15-SP4': ['DC-file-foo', 'DC-file-bar']
+                "en-us/sles/15-SP4": ["DC-file-foo", "DC-file-bar"],
+                "de-de/sles/15-SP4": ["DC-file-foo", "DC-file-bar"],
             },
-            'sles/15-SP4/en-us,de-de',
-            4
+            "sles/15-SP4/en-us,de-de",
+            4,
         ),
         (
-            {}, # No files created
-            'sles/15-SP4/en-us',
-            0
+            {},  # No files created
+            "sles/15-SP4/en-us",
+            0,
         ),
     ],
-    ids=["single_lang", "multi_lang", "no_files"]
+    ids=["single_lang", "multi_lang", "no_files"],
 )
-def test_collect_files_flat(tmp_path: Path, setup_files, doctype_str, expected_file_count):
+def test_collect_files_flat(
+    tmp_path: Path, setup_files, doctype_str, expected_file_count
+):
     """Verify that collect_files_flat finds DC-* files correctly."""
     # Arrange
-    cache_dir = tmp_path / 'cache'
+    cache_dir = tmp_path / "cache"
     for path_str, files in setup_files.items():
         dir_path = cache_dir / path_str
         dir_path.mkdir(parents=True, exist_ok=True)
@@ -705,17 +791,17 @@ def test_collect_files_flat(tmp_path: Path, setup_files, doctype_str, expected_f
 class TestUpdateRepositories:
     """Tests for the update_repositories function."""
 
-    @patch.object(metaprocess_pkg.ManagedGitRepo, 'clone_bare', new_callable=AsyncMock)
+    @patch.object(metaprocess_pkg.ManagedGitRepo, "clone_bare", new_callable=AsyncMock)
     async def test_update_repositories_success(
         self, mock_clone_bare: AsyncMock, tmp_path: Path
     ):
         """Verify that update_repositories successfully 'clones' a repo."""
         # Arrange
         mock_deliverable = Mock(spec=Deliverable)
-        mock_deliverable.git.url = 'gh://SUSE/doc-test'
-        mock_deliverable.git.slug = 'SUSE-doc-test'
+        mock_deliverable.git.url = "gh://SUSE/doc-test"
+        mock_deliverable.git.slug = "SUSE-doc-test"
         deliverables = [mock_deliverable]
-        repo_dir = tmp_path / 'repos'
+        repo_dir = tmp_path / "repos"
         mock_clone_bare.return_value = True
 
         from docbuild.cli.cmd_metadata.metaprocess import update_repositories
@@ -727,17 +813,17 @@ class TestUpdateRepositories:
         mock_clone_bare.assert_awaited_once()
         # mock_clone_bare.assert_awaited_once_with(expected_path)
 
-    @patch.object(metaprocess_pkg.ManagedGitRepo, 'clone_bare', new_callable=AsyncMock)
+    @patch.object(metaprocess_pkg.ManagedGitRepo, "clone_bare", new_callable=AsyncMock)
     async def test_update_repositories_failed(
         self, mock_clone_bare: AsyncMock, tmp_path: Path, caplog
     ):
         """Verify that update_repositories handles a git clone failure."""
         # Arrange
         mock_deliverable = Mock(spec=Deliverable)
-        mock_deliverable.git.url = 'gh://SUSE/non-existent-repo'
-        mock_deliverable.git.slug = 'SUSE-non-existent-repo'
+        mock_deliverable.git.url = "gh://SUSE/non-existent-repo"
+        mock_deliverable.git.slug = "SUSE-non-existent-repo"
         deliverables = [mock_deliverable]
-        repo_dir = tmp_path / 'repos'
+        repo_dir = tmp_path / "repos"
         mock_clone_bare.return_value = False
 
         from docbuild.cli.cmd_metadata.metaprocess import update_repositories
@@ -751,5 +837,5 @@ class TestUpdateRepositories:
 
         # Assert
         mock_clone_bare.assert_awaited_once()
-        assert 'Failed to update' in caplog.text
+        assert "Failed to update" in caplog.text
         # assert error_message in caplog.text
