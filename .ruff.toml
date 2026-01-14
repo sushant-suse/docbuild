@@ -55,7 +55,7 @@ ignore = [
     "D203",    # Conflicts with D211 (one blank line before class docstring)
     "D213",    # Conflicts with D212 (multi-line docstring start convention)
     # "D401",    # First line of docstring should be in imperative mood
-    "COM812",  # 
+    "COM812",  #
 ]
 
 # Allow autofix for everything except complexity and annotations
@@ -77,7 +77,7 @@ max-complexity = 10
 
 [format]
 # 5. Use single quotes in `ruff format`.
-quote-style = "single"
+quote-style = "double"
 
 
 [lint.per-file-ignores]
@@ -91,8 +91,11 @@ quote-style = "single"
     "ANN201", # Missing return type annotation
     "ANN202", # Missing return type annotation for private function
     "ANN204", # Missing return type annotation for special method `__init__`
+    "ANN401", # Missing type annotation for self in method
     "D100",   # Missing docstring in public module
     "D101",   # Missing docstring in public class
     "D103",   # Missing docstring in public function
     "D105",   # Missing docstring in magic method
 ]
+# Ignore unused imports in all __init__.py files
+"__init__.py" = ["F401"]

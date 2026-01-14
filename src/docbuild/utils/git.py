@@ -31,10 +31,9 @@ class ManagedGitRepo:
         cls._locks.clear()
         cls._is_updated.clear()
 
-    def __init__(self: Self,
-                 remote_url: str,
-                 rootdir: Path,
-                 gitconfig: Path | None = None) -> None:
+    def __init__(
+        self: Self, remote_url: str, rootdir: Path, gitconfig: Path | None = None
+    ) -> None:
         """Initialize the managed repository.
 
         :param remote_url: The remote URL of the repository.
@@ -55,7 +54,7 @@ class ManagedGitRepo:
     def __repr__(self: Self) -> str:
         """Return a string representation of the ManagedGitRepo."""
         return (
-            f'{self.__class__.__name__}(remote_url={self.remote_url!r}, '
+            f"{self.__class__.__name__}(remote_url={self.remote_url!r}, "
             f"bare_repo_path='{self.bare_repo_path!s}')"
         )
 
@@ -85,9 +84,9 @@ class ManagedGitRepo:
         url = self._repo_model.url
         try:
             self.result = await execute_git_command(
-                'clone',
-                '--bare',
-                '--progress',
+                "clone",
+                "--bare",
+                "--progress",
                 str(url),
                 str(self.bare_repo_path),
                 cwd=self._permanent_root,
@@ -122,14 +121,14 @@ class ManagedGitRepo:
         async with self._locks[repo_model]:
             # Re-check the update status after acquiring the lock
             if self._is_updated.get(repo_model, False):
-                log.info('Repository %r already processed this run.', repo_model.name)
+                log.info("Repository %r already processed this run.", repo_model.name)
                 return True
 
             result = False
             if self.bare_repo_path.exists():
                 log.info(
-                    'Repository already exists, fetching updates for %r',
-                    repo_model.name
+                    "Repository already exists, fetching updates for %r",
+                    repo_model.name,
                 )
                 result = await self.fetch_updates()
             else:
@@ -152,20 +151,21 @@ class ManagedGitRepo:
         """Create a temporary worktree from the bare repository."""
         if not self.bare_repo_path.exists():
             raise FileNotFoundError(
-                'Cannot create worktree. Bare repository does not exist at: '
-                f'{self.bare_repo_path}'
+                "Cannot create worktree. Bare repository does not exist at: "
+                f"{self.bare_repo_path}"
             )
 
-        clone_args = ['clone']
+        clone_args = ["clone"]
         if is_local:
-            clone_args.append('--local')
-        clone_args.extend(['--branch', branch])
+            clone_args.append("--local")
+        clone_args.extend(["--branch", branch])
         if options:
             clone_args.extend(options)
         clone_args.extend([str(self.bare_repo_path), str(target_dir)])
 
         self.result = await execute_git_command(
-            *clone_args, cwd=target_dir.parent,
+            *clone_args,
+            cwd=target_dir.parent,
             gitconfig=self._gitconfig,
         )
 
@@ -176,7 +176,7 @@ class ManagedGitRepo:
         """
         if not self.bare_repo_path.exists():
             log.warning(
-                'Cannot fetch updates: Bare repository does not exist at %s',
+                "Cannot fetch updates: Bare repository does not exist at %s",
                 self.bare_repo_path,
             )
             return False
@@ -186,8 +186,12 @@ class ManagedGitRepo:
             # To update *every* branch in the bare Git repo, we need to use
             # this weird 'git fetch' command:
             self.result = await execute_git_command(
-                'fetch', 'origin', '+refs/heads/*:refs/heads/*', '-v', '--prune',
-                cwd=self.bare_repo_path
+                "fetch",
+                "origin",
+                "+refs/heads/*:refs/heads/*",
+                "-v",
+                "--prune",
+                cwd=self.bare_repo_path,
             )
             log.info("Successfully fetched updates for '%s'", self.slug)
             return True

@@ -1,22 +1,17 @@
 """Main CLI tool for document operations."""
 
+import logging
 from pathlib import Path
 import sys
-import logging
-import click
-import rich.console
-import rich.logging
-from rich.pretty import install
-from rich.traceback import install as install_traceback
-from pydantic import ValidationError
 from typing import Any, cast
 
-from ..__about__ import __version__
-from ..config.app import replace_placeholders
-from ..config.load import handle_config
-from ..models.config.app import AppConfig
-from ..models.config.env import EnvConfig
+import click
+from pydantic import ValidationError
+import rich.console
+from rich.traceback import install as install_traceback
 
+from ..__about__ import __version__
+from ..config.load import handle_config
 from ..constants import (
     APP_CONFIG_BASENAMES,
     APP_NAME,
@@ -26,7 +21,9 @@ from ..constants import (
     PROJECT_LEVEL_APP_CONFIG_FILENAMES,
 )
 from ..logging import setup_logging
-from ..utils.pidlock import PidFileLock, LockAcquisitionError
+from ..models.config.app import AppConfig
+from ..models.config.env import EnvConfig
+from ..utils.pidlock import LockAcquisitionError, PidFileLock
 from .cmd_build import build
 from .cmd_c14n import c14n
 from .cmd_config import config
@@ -37,19 +34,21 @@ from .context import DocBuildContext
 from .defaults import DEFAULT_APP_CONFIG, DEFAULT_ENV_CONFIG
 
 PYTHON_VERSION = (
-    f'{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}'
+    f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
 )
 log = logging.getLogger(__name__)
 CONSOLE = rich.console.Console(stderr=True, highlight=False)
 
+
 def _setup_console() -> None:
-    """Configures the rich console."""
+    """Configure the rich console."""
     install_traceback(console=CONSOLE, show_locals=True)
+
 
 @click.group(
     name=APP_NAME,
-    context_settings={'show_default': True, 'help_option_names': ['-h', '--help']},
-    help='Main CLI tool for document operations.',
+    context_settings={"show_default": True, "help_option_names": ["-h", "--help"]},
+    help="Main CLI tool for document operations.",
     invoke_without_command=True,
 )
 @click.version_option(
@@ -57,21 +56,21 @@ def _setup_console() -> None:
     prog_name=APP_NAME,
     message=f"%(prog)s, version %(version)s running Python {PYTHON_VERSION}",
 )
-@click.option('-v', '--verbose', count=True, help='Increase verbosity')
-@click.option('--dry-run', is_flag=True, help='Run without making changes')
+@click.option("-v", "--verbose", count=True, help="Increase verbosity")
+@click.option("--dry-run", is_flag=True, help="Run without making changes")
 @click.option(
-    '--debug/--no-debug',
+    "--debug/--no-debug",
     default=False,
-    envvar='DOCBUILD_DEBUG',
+    envvar="DOCBUILD_DEBUG",
     help=(
-        'Enable debug mode. '
-        'This will show more information about the process and the config files. '
+        "Enable debug mode. "
+        "This will show more information about the process and the config files. "
         "If available, read the environment variable 'DOCBUILD_DEBUG'."
     ),
 )
 @click.option(
-    '--app-config',
-    metavar='APP_CONFIG_FILE',
+    "--app-config",
+    metavar="APP_CONFIG_FILE",
     type=click.Path(
         exists=True,
         dir_okay=False,
@@ -79,17 +78,17 @@ def _setup_console() -> None:
         resolve_path=True,
         path_type=Path,
     ),
-    help='Filename to the application TOML config file. Overrides auto-search.',
+    help="Filename to the application TOML config file. Overrides auto-search.",
 )
 @click.option(
-    '--env-config',
-    metavar='ENV_CONFIG_FILE',
+    "--env-config",
+    metavar="ENV_CONFIG_FILE",
     type=click.Path(exists=True, dir_okay=False),
     help=(
         "Filename to a environment's TOML config file. "
-        f'If not set, {APP_NAME} uses the default filename '
-        f'{DEFAULT_ENV_CONFIG_FILENAME!r} '
-        'in the current working directory.'
+        f"If not set, {APP_NAME} uses the default filename "
+        f"{DEFAULT_ENV_CONFIG_FILENAME!r} "
+        "in the current working directory."
     ),
 )
 @click.pass_context
@@ -114,7 +113,7 @@ def cli(
     """
     if ctx.invoked_subcommand is None:
         # If no subcommand is invoked, show the help message
-        click.echo(10 * '-')
+        click.echo(10 * "-")
         click.echo(ctx.get_help())
         ctx.exit(0)
 
@@ -132,7 +131,7 @@ def cli(
     # 1. Load the raw application config dictionary
     (
         context.appconfigfiles,
-        raw_appconfig, # Store config as raw dictionary
+        raw_appconfig,  # Store config as raw dictionary
         context.appconfig_from_defaults,
     ) = handle_config(
         app_config,
@@ -157,15 +156,17 @@ def cli(
 
     # 3. Setup logging using the validated config object
     # Use model_dump(by_alias=True) to ensure the 'class' alias is used.
-    logging_config = context.appconfig.logging.model_dump(by_alias=True, exclude_none=True)
-    setup_logging(cliverbosity=verbose, user_config={'logging': logging_config})
+    logging_config = context.appconfig.logging.model_dump(
+        by_alias=True, exclude_none=True
+    )
+    setup_logging(cliverbosity=verbose, user_config={"logging": logging_config})
 
     # --- PHASE 2: Load Environment Config, Validate, and Acquire Lock ---
     #
     # 1. Load raw Environment Config
     (
         context.envconfigfiles,
-        raw_envconfig, # Renaming context.envconfig to raw_envconfig locally
+        raw_envconfig,  # Renaming context.envconfig to raw_envconfig locally
         context.envconfig_from_defaults,
     ) = handle_config(
         env_config,
@@ -185,9 +186,10 @@ def cli(
         context.envconfig = EnvConfig.from_dict(raw_envconfig)
     except (ValueError, ValidationError) as e:
         log.error(
-             "Environment configuration failed validation: "
-             "Error in config file(s): %s %s",
-             context.envconfigfiles, e
+            "Environment configuration failed validation: "
+            "Error in config file(s): %s %s",
+            context.envconfigfiles,
+            e,
         )
         ctx.exit(1)
 
@@ -212,10 +214,12 @@ def cli(
             log.error("Failed to set up environment lock: %s", e)
             ctx.exit(1)
 
-        # 3. Register the lock's __exit__ method to be called when the context terminates.
+        # 3. Register the lock's __exit__ method to be called when the context
+        # terminates.
         # We use a lambda to supply the three mandatory positional arguments (None)
         # expected by __exit__, satisfying the click.call_on_close requirement.
         ctx.call_on_close(lambda: ctx.obj.env_lock.__exit__(None, None, None))
+
 
 # Add subcommand
 cli.add_command(build)

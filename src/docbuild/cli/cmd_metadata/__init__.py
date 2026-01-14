@@ -14,28 +14,30 @@ from .metaprocess import process
 
 # Set up rich consoles for output
 stdout = Console()
-console_err = Console(stderr=True, style='red')
+console_err = Console(stderr=True, style="red")
 
 
 @click.command(help=__doc__)
 @click.argument(
-    'doctypes',
+    "doctypes",
     nargs=-1,
     callback=validate_doctypes,
 )
 @click.option(
-    '-E', '--exitfirst',
+    "-E",
+    "--exitfirst",
     is_flag=True,
     default=False,
     show_default=True,
-    help='Exit on first failed deliverable.',
+    help="Exit on first failed deliverable.",
 )
 @click.option(
-    '-S', '--skip-repo-update',
+    "-S",
+    "--skip-repo-update",
     is_flag=True,
     default=False,
     show_default=True,
-    help='Skip updating git repositories before processing.',
+    help="Skip updating git repositories before processing.",
 )
 @click.pass_context
 def metadata(
@@ -49,7 +51,7 @@ def metadata(
     :param ctx: The Click context object.
     """
     context: DocBuildContext = ctx.obj
-    timer = make_timer('metadata')
+    timer = make_timer("metadata")
     result = 1  # Default exit code for interruption or error
 
     # The timer data object 't' will be populated by the context manager.
@@ -58,11 +60,15 @@ def metadata(
     try:
         with timer() as t:
             result = asyncio.run(
-                process(context, doctypes,
-                        exitfirst=exitfirst, skip_repo_update=skip_repo_update)
+                process(
+                    context,
+                    doctypes,
+                    exitfirst=exitfirst,
+                    skip_repo_update=skip_repo_update,
+                )
             )
     finally:
         if t and not math.isnan(t.elapsed):
-            stdout.print(f'Elapsed time {t.elapsed:0.2f}s')
+            stdout.print(f"Elapsed time {t.elapsed:0.2f}s")
 
     ctx.exit(result)

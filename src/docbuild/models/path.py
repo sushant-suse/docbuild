@@ -2,7 +2,7 @@
 
 import os
 from pathlib import Path
-from typing import Any, Self
+from typing import Self
 
 from pydantic import GetCoreSchemaHandler
 from pydantic_core import core_schema
@@ -31,7 +31,7 @@ class EnsureWritableDirectory:
 
     @classmethod
     def __get_pydantic_core_schema__(
-        cls, source_type: Any, handler: GetCoreSchemaHandler
+        cls, source_type: type[Path], handler: GetCoreSchemaHandler
     ) -> core_schema.CoreSchema:
         """Define Validation AND Serialization logic."""
         # 1. Validation Logic (The Chain)
@@ -45,7 +45,7 @@ class EnsureWritableDirectory:
         # This tells Pydantic: "When dumping to JSON or Python, use str(instance)"
         serialization_schema = core_schema.plain_serializer_function_ser_schema(
             lambda instance: str(instance),
-            when_used='always',  # Apply to both JSON and Python (dict) dumps
+            when_used="always",  # Apply to both JSON and Python (dict) dumps
         )
         # 3. Combine Validation and Serialization
         return core_schema.json_or_python_schema(
@@ -80,9 +80,12 @@ class EnsureWritableDirectory:
 
         # 3. Permission Checks (R/W/X)
         missing_perms = []
-        if not os.access(path, os.R_OK): missing_perms.append("READ")
-        if not os.access(path, os.W_OK): missing_perms.append("WRITE")
-        if not os.access(path, os.X_OK): missing_perms.append("EXECUTE")
+        if not os.access(path, os.R_OK):
+            missing_perms.append("READ")
+        if not os.access(path, os.W_OK):
+            missing_perms.append("WRITE")
+        if not os.access(path, os.X_OK):
+            missing_perms.append("EXECUTE")
 
         if missing_perms:
             raise ValueError(
@@ -108,7 +111,7 @@ class EnsureWritableDirectory:
 
     # Allows access to methods/attributes of the underlying Path object
     # (e.g., .joinpath)
-    def __getattr__(self, name: str) -> Any:
+    def __getattr__(self, name: str) -> object:
         """Delegate attribute access to the underlying Path object."""
         return getattr(self._path, name)
 
