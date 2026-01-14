@@ -179,7 +179,7 @@ class AppLoggingConfig(BaseModel):
 
 
 class AppConfig(BaseModel):
-    """Root model for application configuration (config.toml)."""
+    """Root model for application configuration (:file:`config.toml`)."""
 
     logging: AppLoggingConfig = Field(
         default_factory=lambda: AppLoggingConfig.model_validate(
