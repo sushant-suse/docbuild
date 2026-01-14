@@ -73,7 +73,8 @@ def test_compare_with_one_language_and_with_different_object():
 def test_language_code_is_frozen():
     lang = LanguageCode(language="en-us")
 
-    with pytest.raises(ValidationError, match=".*frozen_instance.*"):
+    with pytest.raises(ValidationError,
+                       match=r".*frozen_instance.*"):
         lang.language = "de-de"
 
 

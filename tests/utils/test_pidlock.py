@@ -6,6 +6,7 @@ import multiprocessing as mp
 from multiprocessing import Event
 from pathlib import Path
 import platform
+import re
 import time
 from unittest.mock import Mock, patch
 
@@ -143,7 +144,7 @@ def test_lock_is_reentrant_per_process(lock_setup):
         # (internal API misuse)
         with pytest.raises(
             RuntimeError,
-            match="Lock already acquired by this PidFileLock instance."
+            match=re.escape("Lock already acquired by this PidFileLock instance.")
         ):
             with lock2:
                 pass
