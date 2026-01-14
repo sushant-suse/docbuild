@@ -3,6 +3,7 @@
 from collections.abc import Iterator
 from os import PathLike
 from pathlib import Path
+import re
 from subprocess import CompletedProcess
 import tempfile
 from unittest.mock import AsyncMock, Mock, patch
@@ -123,7 +124,8 @@ class TestProcessValidation:
         context = Mock(spec=DocBuildContext)
         context.envconfig = {"paths": "not_a_dict"}
 
-        with pytest.raises(ValueError, match="'paths.config' must be a dictionary"):
+        with pytest.raises(ValueError,
+                           match=re.escape("'paths.config' must be a dictionary")):
             await process_mod.process(context, [])
 
     async def test_process_with_no_xml_files(self, mock_context, caplog):

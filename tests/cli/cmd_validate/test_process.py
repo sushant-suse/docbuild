@@ -1,6 +1,7 @@
 """Tests for the XML validation process module."""
 
 from pathlib import Path
+import re
 from subprocess import CompletedProcess
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -58,7 +59,8 @@ async def test_process_file_with_generic_parsing_error(
 
 async def test_process_no_envconfig(mock_context):
     mock_context.envconfig = None
-    with pytest.raises(ValueError, match="No envconfig found in context."):
+    with pytest.raises(ValueError,
+                       match=re.escape("No envconfig found in context.")):
         await process(mock_context, xmlfiles=(Path("dummy.xml"),))
 
 

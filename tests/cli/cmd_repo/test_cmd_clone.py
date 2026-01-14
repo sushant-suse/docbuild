@@ -1,6 +1,7 @@
 """Tests for the 'docbuild repo clone' command."""
 
 import logging
+import re
 from unittest.mock import AsyncMock
 
 import pytest
@@ -112,7 +113,8 @@ async def test_process_stitchnode_none(monkeypatch, tmp_path):
     (tmp_path / "config").mkdir()
     (tmp_path / "repos").mkdir()
 
-    with pytest.raises(ValueError, match="Stitch node could not be created."):
+    with pytest.raises(ValueError,
+                       match=re.escape("Stitch node could not be created.")):
         await mod_process.process(context, repos=())
 
 
@@ -120,7 +122,7 @@ async def test_process_configdir_none():
     context = DocBuildContext(envconfig={"paths": {}})
     with pytest.raises(
         ValueError,
-        match="Could not get a value from envconfig.paths.config_dir",
+        match=re.escape("Could not get a value from envconfig.paths.config_dir"),
     ):
         await mod_process.process(context, repos=())
 
@@ -129,6 +131,6 @@ async def test_process_repodir_none():
     context = DocBuildContext(envconfig={"paths": {"config_dir": "/dummy/config"}})
     with pytest.raises(
         ValueError,
-        match="Could not get a value from envconfig.paths.repo_dir",
+        match=re.escape("Could not get a value from envconfig.paths.repo_dir"),
     ):
         await mod_process.process(context, repos=())
