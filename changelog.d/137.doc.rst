@@ -1,0 +1,1 @@
+Fix documentation issues due to renaming of classes with underscores.
