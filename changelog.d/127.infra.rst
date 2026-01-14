@@ -1,1 +1,0 @@
-Add a new GitHub Action for code formatting issues using Ruff.

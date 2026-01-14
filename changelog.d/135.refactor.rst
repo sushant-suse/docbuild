@@ -1,1 +1,0 @@
-Reduce complexity of :func:`~docbuild.cli.cmd_validate.process.process_file`. Split into smaller functions.
