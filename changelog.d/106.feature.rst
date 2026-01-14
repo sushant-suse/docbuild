@@ -1,0 +1,1 @@
+Introduces the new :command:`docbuild metadata` to automate the process of generating and caching documentation metadata.
