@@ -1,1 +1,0 @@
-Reformat the source code with Ruff. Removed unused imports and variables, fix docstrings, and use double quotes in strings.
