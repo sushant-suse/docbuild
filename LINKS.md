@@ -31,7 +31,14 @@ This document lists some links that may be helpful for this project.
 * [filelock](https://github.com/tox-dev/py-filelock)
 * [Portalocker](https://portalocker.readthedocs.io/en/latest/)
 
+## Databases
+
+* [TinyDB](https://tinydb.readthedocs.io/en/latest/)
+* [Sqlite](https://www.sqlite.org/index.html)
+* [aiosqlite](https://github.com/omnilib/aiosqlite)
+
 ## Docserv
+
 * [Docserv Action steps](https://confluence.suse.com/spaces/documentation/pages/1137311916/Docserv+Action+steps)
 * [Docserv repo](https://github.com/openSUSE/docserv)
 
