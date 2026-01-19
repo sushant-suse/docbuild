@@ -297,6 +297,11 @@ formatting = [
     { name = "docformatter" },
     { name = "ruff" },
 ]
+github = [
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+    { name = "pytest-cov" },
+]
 repl = [
     { name = "ipython" },
 ]
@@ -313,7 +318,7 @@ typing = [
 requires-dist = [
     { name = "click", specifier = ">=8.1.8" },
     { name = "jinja2", specifier = ">=3.1.6,<4.0.0" },
-    { name = "lxml", specifier = ">=5.4.0" },
+    { name = "lxml", specifier = ">=6.0.0" },
     { name = "pydantic", specifier = ">=2.11.4" },
     { name = "rich", specifier = ">=14.0.0" },
     { name = "tomlkit", specifier = ">=0.13.2" },
@@ -350,6 +355,11 @@ docs = [
 formatting = [
     { name = "docformatter", specifier = ">=1.7.5" },
     { name = "ruff", specifier = ">=0.11.12" },
+]
+github = [
+    { name = "pytest", specifier = ">=8.3.5" },
+    { name = "pytest-asyncio", specifier = ">=1.0.0" },
+    { name = "pytest-cov", specifier = ">=6.1.1" },
 ]
 repl = [{ name = "ipython", specifier = ">=9.3.0" }]
 tests = [
