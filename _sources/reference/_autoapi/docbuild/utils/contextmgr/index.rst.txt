@@ -38,7 +38,7 @@ Module Contents
 
 .. py:function:: make_timer(name: str, method: collections.abc.Callable[[], float] = time.perf_counter) -> collections.abc.Callable[[], contextlib.AbstractContextManager[TimerData]]
 
-   Create independant context managers to measure elapsed time.
+   Create independent context managers to measure elapsed time.
 
    Each timer is independent and can be used in a context manager.
    The name is used to identify the timer.

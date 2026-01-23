@@ -34,7 +34,7 @@ Module Contents
    :raises FileNotFoundError: if the command is not found.
 
 
-.. py:function:: execute_git_command(*args: str, cwd: pathlib.Path | None = None, extra_env: dict[str, str] | None = None, gitconfig: pathlib.Path | None = None) -> subprocess.CompletedProcess
+.. py:function:: execute_git_command(*args: str, cwd: pathlib.Path | None = None, extra_env: dict[str, str] | None = None, gitconfig: pathlib.Path | None = None) -> subprocess.CompletedProcess[str]
    :async:
 
 
