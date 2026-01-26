@@ -1,43 +1,58 @@
 """Server roles for the docbuild application."""
 
 from enum import StrEnum
-
-# from typing import Literal, Type
-# from pydantic import BaseModel, field_validator, Field
-# from ...constants import SERVER_ROLES
-#
-# ServerRole = StrEnum(
-#     "ServerRole",
-#     # Allow lowercase and uppercase names
-#     {name: name for name in SERVER_ROLES}
-#     | {name.upper(): name for name in SERVER_ROLES},
-# )
+from typing import Self
 
 
 class ServerRole(StrEnum):
-    """The server role."""
+    """The server role.
 
-    # production
+    This Enum supports various aliases and case variations for each role.
+    """
+
+    # Primary Members
     PRODUCTION = "production"
-    """Server is in production mode, serving live traffic."""
-    PROD = PRODUCTION
-    P = PRODUCTION
-    production = PRODUCTION
-    prod = PRODUCTION
-    p = PRODUCTION
-    # staging
     STAGING = "staging"
-    """Server is in staging mode, used for testing before production."""
-    STAGE = STAGING
-    S = STAGING
-    staging = STAGING
-    stage = STAGING
-    s = STAGING
-    # testing
     TESTING = "testing"
-    """Server is in testing mode, used for development and QA."""
-    TEST = TESTING
-    T = TESTING
-    testing = TESTING
-    test = TESTING
-    t = TESTING
+
+    # Aliases for PRODUCTION
+    PROD = "production"
+    P = "production"
+    prod = "production"
+    p = "production"
+
+    # Aliases for STAGING
+    STAGE = "staging"
+    S = "staging"
+    stage = "staging"
+    s = "staging"
+
+    # Aliases for TESTING
+    TEST = "testing"
+    T = "testing"
+    test = "testing"
+    t = "testing"
+    DEVEL = "testing"
+    devel = "testing"
+    DEV = "testing"
+    dev = "testing"
+
+    @classmethod
+    def _missing_(cls: type[Self], value: object) -> "ServerRole | None":
+        """Handle aliases and case-insensitive lookups using class members.
+
+        If the value passed isn't a valid value (for example, 'production'),
+        check if it matches one of the alias names (for example, 'p').
+        """
+        # Convert the input to a string to check against member keys
+        name = str(value)
+        member = cls.__members__.get(name)
+
+        if member is not None:
+            return member
+
+        # If no match is found, raise ValueError with all valid names/aliases
+        valid = ", ".join(cls.__members__.keys())
+        raise ValueError(
+            f"{name!r} is not a valid {cls.__name__}; valid names/aliases: {valid}"
+        )
