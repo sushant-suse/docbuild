@@ -28,10 +28,12 @@ dependencies = [
     "tomlkit>=0.13.2",
 ]
 authors = [
-  {name = "Tom Schraitle", email = "toms@suse.de"},
+  {name = "Tom Schraitle", email = "tomschr@users.noreply.github.com"},
+  {name = "Sushant Gaurav", email = "sushant-suse@users.noreply.github.com"},
 ]
 maintainers = [
-  {name = "Tom Schraitle", email = "toms@suse.de"},
+  {name = "Tom Schraitle", email = "tomschr@users.noreply.github.com"},
+  {name = "Sushant Gaurav", email = "sushant-suse@users.noreply.github.com"},
 ]
 dynamic = ["version",]
 classifiers = [
