@@ -163,26 +163,24 @@ class EnvTmpPaths(BaseModel):
     )
     "Root path for temporary files."
 
-    tmp_path: EnsureWritableDirectory = Field(
-        title="General Temporary Path for specific server",
+    tmp_dir: EnsureWritableDirectory = Field(
+        title="General Temporary Directory for specific server",
         description=(
             "A general-purpose subdirectory within the base temporary path to "
             "distinguish between different servers."
         ),
         examples=["/var/tmp/docbuild/doc-example-com"],
-        alias="tmp_dir",
     )
-    "General temporary path."
+    "General temporary directory."
 
-    tmp_deliverable_path: EnsureWritableDirectory = Field(
-        title="Temporary Deliverable Path",
+    tmp_deliverable_dir: EnsureWritableDirectory = Field(
+        title="Temporary Deliverable Directory",
         description=(
             "The directory where deliverable repositories are cloned and processed."
         ),
         examples=["/var/tmp/docbuild/doc-example-com/deliverable/"],
-        alias="tmp_deliverable_dir",
     )
-    "Path for temporary deliverable clones."
+    "Directory for temporary deliverable clones."
 
     tmp_metadata_dir: EnsureWritableDirectory = Field(
         title="Temporary Metadata Directory",
@@ -202,24 +200,22 @@ class EnvTmpPaths(BaseModel):
     )
     "Temporary build output directory."
 
-    tmp_out_path: EnsureWritableDirectory = Field(
-        title="Temporary Output Path",
+    tmp_out_dir: EnsureWritableDirectory = Field(
+        title="Temporary Output Directory",
         description=(
             "The final temporary directory where built artifacts land before "
             "deployment."
         ),
         examples=["/var/tmp/docbuild/doc-example-com/out/"],
-        alias="tmp_out_dir",
     )
-    "Temporary final output path."
+    "Temporary final output directory."
 
-    log_path: EnsureWritableDirectory = Field(
-        title="Log Path",
+    log_dir: EnsureWritableDirectory = Field(
+        title="Log Directory",
         description="The directory where build logs and application logs are stored.",
         examples=["/var/tmp/docbuild/doc-example-com/log"],
-        alias="log_dir",
     )
-    "Path for log files."
+    "Directory for log files."
 
     tmp_deliverable_name: str = Field(
         title="Temporary Deliverable Name",
@@ -237,22 +233,20 @@ class EnvTargetPaths(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    target_path: str = Field(
-        title="Target Server Deployment Path",
+    target_dir: str = Field(
+        title="Target Server Deployment Directory",
         description="The final remote destination for the built documentation",
         examples=["doc@10.100.100.100:/srv/docs"],
-        alias="target_dir",
     )
-    "The destination path for final built documentation."
+    "The destination directory for final built documentation."
 
-    backup_path: Path = Field(
-        title="Build Server Path",
+    backup_dir: Path = Field(
+        title="Build Server Backup Directory",
         description=(
             "The location on the build server before it is synced to the target path."
         ),
-        alias="backup_dir",
     )
-    "Path for backups."
+    "Directory for backups."
 
 
 class EnvPathsConfig(BaseModel):
@@ -304,7 +298,7 @@ class EnvPathsConfig(BaseModel):
     )
     "Path for permanent bare Git repositories."
 
-    temp_repo_dir: Path = Field(
+    tmp_repo_dir: Path = Field(
         title="Temporary Repository Directory",
         description=(
             "The directory used for temporary working copies cloned from "
@@ -312,7 +306,7 @@ class EnvPathsConfig(BaseModel):
         ),
         examples=["/var/cache/docbuild/repos/temporary-branches/"],
     )
-    "Path for temporary working copies."
+    "Directory for temporary working copies."
 
     base_cache_dir: Path = Field(
         title="Base Cache Directory",
