@@ -42,15 +42,21 @@ def _mock_successful_placeholder_resolver(data: dict[str, Any]) -> dict[str, Any
     resolved_data["paths"]["tmp"]["tmp_dir"] = tmp_general
     resolved_data["paths"]["tmp"]["tmp_deliverable_dir"] = tmp_general + "/deliverable"
     resolved_data["paths"]["tmp"]["tmp_metadata_dir"] = tmp_general + "/metadata"
-    resolved_data["paths"]["tmp"]["tmp_build_dir"] = (
-        tmp_general + "/build/{{product}}-{{docset}}-{{lang}}"
-    )
+
+    # Split build_dir: base is provided, dyn is optional (tested via default)
+    resolved_data["paths"]["tmp"]["tmp_build_base_dir"] = tmp_general + "/build"
+
     resolved_data["paths"]["tmp"]["tmp_out_dir"] = tmp_general + "/out"
     resolved_data["paths"]["tmp"]["log_dir"] = tmp_general + "/log"
-    resolved_data["paths"]["tmp"]["tmp_deliverable_name"] = (
+
+    # Renamed to match the updated model and use standard placeholder
+    resolved_data["paths"]["tmp"]["tmp_deliverable_name_dyn"] = (
         "{{product}}_{{docset}}_{{lang}}_XXXXXX"
     )
-    resolved_data["paths"]["target"]["target_dir"] = "doc@10.100.100.100:/srv/docs"
+
+    # Split target_dir and use placeholder requested by reviewer
+    resolved_data["paths"]["target"]["target_base_dir"] = "doc@10.100.100.100:/srv/docs"
+    resolved_data["paths"]["target"]["target_dir_dyn"] = "{{product}}"
     resolved_data["paths"]["target"]["backup_dir"] = Path(
         "/data/docbuild/external-builds/"
     )
@@ -60,7 +66,7 @@ def _mock_successful_placeholder_resolver(data: dict[str, Any]) -> dict[str, Any
         "build",
         {
             "daps": {"command": "daps", "meta": "daps meta"},
-            "container": {"container": "registry.example.com/container"},
+            "container": {"container": "none"},
         },
     )
 
@@ -77,10 +83,7 @@ def mock_placeholder_resolution(monkeypatch):
 
 @pytest.fixture
 def mock_valid_raw_env_data(tmp_path: Path) -> dict[str, Any]:
-    """Provide a minimal, valid dictionary representing env.toml data.
-
-    Includes ALL mandatory path fields and a nested xslt-params structure.
-    """
+    """Provide a minimal, valid dictionary representing env.toml data."""
     nested_xslt_params = {
         "external": {"js": {"onlineonly": "/docserv/res/extra.js"}},
         "show": {"edit": {"link": 1}},
@@ -117,22 +120,23 @@ def mock_valid_raw_env_data(tmp_path: Path) -> dict[str, Any]:
                 "tmp_base_dir": "/var/tmp/docbuild",
                 "tmp_dir": "{tmp_base_dir}/doc-example-com",
                 "tmp_deliverable_dir": "{tmp_dir}/deliverable/",
-                "tmp_build_dir": "{tmp_dir}/build/{{product}}-{{docset}}-{{lang}}",
+                "tmp_build_base_dir": "{tmp_dir}/build",
                 "tmp_out_dir": "{tmp_dir}/out/",
                 "log_dir": "{tmp_dir}/log",
                 "tmp_metadata_dir": "{tmp_dir}/metadata",
-                "tmp_deliverable_name": "{{product}}_{{docset}}_{{lang}}_XXXXXX",
+                "tmp_deliverable_name_dyn": "{{product}}_{{docset}}_{{lang}}_XXXXXX",
             },
             "target": {
-                "target_dir": "doc@10.100.100.100:/srv/docs",
+                "target_base_dir": "doc@10.100.100.100:/srv/docs",
+                "target_dir_dyn": "{{product}}",
                 "backup_dir": Path("/data/docbuild/external-builds/"),
             },
         },
         "build": {
             "daps": {"command": "daps", "meta": "daps meta"},
-            "container": {"container": "registry.example.com/container"},
+            "container": {"container": "none"},
         },
-        "xslt-params": nested_xslt_params,  # <-- Use nested structure
+        "xslt-params": nested_xslt_params,
     }
 
 
@@ -148,14 +152,15 @@ def test_envconfig_full_success(mock_valid_raw_env_data: dict[str, Any]):
     # Check type coercion for core types
     assert isinstance(config.paths.base_cache_dir, Path)
 
-    # Updated assertion to use tmp_dir instead of tmp_path
+    # Check tmp_dir instead of tmp_path
     assert config.paths.tmp.tmp_dir.is_absolute()
     assert config.paths.tmp.tmp_dir.name == "doc-example-com"
 
-    # Check that the field with runtime placeholders is correctly handled as a string
-    assert isinstance(config.paths.tmp.tmp_build_dir, str)
+    # Verify that the default value for tmp_build_dir_dyn is correctly picked up
+    assert config.paths.tmp.tmp_build_dir_dyn == "{{product}}-{{docset}}-{{lang}}"
+    assert "build" in str(config.paths.tmp.tmp_build_base_dir)
 
-    # Check XSLT params: should now contain the nested structure
+    # Check XSLT params
     assert "external" in config.xslt_params
     assert isinstance(config.xslt_params["external"], dict)
     assert config.xslt_params["show"]["edit"]["link"] == 1
@@ -174,10 +179,8 @@ def test_envconfig_type_coercion_ip_host(mock_valid_raw_env_data: dict[str, Any]
 
 def test_envconfig_strictness_extra_field_forbid(tmp_path: Path, monkeypatch: Any):
     """Test that extra fields are forbidden on the top-level EnvConfig model."""
-    # This test checks for 'extra = forbid' behavior.
     monkeypatch.setattr(config_app_mod, "replace_placeholders", lambda data: data)
 
-    # Prepare all directories that are validated for existence and writability.
     paths_to_create = [
         tmp_path,
         tmp_path / "config",
@@ -186,14 +189,15 @@ def test_envconfig_strictness_extra_field_forbid(tmp_path: Path, monkeypatch: An
         tmp_path / "out",
         tmp_path / "log",
         tmp_path / "backup",
+        tmp_path / "build",
     ]
     for p in paths_to_create:
-        p.mkdir(exist_ok=True)
+        p.mkdir(exist_ok=True, parents=True)
 
     raw_data = {
         "build": {
             "daps": {"command": "daps", "meta": "daps meta"},
-            "container": {"container": "registry.example.com/container"},
+            "container": {"container": "none"},
         },
         "server": {
             "name": "D",
@@ -222,13 +226,14 @@ def test_envconfig_strictness_extra_field_forbid(tmp_path: Path, monkeypatch: An
                 "tmp_dir": str(tmp_path),
                 "tmp_deliverable_dir": str(tmp_path / "deliverable"),
                 "tmp_metadata_dir": str(tmp_path / "metadata"),
-                "tmp_build_dir": str(tmp_path / "build/{{product}}"),
+                "tmp_build_base_dir": str(tmp_path / "build"),
                 "tmp_out_dir": str(tmp_path / "out"),
                 "log_dir": str(tmp_path / "log"),
-                "tmp_deliverable_name": "main",
+                "tmp_deliverable_name_dyn": "{{product}}_{{docset}}_{{lang}}_XXXXXX",
             },
             "target": {
-                "target_dir": "/srv",  # Not validated for existence
+                "target_base_dir": "/srv",
+                "target_dir_dyn": "{{product}}",
                 "backup_dir": str(tmp_path / "backup"),
             },
         },
