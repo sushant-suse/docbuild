@@ -38,6 +38,8 @@ def repo_url(request) -> str:
             "org/repo_git",
             "https://github.com/org/repo_git.git",
         ),
+        # 7
+        ("http://a.b/org/c.git", "org/c", "http://a.b/org/c.git"),
     ],
 )
 def test_repo_https(input_value, name, url):
@@ -151,6 +153,45 @@ def test_repo_abbreviated(input_value, name, url):
     repo = Repo(input_value)
     assert repo.name == name
     assert repo.url == url
+
+
+@pytest.mark.parametrize(
+    "input_value, name, branch, expected_surl, expected_tree",
+    [
+        # 1
+        (
+            "org/repo@main",
+            "org/repo",
+            "main",
+            "gh://org/repo@main",
+            "https://github.com/org/repo/tree/main",
+        ),
+        # 2
+        (
+            "ORG/repo@develop",
+            "org/repo",
+            "develop",
+            "gh://org/repo@develop",
+            "https://github.com/org/repo/tree/develop",
+        ),
+        # 3
+        (
+            "org/repo_git.git@v1.2.4",
+            "org/repo_git",
+            "v1.2.4",
+            "gh://org/repo_git@v1.2.4",
+            "https://github.com/org/repo_git/tree/v1.2.4",
+        ),
+        # 4
+    ],
+)
+def test_repo_with_branch(input_value, name, branch, expected_surl, expected_tree):
+    repo = Repo(input_value)
+    assert repo.name == name
+    assert repo.branch == branch
+    assert repo.surl == expected_surl
+    assert repo.treeurl == expected_tree
+    assert repo.origin == input_value
 
 
 def test_repo_with_empty_value():
