@@ -58,14 +58,18 @@ jobs:
     - name: Install dependencies
       run: uv sync --frozen --group github-action
 
+    # Updated to v4 to avoid deprecation of v3 in late 2026
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
+      uses: github/codeql-action/init@v4
       with:
         languages: ${{ matrix.language }}
         # Extended suites catch more complex vulnerabilities and code quality smells
         queries: security-extended,security-and-quality
+        # Explicitly set the source root to ensure Python files are picked up
+        source-root: src
 
+    # Updated to v4 to match initialization
     - name: Perform Analysis
-      uses: github/codeql-action/analyze@v3
+      uses: github/codeql-action/analyze@v4
       with:
         category: "/language:${{matrix.language}}"
