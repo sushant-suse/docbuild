@@ -1,0 +1,1 @@
+Integrated GitHub CodeQL analysis for automated security scanning of Python source code.
