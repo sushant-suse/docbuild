@@ -1,5 +1,6 @@
 """Show the directory path for permanent repositories."""
 
+
 import click
 
 from ...cli.context import DocBuildContext
@@ -16,9 +17,7 @@ def cmd_dir(ctx: click.Context) -> None:
     :param ctx: The Click context object.
     """
     context: DocBuildContext = ctx.obj
-    if context.envconfig is None:
-        raise ValueError("No envconfig found in context.")
-
-    repo_dir = context.envconfig.get("paths", {}).get("repo_dir", None)
+    env = context.envconfig
+    repo_dir = env.paths.repo_dir
     print(repo_dir)
     ctx.exit(0)

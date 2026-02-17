@@ -407,12 +407,13 @@ async def process(
         configured correctly.
     :return: 0 if all files passed validation, 1 if any failures occurred.
     """
-    configdir = Path(context.envconfig.paths.config_dir).expanduser()
+    env = context.envconfig
+    configdir = Path(env.paths.config_dir).expanduser()
     stdout.print(f"Config path: {configdir}")
     xmlconfigs = tuple(configdir.rglob("[a-z]*.xml"))
     stitchnode: etree._ElementTree = await create_stitchfile(xmlconfigs)
 
-    tmp_metadata_dir = context.envconfig.paths.tmp.tmp_metadata_dir
+    tmp_metadata_dir = env.paths.tmp.tmp_metadata_dir
     # TODO: Is this necessary here?
     tmp_metadata_dir.mkdir(parents=True, exist_ok=True)
 

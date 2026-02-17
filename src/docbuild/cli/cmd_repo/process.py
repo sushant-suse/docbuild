@@ -23,14 +23,9 @@ async def process(context: DocBuildContext, repos: tuple[str, ...]) -> int:
     :raises ValueError: If configuration paths are missing.
     """
     # The calling command function is expected to have checked context.envconfig.
-    paths = context.envconfig.get("paths", {})
-    config_dir_str = paths.get("config_dir")
-    repo_dir_str = paths.get("repo_dir")
-
-    if not config_dir_str:
-        raise ValueError("Could not get a value from envconfig.paths.config_dir")
-    if not repo_dir_str:
-        raise ValueError("Could not get a value from envconfig.paths.repo_dir")
+    envcfg = context.envconfig
+    config_dir_str = envcfg.paths.config_dir
+    repo_dir_str = envcfg.paths.repo_dir
 
     configdir = Path(config_dir_str).expanduser()
     repo_dir = Path(repo_dir_str).expanduser()
@@ -52,6 +47,7 @@ async def process(context: DocBuildContext, repos: tuple[str, ...]) -> int:
     else:
         # Create a unique list from user input, preserving order
         unique_git_repos = list(dict.fromkeys(Repo(r) for r in repos))
+        log.debug("User-specified repositories: %s", unique_git_repos)
 
     if not unique_git_repos:
         log.info("No repositories found to clone.")

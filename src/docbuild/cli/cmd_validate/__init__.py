@@ -36,20 +36,12 @@ def validate(
     :param validation_method: Validation method to use, 'jing' or 'lxml'.
     """
     context: DocBuildContext = ctx.obj
+    env = context.envconfig
 
     # Set the chosen validation method in the context for downstream use
     context.validation_method = validation_method.lower()
 
-    if context.envconfig is None:
-        raise ValueError("No envconfig found in context.")
-
-    if (paths := ctx.obj.envconfig.get("paths")) is None:
-        raise ValueError("No paths found in envconfig.")
-
-    configdir = paths.get("config_dir", None)
-    if configdir is None:
-        raise ValueError("Could not get a value from envconfig.paths.config_dir")
-
+    configdir = env.paths.config_dir
     configdir_path = Path(configdir).expanduser()
 
     if not xmlfiles:

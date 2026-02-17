@@ -24,15 +24,9 @@ def cmd_list(ctx: click.Context) -> None:
     :param ctx: The Click context object.
     """
     context: DocBuildContext = ctx.obj
-    if context.envconfig is None:
-        raise ValueError("No envconfig found in context.")
+    env = context.envconfig
 
-    repo_dir = context.envconfig.get("paths", {}).get("repo_dir", None)
-    if repo_dir is None:
-        raise ValueError(
-            "No permanent repositories defined, neither with "
-            "--env-config nor as default."
-        )
+    repo_dir = env.paths.repo_dir
     repo_dir = Path(repo_dir).resolve()
     if not repo_dir.exists():
         console_err.print(
