@@ -1,12 +1,13 @@
 """Main CLI tool for document operations."""
 
+from collections.abc import Sequence
 import logging
 from pathlib import Path
 import sys
 from typing import Any, cast
 
 import click
-from pydantic import ValidationError
+from pydantic import BaseModel, ValidationError
 import rich.console
 from rich.traceback import install as install_traceback
 
@@ -23,6 +24,7 @@ from ..constants import (
 from ..logging import setup_logging
 from ..models.config.app import AppConfig
 from ..models.config.env import EnvConfig
+from ..utils.errors import format_pydantic_error
 from ..utils.pidlock import LockAcquisitionError, PidFileLock
 from .cmd_build import build
 from .cmd_c14n import c14n
@@ -44,6 +46,41 @@ CONSOLE = rich.console.Console(stderr=True, highlight=False)
 def _setup_console() -> None:
     """Configure the rich console."""
     install_traceback(console=CONSOLE, show_locals=True)
+
+
+def handle_validation_error(
+    e: Exception,
+    model_class: type[BaseModel],
+    config_files: Sequence[Path] | None,
+    verbose: int,
+    ctx: click.Context,
+) -> None:
+    """Format validation errors and exit the CLI.
+
+    Outsourced logic to avoid code duplication between App and Env config phases.
+    Using Sequence[Path] ensures compatibility with both lists and tuples.
+    :param e: The exception that was raised during validation.
+    :param model_class: The Pydantic model class that was being validated
+      (AppConfig or EnvConfig).
+    :param config_files: The list of config files that were attempted to be loaded, used for error context.
+    :param verbose: The verbosity level from the CLI options, which can be
+      used to control the level of detail in the error output.
+    :param ctx: The Click context, used to exit the CLI with an appropriate
+      status code after handling the error.
+    """
+    config_label = "Application" if model_class == AppConfig else "Environment"
+
+    if isinstance(e, ValidationError):
+        # Safely extract the first config file name for the error header
+        config_file = str((config_files or ["unknown"])[0])
+        format_pydantic_error(
+            e, model_class, config_file, verbose, console=CONSOLE
+        )
+    else:
+        log.error("%s configuration failed validation:", config_label)
+        log.error("Error in config file(s): %s", config_files)
+        log.error(e)
+    ctx.exit(1)
 
 
 @click.group(
@@ -113,7 +150,6 @@ def cli(
     :param kwargs: Additional keyword arguments.
     """
     if ctx.invoked_subcommand is None:
-        # If no subcommand is invoked, show the help message
         click.echo(10 * "-")
         click.echo(ctx.get_help())
         ctx.exit(0)
@@ -121,18 +157,15 @@ def cli(
     if ctx.obj is None:
         ctx.ensure_object(DocBuildContext)
 
-    # Build the context object
     context = ctx.obj
     context.verbose = verbose
     context.dry_run = dry_run
     context.debug = debug
 
-    # --- PHASE 1: Load and Validate Application Config (and setup logging) ---
-    #
-    # 1. Load the raw application config dictionary
+    # --- PHASE 1: Load and Validate Application Config ---
     (
         context.appconfigfiles,
-        raw_appconfig,  # Store config as raw dictionary
+        raw_appconfig,
         context.appconfig_from_defaults,
     ) = handle_config(
         app_config,
@@ -142,32 +175,23 @@ def cli(
         DEFAULT_APP_CONFIG,
     )
 
-    # Explicitly cast the raw_appconfig type to silence Pylance
     raw_appconfig = cast(dict[str, Any], raw_appconfig)
 
-    # 2. Validate the raw config dictionary using Pydantic
     try:
-        # Pydantic validation also handles placeholder replacement via @model_validator
         context.appconfig = AppConfig.from_dict(raw_appconfig)
     except (ValueError, ValidationError) as e:
-        log.error("Application configuration failed validation:")
-        log.error("Error in config file(s): %s", context.appconfigfiles)
-        log.error(e)
-        ctx.exit(1)
+        handle_validation_error(e, AppConfig, context.appconfigfiles, verbose, ctx)
 
     # 3. Setup logging using the validated config object
-    # Use model_dump(by_alias=True) to ensure the 'class' alias is used.
     logging_config = context.appconfig.logging.model_dump(
         by_alias=True, exclude_none=True
     )
     setup_logging(cliverbosity=verbose, user_config={"logging": logging_config})
 
     # --- PHASE 2: Load Environment Config, Validate, and Acquire Lock ---
-    #
-    # 1. Load raw Environment Config
     (
         context.envconfigfiles,
-        raw_envconfig,  # Renaming context.envconfig to raw_envconfig locally
+        raw_envconfig,
         context.envconfig_from_defaults,
     ) = handle_config(
         env_config,
@@ -177,52 +201,32 @@ def cli(
         DEFAULT_ENV_CONFIG,
     )
 
-    # Explicitly cast the raw_envconfig type to silence Pylance
     raw_envconfig = cast(dict[str, Any], raw_envconfig)
 
-    # 2. VALIDATE the raw environment config dictionary using Pydantic
     try:
-        # Pydantic validation handles placeholder replacement via @model_validator
-        # The result is the validated Pydantic object, stored in context.envconfig
         context.envconfig = EnvConfig.from_dict(raw_envconfig)
     except (ValueError, ValidationError) as e:
-        log.error(
-            "Environment configuration failed validation: "
-            "Error in config file(s): %s %s",
-            context.envconfigfiles,
-            e,
-        )
-        ctx.exit(1)
+        handle_validation_error(e, EnvConfig, context.envconfigfiles, verbose, ctx)
 
-    env_config_path = context.envconfigfiles[0] if context.envconfigfiles else None
+    env_config_path = (context.envconfigfiles or [None])[0]
 
-    # --- CONCURRENCY CONTROL: Use explicit __enter__ and cleanup registration ---
+    # --- CONCURRENCY CONTROL ---
     if env_config_path:
-        # 1. Instantiate the lock object
-        ctx.obj.env_lock = PidFileLock(resource_path=env_config_path)
-
+        ctx.obj.env_lock = PidFileLock(resource_path=cast(Path, env_config_path))
         try:
-            # 2. Acquire the lock by explicitly calling the __enter__ method.
             ctx.obj.env_lock.__enter__()
             log.info("Acquired lock for environment config: %r", env_config_path.name)
-
         except LockAcquisitionError as e:
-            # Handles lock contention
             log.error(str(e))
             ctx.exit(1)
         except Exception as e:
-            # Handles critical errors
             log.error("Failed to set up environment lock: %s", e)
             ctx.exit(1)
 
-        # 3. Register the lock's __exit__ method to be called when the context
-        # terminates.
-        # We use a lambda to supply the three mandatory positional arguments (None)
-        # expected by __exit__, satisfying the click.call_on_close requirement.
         ctx.call_on_close(lambda: ctx.obj.env_lock.__exit__(None, None, None))
 
 
-# Add subcommand
+# Add subcommands
 cli.add_command(build)
 cli.add_command(c14n)
 cli.add_command(config)
