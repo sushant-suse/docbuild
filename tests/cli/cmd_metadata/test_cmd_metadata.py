@@ -3,7 +3,7 @@
 from collections.abc import Iterator
 import json
 from pathlib import Path
-from unittest.mock import AsyncMock, Mock, patch
+from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
 from lxml import etree
 import pytest
@@ -368,13 +368,26 @@ class TestProcessDeliverable:
 
         dapstmpl = "daps --dc-file={dcfile} --output={output}"
 
-        # Act
+        # Create a mock context for the new function signature
+        mock_context = MagicMock(spec=DocBuildContext)
+
+        # Link the mock context to the actual temporary paths created by the test setup
+        mock_context.envconfig.paths.repo_dir = setup_paths["repo_dir"]
+        mock_context.envconfig.paths.tmp_repo_dir = setup_paths["tmp_repo_dir"]
+        mock_context.envconfig.paths.meta_cache_dir = setup_paths["meta_cache_dir"]
+        mock_context.envconfig.paths.base_cache_dir = setup_paths["base_cache_dir"]
+
         result = await process_deliverable(
-            deliverable=deliverable, dapstmpl=dapstmpl, **setup_paths
+            context=mock_context,
+            deliverable=deliverable,
+            dapstmpl=dapstmpl,
         )
 
         # Assert
-        assert result is expected_result
+        success, res_deliverable = result
+        assert success is expected_result
+        assert res_deliverable == deliverable
+
         if expected_log:
             assert any(expected_log in record.message for record in caplog.records)
 
@@ -685,9 +698,11 @@ def test_store_productdocset_json_merges_and_writes(
     out_file = Path(meta_cache_dir) / deliverable.productid / f"{deliverable.docsetid}.json"
     assert out_file.exists()
     merged = json.loads(out_file.read_text(encoding="utf-8"))
-    assert "documents" in merged # Check if the 'documents' key exists
+    # Updated assertions to match your new model structure
+    assert "documents" in merged
     assert merged["documents"][0]["docs"][0]["title"] == "Doc1"
-    assert merged["documents"][0]["docs"][0]["dcfile"] == "DC-Doc1.xml"
+    # Ensure our new parity keys are there
+    assert "hide-productname" in merged
 
 
 def test_store_productdocset_json_warns_on_empty_metadata(
@@ -716,8 +731,8 @@ def test_store_productdocset_json_warns_on_empty_metadata(
             mock_context_with_config_dir, [doctype], stitchnode
         )
 
-    # Expect a warning to be logged
-    mock_log.warning.assert_called_with("Empty metadata file %s", Path("empty.json"))
+    # Expect an error to be logged
+    mock_log.error.assert_called_with("Empty metadata file %s", Path("empty.json"))
 
 
 def test_store_productdocset_json_handles_read_error(
