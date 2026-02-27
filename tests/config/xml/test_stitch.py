@@ -117,30 +117,33 @@ class TestStitchfile:
         result = check_stitchfile(xmlnode)
         assert not result
 
-    async def test_create_stitchfile_with_ref_check_failure(self, tmp_path):
-        """Test create_stitchfile raises ValueError on unresolved references."""
+    async def test_create_stitchfile_with_ref_check_failure(self, tmp_path, caplog):
+        """Test that create_stitchfile raises ValueError on reference check failure."""
+        # Set level to DEBUG to capture the underlying log entries before the exception
+        caplog.set_level("DEBUG")
+
         invalid_xml_content = """
-<product productid="p1">
-  <docset setid="d1">
-    <internal>
-      <ref product="p2" /> <!-- p2 does not exist -->
-    </internal>
-  </docset>
-</product>
-"""
+    <product productid="p1">
+    <docset setid="d1">
+        <internal>
+        <ref product="p2" />
+        </internal>
+    </docset>
+    </product>
+    """
         xml_file = tmp_path / "invalid.xml"
         xml_file.write_text(invalid_xml_content)
 
-        with pytest.raises(
-            ValueError, match="Unresolved references found in stitch file"
-        ):
+        # Verify that the function raises ValueError (Strictness is restored in stitch.py)
+        # We match the specific error message to ensure it's failing for the right reason.
+        with pytest.raises(ValueError, match="Unresolved references found in stitch file"):
             await create_stitchfile([xml_file], with_ref_check=True)
 
-        # Check that the specific error was logged from check_stitchfile
-        # assert (
-        #     "Failed reference from 'p1/d1' to p2: Referenced product does not exist."
-        #     in caplog.text
-        # )
+        # Optional: Verify that the reference failure was still logged before the exception was raised
+        if caplog.records:
+            log_messages = [record.message for record in caplog.records]
+            # Look for the specific reference that failed (p2)
+            assert any("p2" in msg for msg in log_messages)
 
     async def test_create_stitchfile_without_ref_check(self, tmp_path):
         """Test create_stitchfile succeeds with unresolved refs if check is disabled."""

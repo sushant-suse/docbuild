@@ -2,6 +2,7 @@
 
 from collections.abc import Generator
 from datetime import date
+import logging
 from typing import ClassVar, Self
 
 from lxml import etree
@@ -11,6 +12,7 @@ from pydantic import (
     # model_validator,
     Field,
     SerializationInfo,
+    ValidationInfo,
     field_serializer,
     field_validator,
 )
@@ -18,6 +20,7 @@ from pydantic import (
 from ..models.language import LanguageCode
 from ..models.lifecycle import LifecycleFlag
 
+log = logging.getLogger(__name__)
 
 class Description(BaseModel):
     """Represents a description for a product/docset.
@@ -33,7 +36,7 @@ class Description(BaseModel):
 
     lang: LanguageCode
     default: bool
-    description: str
+    description: str = Field(default="")
 
     @field_serializer("lang")
     def serialize_lang(self: Self, value: LanguageCode, info: SerializationInfo) -> str:
@@ -179,7 +182,7 @@ class DocumentFormat(BaseModel):
         }
     """
 
-    html: str
+    html: str = Field(default="")
     pdf: str | None = Field(default=None, exclude_if=lambda v: v is None or v == "")
     single_html: str | None = Field(
         default=None, alias="single-html", exclude_if=lambda v: v is None or v == ""
@@ -207,21 +210,37 @@ class SingleDocument(BaseModel):
         }
     """
 
+    # Define dcfile first so it is available to other validators in 'info.data'
+    dcfile: str = Field(default="")
     lang: str | None = None
-    title: str
+    title: str | None = Field(default=None)
     subtitle: str = Field(default="")
-    description: str
-    dcfile: str
+    description: str = Field(default="")
     rootid: str = Field(default="")
-    format: DocumentFormat
+    format: DocumentFormat = Field(default_factory=DocumentFormat)
     datemodified: date | None = Field(default=None, serialization_alias="dateModified")
 
+    @field_validator("title")
+    @classmethod
+    def warn_missing_title(cls, v: str | None, info: ValidationInfo) -> str | None:
+        """Check for missing titles and log a warning with the document origin."""
+        # info.data contains fields defined before 'title'
+        origin = info.data.get("dcfile", "Unknown Origin")
+        lang = info.data.get("lang", "Unknown Lang")
+
+        # Catch both None and empty strings
+        if not v:
+            log.warning(
+                "Metadata Integrity: Document missing title. Origin: %s (Lang: %s)",
+                origin, lang
+            )
+        return v
+
     @field_serializer("datemodified")
-    def serialize_date(self: Self, value: date | None, info: SerializationInfo) -> str:
+    def serialize_date(self: Self, value: date | None, _info: SerializationInfo) -> str:
         """Serialize date to 'YYYY-MM-DD' or an empty string if None."""
         if value is None:
-            return ""  # This ensures the key exists as "" in JSON
-        # If it's already a string (from DAPS output), return it, otherwise isoformat
+            return ""
         return value.isoformat() if hasattr(value, "isoformat") else str(value)
 
 

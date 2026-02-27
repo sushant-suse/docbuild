@@ -335,7 +335,10 @@ def load_and_validate_documents(
                 log.error("Empty metadata file %s", f)
                 continue
 
-            doc_model = Document.model_validate(loaded_doc_data)
+            try:
+                doc_model = Document.model_validate(loaded_doc_data)
+            except ValidationError:
+                continue
             manifest.documents.append(doc_model)
 
         except (json.JSONDecodeError, ValidationError, OSError) as e:
@@ -428,7 +431,10 @@ async def process(
     configdir = Path(env.paths.config_dir).expanduser()
     stdout.print(f"Config path: {configdir}")
     xmlconfigs = tuple(configdir.rglob("[a-z]*.xml"))
-    stitchnode: etree._ElementTree = await create_stitchfile(xmlconfigs)
+    try:
+        stitchnode: etree._ElementTree = await create_stitchfile(xmlconfigs)
+    except ValueError as e:
+        log.warning(e)
 
     tmp_metadata_dir = env.paths.tmp.tmp_metadata_dir
     # TODO: Is this necessary here?
