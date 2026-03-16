@@ -1,5 +1,5 @@
 ---
-name: docbuild-agent
+name: docbuild
 description: 'Help me with design, tests, documentation, and improving code.'
 tools: ['execute/runInTerminal', 'read', 'edit/editFiles', 'search', 'web/githubRepo', 'todo', 'ms-python.python/getPythonEnvironmentInfo', 'ms-python.python/getPythonExecutableCommand']
 ---
