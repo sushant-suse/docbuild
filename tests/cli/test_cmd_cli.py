@@ -1,6 +1,7 @@
 """Tests for the main CLI entry point and configuration loading flow."""
 
 from pathlib import Path
+import tomllib
 from unittest.mock import Mock, patch
 
 import click
@@ -267,3 +268,49 @@ def test_cli_verbose_and_debug(
     assert result.exit_code == 0
     assert context.verbose == 3
     assert context.debug is True
+
+
+@pytest.mark.parametrize("is_app_config_failure", [True, False])
+def test_cli_toml_syntax_error(
+    runner,
+    fake_handle_config,
+    mock_config_models,
+    is_app_config_failure,
+):
+    """Verify that the CLI handles TOML syntax errors gracefully."""
+
+    def resolver_with_syntax_error(user_path, *args, **kwargs):
+        # If we are testing Env failure, let the App config pass first
+        if not is_app_config_failure and "default_app" in str(user_path):
+             return (Path("app.toml"),), {"logging": {"version": 1}}, False
+
+        raise tomllib.TOMLDecodeError("Invalid value", "test.toml", 0)
+
+    fake_handle_config(resolver_with_syntax_error)
+
+    result = runner.invoke(cli, ["capture"])
+
+    assert result.exit_code == 1
+    assert "Syntax error in config file" in result.output
+    assert "Invalid value" in result.output
+    assert "Booleans must be lowercase" in result.output
+    assert "Traceback (most recent call last)" not in result.output
+
+
+def test_load_config_helpers_populate_context(fake_handle_config, mock_config_models):
+    """Verify that the refactored helper functions correctly update the context object."""
+    from docbuild.cli.cmd_cli import load_app_config, load_env_config
+
+    # Setup mock resolver
+    fake_handle_config(lambda *a, **k: ((Path("test.toml"),), {"key": "val"}, False))
+
+    mock_ctx = Mock()
+    mock_ctx.obj = DocBuildContext()
+
+    # Test App Loader
+    load_app_config(mock_ctx, Path("app.toml"), max_workers="5")
+    assert mock_ctx.obj.appconfig is not None
+
+    # Test Env Loader
+    load_env_config(mock_ctx, Path("env.toml"))
+    assert mock_ctx.obj.envconfig is not None
