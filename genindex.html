@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Index &#8212; docbuild 0.16.0 documentation</title>
+    <title>Index &#8212; docbuild 0.17.0 documentation</title>
   
   
   
@@ -26,8 +26,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
@@ -35,37 +35,44 @@
     <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
   
   <!-- So that users can add custom icons -->
-  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <script defer src="_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="_static/documentation_options.js?v=7de89ed4"></script>
+    <script src="_static/documentation_options.js?v=0c3dd48d"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="_static/copybutton.js?v=f281be69"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'genindex';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
+  
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
   </head>
-  
-  
-  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
-
+  <body data-default-mode="">
   
   
   <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
   
   <div id="pst-scroll-pixel-helper"></div>
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
-
+  
+  
+  
   
   <dialog id="pst-search-dialog">
     
@@ -94,7 +101,7 @@
 </aside>
 
   
-    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
 <div class="bd-header__inner bd-page-width">
   <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
     <span class="fa-solid fa-bars"></span>
@@ -433,6 +440,7 @@
  | <a href="#T"><strong>T</strong></a>
  | <a href="#U"><strong>U</strong></a>
  | <a href="#V"><strong>V</strong></a>
+ | <a href="#W"><strong>W</strong></a>
  | <a href="#X"><strong>X</strong></a>
  | <a href="#Z"><strong>Z</strong></a>
  
@@ -489,8 +497,6 @@
         <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-S">docbuild-metadata command line option</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     --validation-method
 
@@ -498,6 +504,8 @@
         <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-validate-validation-method">docbuild-validate command line option</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     --verbose
 
@@ -513,10 +521,24 @@
 </li>
       </ul></li>
       <li>
+    --workers
+
+      <ul>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-j">docbuild command line option</a>
+</li>
+      </ul></li>
+      <li>
     -E
 
       <ul>
         <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-E">docbuild-metadata command line option</a>
+</li>
+      </ul></li>
+      <li>
+    -j
+
+      <ul>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-j">docbuild command line option</a>
 </li>
       </ul></li>
       <li>
@@ -897,6 +919,10 @@
         <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-v">--verbose</a>
 </li>
         <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-version">--version</a>
+</li>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-j">--workers</a>
+</li>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-j">-j</a>
 </li>
         <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-v">-v</a>
 </li>
@@ -1358,6 +1384,15 @@
 </li>
       </ul></li>
       <li>
+    docbuild.utils.concurrency
+
+      <ul>
+        <li><a href="reference/_autoapi/docbuild/utils/concurrency/index.html#module-docbuild.utils.concurrency">module</a>
+</li>
+      </ul></li>
+      <li><a href="reference/_autoapi/docbuild/utils/concurrency/TaskFailedError.html#docbuild.utils.concurrency.TaskFailedError">docbuild.utils.concurrency.TaskFailedError</a>
+</li>
+      <li>
     docbuild.utils.contextmgr
 
       <ul>
@@ -1519,14 +1554,16 @@
 </li>
       <li><a href="reference/_autoapi/docbuild/utils/errors/index.html#docbuild.utils.errors.format_pydantic_error">format_pydantic_error() (in module docbuild.utils.errors)</a>
 </li>
+      <li><a href="reference/_autoapi/docbuild/utils/errors/index.html#docbuild.utils.errors.format_toml_error">format_toml_error() (in module docbuild.utils.errors)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/_autoapi/docbuild/models/config/app/AppConfig.html#docbuild.models.config.app.AppConfig.from_dict">from_dict() (docbuild.models.config.app.AppConfig class method)</a>
 
       <ul>
         <li><a href="reference/_autoapi/docbuild/models/config/env/EnvConfig.html#docbuild.models.config.env.EnvConfig.from_dict">(docbuild.models.config.env.EnvConfig class method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/_autoapi/docbuild/models/doctype/Doctype.html#docbuild.models.doctype.Doctype.from_str">from_str() (docbuild.models.doctype.Doctype class method)</a>
 
       <ul>
@@ -1631,17 +1668,21 @@
         <li><a href="reference/_autoapi/docbuild/models/doctype/Doctype.html#docbuild.models.doctype.Doctype.lifecycle">(docbuild.models.doctype.Doctype attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/_autoapi/docbuild/constants/index.html#docbuild.constants.LIFECYCLES_STR">LIFECYCLES_STR (in module docbuild.constants)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/_autoapi/docbuild/config/xml/list/index.html#docbuild.config.xml.list.list_all_deliverables">list_all_deliverables() (in module docbuild.config.xml.list)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/config/load/index.html#docbuild.config.load.load_and_merge_configs">load_and_merge_configs() (in module docbuild.config.load)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/cli/cmd_metadata/metaprocess/index.html#docbuild.cli.cmd_metadata.metaprocess.load_and_validate_documents">load_and_validate_documents() (in module docbuild.cli.cmd_metadata.metaprocess)</a>
 </li>
+      <li><a href="reference/_autoapi/docbuild/cli/cmd_cli/index.html#docbuild.cli.cmd_cli.load_app_config">load_app_config() (in module docbuild.cli.cmd_cli)</a>
+</li>
       <li><a href="reference/_autoapi/docbuild/config/xml/stitch/index.html#docbuild.config.xml.stitch.load_check_functions">load_check_functions() (in module docbuild.config.xml.stitch)</a>
+</li>
+      <li><a href="reference/_autoapi/docbuild/cli/cmd_cli/index.html#docbuild.cli.cmd_cli.load_env_config">load_env_config() (in module docbuild.cli.cmd_cli)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/config/load/index.html#docbuild.config.load.load_single_config">load_single_config() (in module docbuild.config.load)</a>
 </li>
@@ -1817,6 +1858,8 @@
 </li>
         <li><a href="reference/_autoapi/docbuild/utils/index.html#module-docbuild.utils">docbuild.utils</a>
 </li>
+        <li><a href="reference/_autoapi/docbuild/utils/concurrency/index.html#module-docbuild.utils.concurrency">docbuild.utils.concurrency</a>
+</li>
         <li><a href="reference/_autoapi/docbuild/utils/contextmgr/index.html#module-docbuild.utils.contextmgr">docbuild.utils.contextmgr</a>
 </li>
         <li><a href="reference/_autoapi/docbuild/utils/convert/index.html#module-docbuild.utils.convert">docbuild.utils.convert</a>
@@ -1914,6 +1957,8 @@
 </li>
       <li><a href="reference/_autoapi/docbuild/cli/cmd_validate/process/index.html#docbuild.cli.cmd_validate.process.process_file">process_file() (in module docbuild.cli.cmd_validate.process)</a>
 </li>
+      <li><a href="reference/_autoapi/docbuild/utils/concurrency/index.html#docbuild.utils.concurrency.producer">producer() (in module docbuild.utils.concurrency)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="glossary.html#term-Product"><strong>Product</strong></a>
@@ -1988,10 +2033,10 @@
         <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-repo-clone-arg-REPOS">docbuild-repo-clone command line option</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/_autoapi/docbuild/models/manifest/Category.html#docbuild.models.manifest.Category.reset_rank">reset_rank() (docbuild.models.manifest.Category class method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="glossary.html#term-RNC"><strong>RNC</strong></a>
 </li>
       <li><a href="glossary.html#term-RNG"><strong>RNG</strong></a>
@@ -2004,9 +2049,13 @@
 </li>
       <li><a href="glossary.html#term-Ruff"><strong>Ruff</strong></a>
 </li>
+      <li><a href="reference/_autoapi/docbuild/utils/concurrency/index.html#docbuild.utils.concurrency.run_all">run_all() (in module docbuild.utils.concurrency)</a>
+</li>
       <li><a href="reference/_autoapi/docbuild/cli/cmd_validate/process/index.html#docbuild.cli.cmd_validate.process.run_checks_and_display">run_checks_and_display() (in module docbuild.cli.cmd_validate.process)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/utils/shell/index.html#docbuild.utils.shell.run_command">run_command() (in module docbuild.utils.shell)</a>
+</li>
+      <li><a href="reference/_autoapi/docbuild/utils/concurrency/index.html#docbuild.utils.concurrency.run_parallel">run_parallel() (in module docbuild.utils.concurrency)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/cli/cmd_validate/process/index.html#docbuild.cli.cmd_validate.process.run_python_checks">run_python_checks() (in module docbuild.cli.cmd_validate.process)</a>
 </li>
@@ -2022,6 +2071,8 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/_autoapi/docbuild/utils/concurrency/index.html#docbuild.utils.concurrency.sample_worker">sample_worker() (in module docbuild.utils.concurrency)</a>
+</li>
       <li><a href="glossary.html#term-Semantic-Versioning"><strong>Semantic Versioning</strong></a>
 </li>
       <li><a href="glossary.html#term-SemVer"><strong>SemVer</strong></a>
@@ -2052,10 +2103,10 @@
 </li>
       <li><a href="reference/_autoapi/docbuild/models/config/env/EnvConfig.html#docbuild.models.config.env.EnvConfig.server">server (docbuild.models.config.env.EnvConfig attribute)</a>
 </li>
-      <li><a href="reference/_autoapi/docbuild/constants/index.html#docbuild.constants.SERVER_ROLES">SERVER_ROLES (in module docbuild.constants)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/_autoapi/docbuild/constants/index.html#docbuild.constants.SERVER_ROLES">SERVER_ROLES (in module docbuild.constants)</a>
+</li>
       <li><a href="reference/_autoapi/docbuild/constants/index.html#docbuild.constants.SERVER_ROLES_ALIASES">SERVER_ROLES_ALIASES (in module docbuild.constants)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/models/config/env/EnvPathsConfig.html#docbuild.models.config.env.EnvPathsConfig.server_rootfiles_dir">server_rootfiles_dir (docbuild.models.config.env.EnvPathsConfig attribute)</a>
@@ -2191,6 +2242,18 @@
   </ul></td>
 </tr></table>
 
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/_autoapi/docbuild/models/manifest/SingleDocument.html#docbuild.models.manifest.SingleDocument.warn_missing_title">warn_missing_title() (docbuild.models.manifest.SingleDocument class method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/_autoapi/docbuild/utils/concurrency/index.html#docbuild.utils.concurrency.worker">worker() (in module docbuild.utils.concurrency)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="X">X</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -2253,8 +2316,8 @@
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script defer src="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -2288,7 +2351,7 @@
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.17.1.
 </p></div>
       
     </div>
