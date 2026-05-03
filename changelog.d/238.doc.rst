@@ -1,0 +1,3 @@
+Describe the new portal schema from the perspective of a user trying to add
+or change the config.
+Additionally, rework on the glossary page to improve the layout and readability of terms and definitions.
