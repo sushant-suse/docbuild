@@ -20,8 +20,8 @@ def test_portal_list_help() -> None:
     assert "[PRODUCT]" in result.output
 
 
-def test_portal_list_no_xml_files(tmp_path) -> None:
-    """Test that the command gracefully aborts if no XML files are found."""
+def test_portal_list_no_main_config(tmp_path) -> None:
+    """Test that the command gracefully aborts if portal.xml is not found."""
     runner = CliRunner()
 
     # Create a dummy context with an empty temporary directory
@@ -34,8 +34,8 @@ def test_portal_list_no_xml_files(tmp_path) -> None:
 
     # It should exit with a non-zero status code (Abort)
     assert result.exit_code != 0
-    # Rich line-wraps long paths, so we only check the prefix
-    assert "Error: No XML files found in" in result.output
+    # Rich line-wraps long paths, so we only check the prefix of our new error message
+    assert "Error: Main portal config not found at" in result.output
 
 
 def test_portal_list_invalid_doctype() -> None:
