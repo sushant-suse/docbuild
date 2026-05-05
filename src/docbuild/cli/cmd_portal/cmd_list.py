@@ -1,20 +1,19 @@
-"""Portal management commands for the DOC Build CLI."""
+"""Portal management commands for the docbuild CLI."""
 
 import asyncio
 from collections import defaultdict
 
 import click
-from lxml import etree
+from lxml import etree  #type: ignore
 from rich.console import Console
 from rich.tree import Tree
 
 from docbuild.cli.context import DocBuildContext
 from docbuild.config.xml.list import list_all_deliverables
-from docbuild.config.xml.stitch import create_stitchfile
 from docbuild.models.doctype import Doctype
 
 
-def _build_hierarchy(
+def build_hierarchy(
     deliverables: list[etree._Element],
 ) -> dict[str, dict[str, dict[str, list[str]]]]:
     """Group a flat list of deliverable nodes into a nested dictionary.
@@ -22,7 +21,9 @@ def _build_hierarchy(
     :param deliverables: A list of <deliverable> XML nodes to organize.
     :return: A nested dictionary structured as {lang: {product: {docset: [deliverable titles]}}}}.
     """
-    # Using defaultdict to simplify the grouping logic. The lambda functions create nested dictionaries as needed.
+    # TODO: Refactor this to use `list[Deliverable]` once PR #253 is merged.
+    # We should avoid manual XML tree traversal (getparent) here and instead
+    # rely on the new Deliverable public API properties (language, product, docset).
     hierarchy: dict[str, dict[str, dict[str, list[str]]]] = defaultdict(
         lambda: defaultdict(lambda: defaultdict(list))
     )
@@ -48,7 +49,7 @@ def _build_hierarchy(
     return hierarchy
 
 
-async def _async_list_cmd(ctx: DocBuildContext, doctypes: tuple[str, ...], console: Console) -> None:
+async def async_list_cmd(ctx: DocBuildContext, doctypes: tuple[str, ...], console: Console) -> None:
     """Async worker to fetch the XML, parse Doctypes, and build the tree.
 
     :param ctx: The DocBuildContext containing CLI options and config.
@@ -65,17 +66,22 @@ async def _async_list_cmd(ctx: DocBuildContext, doctypes: tuple[str, ...], conso
             raise click.Abort() from e
 
     # 2. Get XML Tree
-    config_dir = ctx.envconfig.paths.config_dir.expanduser()
-    xml_files = list(config_dir.rglob("*.xml"))
+    config_dir = ctx.envconfig.paths.config_dir.expanduser() # type: ignore
 
-    if not xml_files:
-        console.print(f"[red]Error: No XML files found in {config_dir}[/red]")
+    # TODO: Once Issue #231 is merged, we can replace this hardcoded string with:
+    # portal_cfg_name = ctx.envconfig.paths.main_portal_config
+    # portal_xml_path = config_dir / portal_cfg_name
+    portal_xml_path = config_dir / "portal.xml"
+
+    if not portal_xml_path.exists():
+        console.print(f"[red]Error: Main portal config not found at {portal_xml_path}[/red]")
         raise click.Abort()
 
     try:
-        # We set with_ref_check=False because we just want to list things,
-        # not do a full strict validation here.
-        tree = await create_stitchfile(xml_files, with_ref_check=False)
+        # TODO: Refactor this into a dedicated `create_portal_config()` helper function
+        # to centralize Portal XML loading, rather than doing raw etree parsing in the CLI.
+        tree = etree.parse(portal_xml_path)
+        tree.xinclude()
     except Exception as e:
         console.print(f"[red]Error loading XML schema:[/red] {e}")
         raise click.Abort() from e
@@ -88,7 +94,7 @@ async def _async_list_cmd(ctx: DocBuildContext, doctypes: tuple[str, ...], conso
         return
 
     # 4. Group data for Rich Tree
-    hierarchy = _build_hierarchy(deliverables)
+    hierarchy = build_hierarchy(deliverables)
 
     # 5. Build and print the Rich Tree
     for lang, products in sorted(hierarchy.items()):
@@ -124,4 +130,4 @@ def list_cmd(ctx: DocBuildContext, doctypes: tuple[str, ...]) -> None:
 
     """
     console = Console()
-    asyncio.run(_async_list_cmd(ctx, doctypes, console))
+    asyncio.run(async_list_cmd(ctx, doctypes, console))

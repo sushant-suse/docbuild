@@ -1,4 +1,4 @@
-"""Portal management commands for the DOC Build CLI."""
+"""Portal management commands for the docbuild CLI."""
 
 import click
 
