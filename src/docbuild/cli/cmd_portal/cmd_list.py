@@ -115,6 +115,7 @@ def list_cmd(ctx: DocBuildContext, doctypes: tuple[str, ...]) -> None:
 
     :param ctx: The DocBuildContext passed from the CLI, containing config and options.
     :param doctypes: A tuple of doctype strings passed as arguments to the command.
+
     """
     console = Console()
     asyncio.run(async_list_cmd(ctx, doctypes, console))

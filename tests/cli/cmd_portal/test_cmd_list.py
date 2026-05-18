@@ -100,7 +100,7 @@ def test_portal_list_success(tmp_path) -> None:
         '    </product>\n'
         '</portal>\n'
     )
-    
+
     portal_file = tmp_path / "portal.xml"
     portal_file.write_text(portal_content, encoding="utf-8")
 

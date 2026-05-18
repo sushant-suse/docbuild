@@ -5,6 +5,7 @@ import logging
 import click
 
 from docbuild.cli.cmd_portal.cmd_list import list_cmd
+
 from .cmd_validate import validate
 
 log = logging.getLogger(__name__)
