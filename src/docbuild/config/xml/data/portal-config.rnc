@@ -150,12 +150,18 @@ ds.type.lang =
 ds.type.gitremote =
   ## URL to a Git remote ("http[s]" URLs only)
   # (Let's not support SSH URLs for the moment since that needs authentication)
+  # However, if we want, use the pattern below
   [
     db:refpurpose [ "URL to a Git remote (https URLs only)" ]
   ]
   xsd:anyURI {
-    pattern="""https?://.*"""
+    pattern= "https?://.*"
   }
+  #|
+  # SCP-style SSH:
+  #xsd:string {
+  #  pattern = "([^@]+@)?[a-zA-Z0-9.\-]+:[^ ].*"
+  #}
 
 ds.type.dirname =
   ## A relative directory name
@@ -1147,10 +1153,6 @@ ds.deliverable_en_us_dc =
     ),
     #
     ds.dc
-    #ds.git?,
-    #ds.subdir?,
-    #ds.format,
-    #ds.partners*
   }
 }
 
@@ -1228,8 +1230,13 @@ ds.dc =
   element dc {
     ds.dc.file.attr,
     #
-    ds.git?,
-    ds.subdir?,
+    (
+      ds.git?,
+      (
+        ds.branch? &
+        ds.subdir?
+      )
+    )?,
     ds.format,
     ds.subdeliverable*,
     ds.partners*

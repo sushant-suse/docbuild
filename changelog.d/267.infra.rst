@@ -1,0 +1,1 @@
+Portal Config: Correct ``<git>`` tag inside ``<dc>``
