@@ -28,7 +28,13 @@ project = "docbuild"
 current_year = datetime.now().year
 copyright = f"{current_year}, Tom Schraitle | Sushant Gaurav"  # noqa: A001
 author = "Tom Schraitle, Sushant Gaurav"
-release = __version__
+
+# Check, if we are using 'latest' (main) build
+if os.environ.get("DOC_VERSION") == "latest":
+    release = f"{__version__}-dev"
+else:
+    release = __version__
+
 
 gh_user = "openSUSE"
 gh_repo_url = f"https://github.com/{gh_user}/{project}"
