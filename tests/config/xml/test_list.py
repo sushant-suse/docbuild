@@ -1,4 +1,4 @@
-from lxml import etree
+from lxml import etree  # type: ignore
 import pytest
 
 from docbuild.config.xml.list import list_all_deliverables

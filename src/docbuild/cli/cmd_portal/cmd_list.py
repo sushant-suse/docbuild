@@ -8,6 +8,7 @@ from lxml import etree  # type: ignore
 from rich.console import Console
 from rich.tree import Tree
 
+from docbuild.cli.cmd_portal.process import parse_portal_config
 from docbuild.cli.context import DocBuildContext
 from docbuild.config.xml.list import list_all_deliverables
 from docbuild.models.deliverable import Deliverable
@@ -42,49 +43,31 @@ def build_hierarchy(
     return hierarchy
 
 
-async def async_list_cmd(ctx: DocBuildContext, doctypes: tuple[str, ...], console: Console) -> None:
-    """Async worker to fetch the XML, parse Doctypes, and build the tree.
+def _parse_doctypes(doctypes: tuple[str, ...], console: Console) -> list[Doctype] | None:
+    """Parse raw CLI arguments into Doctype objects with default fallbacks."""
+    if not doctypes:
+        return None
 
-    :param ctx: The DocBuildContext containing CLI options and config.
-    :param doctypes: A tuple of doctype strings passed as arguments to the command.
-    :param console: The Rich Console object for outputting the tree.
-    """
-    # 1. Parse Doctypes
-    parsed_doctypes = None
-    if doctypes:
+    parsed_doctypes = []
+    for dt in doctypes:
+        # Toms' Suggestion: Fallback to default English language if omitted
+        slash_count = dt.count("/")
+        if slash_count == 1:
+            dt = f"{dt}/en-us"
+        elif slash_count == 0:
+            dt = f"{dt}/*/en-us"
+
         try:
-            parsed_doctypes = [Doctype.from_str(dt) for dt in doctypes]
+            parsed_doctypes.append(Doctype.from_str(dt))
         except ValueError as e:
             console.print(f"[red]Error parsing doctype:[/red] {e}")
             raise click.Abort() from e
 
-    # 2. Get XML Tree
-    config_dir = ctx.envconfig.paths.config_dir.expanduser()  # type: ignore
-    portal_xml_path = config_dir / "portal.xml"
+    return parsed_doctypes
 
-    if not portal_xml_path.exists():
-        console.print(f"[red]Error: Main portal config not found at {portal_xml_path}[/red]")
-        raise click.Abort()
 
-    try:
-        tree = etree.parse(portal_xml_path)
-        tree.xinclude()
-    except Exception as e:
-        console.print(f"[red]Error loading XML schema:[/red] {e}")
-        raise click.Abort() from e
-
-    # 3. Fetch and wrap Deliverables into Domain Objects
-    raw_nodes = list(list_all_deliverables(tree, parsed_doctypes))
-    deliverables = [Deliverable(_node=node) for node in raw_nodes]
-
-    if not deliverables:
-        console.print("[yellow]No deliverables found matching the criteria.[/yellow]")
-        return
-
-    # 4. Group data for Rich Tree
-    hierarchy = build_hierarchy(deliverables)
-
-    # 5. Build and print the Rich Tree
+def _print_hierarchy(hierarchy: dict[str, dict[str, dict[str, list[str]]]], console: Console) -> None:
+    """Render and print the nested hierarchy as a Rich Tree."""
     for lang, products in sorted(hierarchy.items()):
         root_tree = Tree(f"[bold blue]{lang}/[/bold blue]")
 
@@ -101,17 +84,62 @@ async def async_list_cmd(ctx: DocBuildContext, doctypes: tuple[str, ...], consol
         console.print()
 
 
+async def async_list_cmd(ctx: DocBuildContext, doctypes: tuple[str, ...], console: Console) -> None:
+    """Async worker to fetch the XML, parse Doctypes, and build the tree.
+
+    :param ctx: The DocBuildContext containing CLI options and config.
+    :param doctypes: A tuple of doctype strings passed as arguments to the command.
+    :param console: The Rich Console object for outputting the tree.
+    """
+    # 1. Parse Doctypes
+    parsed_doctypes = _parse_doctypes(doctypes, console)
+
+    # 2. Get XML Tree
+    # Ensure envconfig is loaded to satisfy type checkers and prevent runtime crashes
+    if ctx.envconfig is None:
+        console.print("[red]Error: Environment configuration is missing.[/red]")
+        raise click.Abort()
+
+    # We rely on the Pydantic env model to handle existence and path validations natively
+    portal_xml_path = ctx.envconfig.paths.main_portal_config.expanduser()
+
+    try:
+        tree = await parse_portal_config(portal_xml_path)
+    except (OSError, etree.XMLSyntaxError, etree.XIncludeError) as e:
+        console.print(f"[red]Error loading XML schema:[/red] {e}")
+        raise click.Abort() from e
+
+    # 3. Fetch and wrap Deliverables into Domain Objects
+    # Consuming the generator directly saves memory over converting to an intermediate list
+    deliverables = [
+        Deliverable(_node=node)
+        for node in list_all_deliverables(tree, parsed_doctypes)
+    ]
+
+    if not deliverables:
+        console.print("[yellow]No deliverables found matching the criteria.[/yellow]")
+        return
+
+    # 4. Group data for Rich Tree
+    hierarchy = build_hierarchy(deliverables)
+
+    # 5. Build and print the Rich Tree
+    _print_hierarchy(hierarchy, console)
+
+
 @click.command(name="list")
 @click.argument("doctypes", nargs=-1)
 @click.pass_obj
 def list_cmd(ctx: DocBuildContext, doctypes: tuple[str, ...]) -> None:
-    """List products, docsets, and deliverables from the portal config.
+    r"""List products, docsets, and deliverables from the portal config.
 
     Accepts optional DOCTYPE arguments to filter the output.
     Format: [PRODUCT]/[DOCSETS]@[LIFECYCLES]/[LANGS]
 
     Example:
         docbuild portal list sles/15-SP6
+
+    \f
 
     :param ctx: The DocBuildContext passed from the CLI, containing config and options.
     :param doctypes: A tuple of doctype strings passed as arguments to the command.
