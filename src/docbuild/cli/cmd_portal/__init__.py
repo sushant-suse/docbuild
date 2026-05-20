@@ -1,14 +1,11 @@
 """Manage Portal XML configuration."""
 
-import asyncio
-from collections.abc import Iterator
 import logging
-from pathlib import Path
 
 import click
 
-from ..context import DocBuildContext
-from . import process as process_mod
+from docbuild.cli.cmd_portal.cmd_list import list_cmd
+
 from .cmd_validate import validate
 
 log = logging.getLogger(__name__)
@@ -24,4 +21,6 @@ def portal(ctx: click.Context) -> None:
     pass  # pragma: no cover
 
 
+# Register both subcommands
+portal.add_command(list_cmd)
 portal.add_command(validate)

@@ -275,6 +275,7 @@ def cli(
 cli.add_command(build)
 cli.add_command(c14n)
 cli.add_command(config)
+cli.add_command(portal)
 cli.add_command(repo)
 cli.add_command(metadata)
 cli.add_command(portal)
