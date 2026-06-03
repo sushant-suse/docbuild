@@ -17,33 +17,27 @@ from docbuild.models.doctype import Doctype
 
 def build_hierarchy(
     deliverables: list[Deliverable],
-) -> dict[str, dict[str, dict[str, list[str]]]]:
-    """Group a list of Deliverable domain objects into a nested dictionary structure.
+) -> dict[str, dict[str, dict[str, list[Deliverable]]]]:
+    """Group Deliverables into a hierarchy.
 
     :param deliverables: A list of Deliverable models to organize.
-    :return: A nested dictionary structured as {lang: {product: {docset: [deliverable titles]}}}.
+    :return: A hierarchy_dict mapping lang -> product -> docset -> deliverables.
     """
-    hierarchy: dict[str, dict[str, dict[str, list[str]]]] = defaultdict(
+    hierarchy: dict[str, dict[str, dict[str, list[Deliverable]]]] = defaultdict(
         lambda: defaultdict(lambda: defaultdict(list))
     )
 
-    for deliverable in deliverables:
-        # Pull facts via the clean Deliverable XML view facade
-        lang = str(deliverable.xml.lang)
-        product = deliverable.xml.productid or "unknown-product"
-        docset = deliverable.xml.docsetid or "unknown-docset"
+    for deliv in deliverables:
+        lang = str(deliv.xml.lang)
+        product = deliv.xml.productid or "unknown-product"
+        docset = deliv.xml.docsetid or "unknown-docset"
 
-        # Determine a compact leaf string using ID and DC file metadata
-        d_id = deliverable.xml.node.get("id", "unnamed-deliverable")
-        dc_file = deliverable.xml.dcfile
-        display_name = f"{d_id} ({dc_file})" if dc_file else d_id
-
-        hierarchy[lang][product][docset].append(display_name)
+        hierarchy[lang][product][docset].append(deliv)
 
     return hierarchy
 
 
-def _parse_doctypes(doctypes: tuple[str, ...], console: Console) -> list[Doctype] | None:
+def parse_doctypes(doctypes: tuple[str, ...], console: Console) -> list[Doctype] | None:
     """Parse raw CLI arguments into Doctype objects with default fallbacks."""
     if not doctypes:
         return None
@@ -66,7 +60,92 @@ def _parse_doctypes(doctypes: tuple[str, ...], console: Console) -> list[Doctype
     return parsed_doctypes
 
 
-def _print_hierarchy(hierarchy: dict[str, dict[str, dict[str, list[str]]]], console: Console) -> None:
+def get_display_name(deliv: Deliverable, d_id: str) -> str:
+    """Determine the main display name for a deliverable."""
+    if deliv.xml.is_prebuilt:
+        title_node = deliv.xml.node.find("title")
+        title = title_node.text if title_node is not None else d_id
+        return f"{title} (Prebuilt)"
+
+    dc_file = deliv.xml.dcfile
+    return f"{d_id} ({dc_file})" if dc_file else d_id
+
+
+def append_translations(deliv_branch: Tree, deliv: Deliverable, lang: str) -> None:
+    """Append translation metadata to the deliverable branch."""
+    other_langs = sorted(other_lang for other_lang in deliv.xml.translations if other_lang != lang)
+    if other_langs:
+        deliv_branch.add(f"Translations: {', '.join(other_langs)}")
+
+
+def append_formats(deliv_branch: Tree, deliv: Deliverable) -> None:
+    """Append output formats metadata to the deliverable branch."""
+    if attrs := deliv.xml.format_attrs():
+        fmt_names = {"pdf": "PDF", "html": "HTML", "single-html": "Single-HTML", "epub": "EPUB"}
+        available = [fmt_names.get(k, k.upper()) for k, v in attrs.items() if v]
+        if available:
+            deliv_branch.add(f"Formats: {', '.join(available)}")
+
+
+def append_categories(deliv_branch: Tree, deliv: Deliverable) -> None:
+    """Append category metadata to the deliverable branch."""
+    if cat_title := deliv.xml.category_title:
+        deliv_branch.add(f"Category: {cat_title}")
+
+
+def append_repo(deliv_branch: Tree, deliv: Deliverable, repo_format: str) -> None:
+    """Append repository metadata to the deliverable branch."""
+    repo = deliv.xml.git_remote()
+    if repo:
+        if isinstance(repo, str):
+            repo_val = repo
+        else:
+            # Using surl for the short variant, url/clone_url for long
+            repo_val = getattr(repo, "url", getattr(repo, "clone_url", str(repo))) if repo_format == "long" else getattr(repo, "surl", str(repo))
+        deliv_branch.add(f"Repo: {repo_val}")
+
+
+def build_deliverable_branch(
+    docset_branch: Tree,
+    deliv: Deliverable,
+    lang: str,
+    show_trans: bool,
+    show_formats: bool,
+    show_categories: bool,
+    repo_format: str | None,
+) -> None:
+    """Format and append a single deliverable node to the Rich Tree."""
+    d_id = deliv.xml.node.get("id", "unnamed-deliverable")
+
+    # 1. Format the main display name
+    display_name = get_display_name(deliv, d_id)
+    deliv_branch = docset_branch.add(display_name)
+
+    # 2. Automatically show URLs for prebuilt deliverables
+    if deliv.xml.is_prebuilt:
+        for url_node in deliv.xml.node.xpath("prebuilt/url"):
+            if href := url_node.get("href"):
+                deliv_branch.add(f"URL: [link={href}]{href}[/link]")
+
+    # 3. Add Optional Metadata based on CLI Flags
+    if show_trans:
+        append_translations(deliv_branch, deliv, lang)
+    if show_formats:
+        append_formats(deliv_branch, deliv)
+    if show_categories:
+        append_categories(deliv_branch, deliv)
+    if repo_format:
+        append_repo(deliv_branch, deliv, repo_format)
+
+
+def print_hierarchy(
+    hierarchy: dict[str, dict[str, dict[str, list[Deliverable]]]],
+    console: Console,
+    show_trans: bool,
+    show_formats: bool,
+    show_categories: bool,
+    repo_format: str | None,
+) -> None:
     """Render and print the nested hierarchy as a Rich Tree."""
     for lang, products in sorted(hierarchy.items()):
         root_tree = Tree(f"[bold blue]{lang}/[/bold blue]")
@@ -77,22 +156,33 @@ def _print_hierarchy(hierarchy: dict[str, dict[str, dict[str, list[str]]]], cons
             for docset, delivs in sorted(docsets.items()):
                 docset_branch = prod_branch.add(f"[cyan]{docset}[/cyan]")
 
-                for display_name in sorted(delivs):
-                    docset_branch.add(display_name)
+                # Sort deliverables by ID for stable output
+                for deliv in sorted(delivs, key=lambda d: d.xml.node.get("id", "")):
+                    build_deliverable_branch(
+                        docset_branch,
+                        deliv,
+                        lang,
+                        show_trans,
+                        show_formats,
+                        show_categories,
+                        repo_format,
+                    )
 
         console.print(root_tree)
         console.print()
 
 
-async def async_list_cmd(ctx: DocBuildContext, doctypes: tuple[str, ...], console: Console) -> None:
-    """Async worker to fetch the XML, parse Doctypes, and build the tree.
-
-    :param ctx: The DocBuildContext containing CLI options and config.
-    :param doctypes: A tuple of doctype strings passed as arguments to the command.
-    :param console: The Rich Console object for outputting the tree.
-    """
-    # 1. Parse Doctypes
-    parsed_doctypes = _parse_doctypes(doctypes, console)
+async def async_list_cmd(
+    ctx: DocBuildContext,
+    doctypes: tuple[str, ...],
+    console: Console,
+    show_trans: bool,
+    show_formats: bool,
+    show_categories: bool,
+    repo_format: str | None,
+) -> None:
+    """Async worker to fetch the XML, parse Doctypes, and build the tree."""
+    parsed_doctypes = parse_doctypes(doctypes, console)
 
     # 2. Get XML Tree
     # The application framework guarantees envconfig is loaded before command execution.
@@ -119,21 +209,43 @@ async def async_list_cmd(ctx: DocBuildContext, doctypes: tuple[str, ...], consol
         console.print("[yellow]No deliverables found matching the criteria.[/yellow]")
         return
 
-    # 4. Group data for Rich Tree
     hierarchy = build_hierarchy(deliverables)
 
-    # 5. Build and print the Rich Tree
-    _print_hierarchy(hierarchy, console)
+    print_hierarchy(
+        hierarchy,
+        console,
+        show_trans,
+        show_formats,
+        show_categories,
+        repo_format
+    )
 
 
 @click.command(name="list")
+@click.option("--trans", "-T", is_flag=True, help="List available translations.")
+@click.option("--formats", "-F", is_flag=True, help="List available output formats.")
+@click.option("--categories", "-C", is_flag=True, help="List categories.")
+@click.option(
+    "--repo",
+    "-R",
+    type=click.Choice(["short", "long"]),
+    default=None,
+    help="List repository origin (requires 'short' or 'long')."
+)
 @click.argument("doctypes", nargs=-1)
 @click.pass_obj
-def list_cmd(ctx: DocBuildContext, doctypes: tuple[str, ...]) -> None:
+def list_cmd(
+    ctx: DocBuildContext,
+    doctypes: tuple[str, ...],
+    trans: bool,
+    formats: bool,
+    categories: bool,
+    repo: str | None,
+) -> None:
     """List products, docsets, and deliverables from the portal config.
 
     Accepts optional DOCTYPE arguments to filter the output.
-    Format: [PRODUCT]/[DOCSETS]@[LIFECYCLES]/[LANGS]
+    Format: PRODUCT/DOCSETS[@LIFECYCLES]/LANGS
 
     Example:
         docbuild portal list sles/15-SP6
@@ -142,7 +254,12 @@ def list_cmd(ctx: DocBuildContext, doctypes: tuple[str, ...]) -> None:
 
     :param ctx: The DocBuildContext passed from the CLI, containing config and options.
     :param doctypes: A tuple of doctype strings passed as arguments to the command.
+    :param trans: Show translation metadata.
+    :param formats: Show output formats metadata.
+    :param categories: Show categories metadata.
+    :param repo: Show repository metadata (short or long).
 
     """ # noqa: D301
     console = Console()
-    asyncio.run(async_list_cmd(ctx, doctypes, console))
+    asyncio.run(async_list_cmd(ctx, doctypes, console, trans, formats, categories, repo))
+

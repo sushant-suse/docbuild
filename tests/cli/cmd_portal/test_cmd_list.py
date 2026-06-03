@@ -17,7 +17,7 @@ def test_portal_list_help() -> None:
     assert result.exit_code == 0
     assert "List products, docsets, and deliverables from the portal config." in result.output
     assert "Format:" in result.output
-    assert "[PRODUCT]" in result.output
+    assert "PRODUCT/DOCSETS" in result.output
 
 
 def test_portal_list_no_main_config(tmp_path) -> None:
@@ -167,3 +167,105 @@ def test_portal_list_no_matching_deliverables(mock_parse, tmp_path) -> None:
 
     assert result.exit_code == 0, result.output
     assert "No deliverables found matching the criteria." in result.output
+
+
+COMPREHENSIVE_MOCK_XML = """<?xml version="1.0" encoding="UTF-8"?>
+<portal schemaversion="7.0">
+    <categories>
+        <category lang="en-us">
+            <language id="tuning-and-performance" title="Tuning and performance" />
+        </category>
+    </categories>
+    <product id="sles">=
+        <docset path="16.0" lifecycle="supported">
+            <resources>
+                <git remote="https://github.com/SUSE/doc-modular.git" />
+                <locale lang="en-us">
+                    <deliverable id="admin_guide" category="tuning-and-performance">
+                        <dc file="DC-admin-guide">
+                            <format epub="0" html="1" pdf="1" single-html="0"/>
+                        </dc>
+                    </deliverable>
+                    <deliverable id="prebuilt_docs" type="prebuilt">
+                        <title>SUSE Docs</title>
+                        <prebuilt>
+                            <url href="https://documentation.suse.com/sles/" format="html"/>
+                        </prebuilt>
+                    </deliverable>
+                </locale>
+                <locale lang="de-de">
+                    <deliverable id="admin_guide" category="tuning-and-performance">
+                        <ref linkend="admin_guide"/>
+                    </deliverable>
+                </locale>
+            </resources>
+        </docset>
+
+        <docset path="invalid-repo" lifecycle="supported">
+            <resources>
+                <git remote="https://todo" />
+                <locale lang="en-us">
+                    <deliverable id="bad_repo_doc">
+                        <dc file="DC-bad-repo" />
+                    </deliverable>
+                </locale>
+            </resources>
+        </docset>
+    </product>
+</portal>
+"""
+
+@patch("docbuild.cli.cmd_portal.cmd_list.parse_portal_config", new_callable=AsyncMock)
+def test_portal_list_metadata_flags(mock_parse, tmp_path) -> None:
+    """Test that all metadata flags successfully inject info into the tree."""
+    runner = CliRunner()
+    mock_parse.return_value = etree.fromstring(COMPREHENSIVE_MOCK_XML.encode("utf-8"))
+
+    mock_ctx = DocBuildContext()
+    mock_ctx.envconfig = MagicMock()
+    mock_ctx.envconfig.paths.main_portal_config.expanduser.return_value = tmp_path / "portal.xml"
+
+    # 1. Test Translations
+    res_trans = runner.invoke(list_cmd, ["--trans"], obj=mock_ctx)
+    assert res_trans.exit_code == 0
+    assert "Translations: de-de" in res_trans.output
+
+    # 2. Test Formats
+    res_formats = runner.invoke(list_cmd, ["--formats"], obj=mock_ctx)
+    assert res_formats.exit_code == 0
+    assert "Formats: HTML, PDF" in res_formats.output
+
+    # 3. Test Categories
+    res_cats = runner.invoke(list_cmd, ["--categories"], obj=mock_ctx)
+    assert res_cats.exit_code == 0
+    assert "Category: Tuning and performance" in res_cats.output
+
+    # 4. Test Repo (Short & Long) - Explicitly testing valid surl AND dummy URL fallback
+    res_repo_short = runner.invoke(list_cmd, ["--repo", "short"], obj=mock_ctx)
+    assert res_repo_short.exit_code == 0
+    assert "gh://suse/doc-modular" in res_repo_short.output.lower()      # Valid short (no .git)
+    assert "Repo: https://todo" in res_repo_short.output                 # Fallback short
+
+    res_repo_long = runner.invoke(list_cmd, ["--repo", "long"], obj=mock_ctx)
+    assert res_repo_long.exit_code == 0
+    assert "https://github.com/suse/doc-modular.git" in res_repo_long.output.lower() # Valid long
+    assert "Repo: https://todo" in res_repo_long.output                              # Fallback long
+
+    # 5. Test Prebuilt Titles & URLs (Implicit behavior)
+    res_prebuilt = runner.invoke(list_cmd, [], obj=mock_ctx)
+    assert res_prebuilt.exit_code == 0
+    assert "SUSE Docs (Prebuilt)" in res_prebuilt.output
+    assert "URL: https://documentation.suse.com/sles/" in res_prebuilt.output
+
+
+def test_portal_list_repo_requires_argument() -> None:
+    """Test that omitting 'short' or 'long' for the -R flag correctly throws a Click error."""
+    runner = CliRunner()
+    mock_ctx = DocBuildContext()
+
+    # Passing a doctype argument immediately after -R.
+    result = runner.invoke(list_cmd, ["-R", "sles/16.0"], obj=mock_ctx)
+
+    assert result.exit_code != 0
+    assert "Invalid value for '--repo' / '-R'" in result.output
+    assert "is not one of 'short', 'long'" in result.output
