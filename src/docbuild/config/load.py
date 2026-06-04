@@ -95,7 +95,7 @@ def handle_config(
         # Pass the raw user_path to satisfy the strict test mock
         found_configs.append(load_single_config(user_path))
     else:
-        # Search directories are typically ordered highest-priority first 
+        # Search directories are typically ordered highest-priority first
         # (e.g. Current Working Dir -> User Config -> System Config)
         for search_dir in search_dirs:
             if basenames:
@@ -123,7 +123,7 @@ def handle_config(
     configs_to_merge: list[dict[str, Any]] = []
     if isinstance(default_config, dict):
         configs_to_merge.append(default_config)
-        
+
     configs_to_merge.extend(found_configs)
 
     merged_config = deep_merge(*configs_to_merge)
