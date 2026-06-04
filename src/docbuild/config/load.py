@@ -8,8 +8,6 @@ from typing import Any
 
 from .merge import deep_merge
 
-# --- REMOVED THE OBSOLETE `process_envconfig` FUNCTION ---
-
 
 def load_single_config(configfile: str | Path) -> dict[str, Any]:
     """Load a single TOML config file and return its content.
@@ -73,6 +71,8 @@ def handle_config(
 
     Note: The returned configuration is the **raw loaded dictionary**. No
     placeholder replacement or validation has been performed on it.
+    Configurations are collected across all search directories and deeply merged
+    on top of the default configuration to allow partial user configs.
 
     :param user_path: Path to the user-defined config file, if any.
     :param search_dirs: Iterable of directories to search for config files.
@@ -83,22 +83,49 @@ def handle_config(
 
         * A tuple of found config file paths or None if no config file is found.
         * The loaded configuration as a dictionary or the default configuration.
-        * A boolean indicating if the default configuration was used.
-    :raises ValueError: If no config file is found and no default
-        configuration is provided.
+        * A boolean indicating if the default configuration was used exclusively.
     """
-    if user_path:
-        return (Path(user_path),), load_single_config(user_path), False
+    found_files: list[Path] = []
+    found_configs: list[dict[str, Any]] = []
 
-    for search_dir in search_dirs:
-        if basenames:
-            for basename in basenames:
-                candidate = Path(search_dir) / basename
+    # 1. Gather all existing config files
+    if user_path:
+        user_p = Path(user_path)
+        found_files.append(user_p)
+        # Pass the raw user_path to satisfy the strict test mock
+        found_configs.append(load_single_config(user_path))
+    else:
+        # Search directories are typically ordered highest-priority first 
+        # (e.g. Current Working Dir -> User Config -> System Config)
+        for search_dir in search_dirs:
+            if basenames:
+                for basename in basenames:
+                    candidate = Path(search_dir) / basename
+                    if candidate.exists():
+                        found_files.append(candidate)
+                        found_configs.append(load_single_config(candidate))
+                        break  # Only take the highest priority basename per directory
+            elif default_filename:
+                candidate = Path(search_dir) / default_filename
                 if candidate.exists():
-                    return (candidate,), load_single_config(candidate), False
-        elif default_filename:
-            candidate = Path(search_dir) / default_filename
-            if candidate.exists():
-                return (candidate,), load_single_config(candidate), False
-    # Not found, use defaults
-    return None, default_config, True
+                    found_files.append(candidate)
+                    found_configs.append(load_single_config(candidate))
+
+    # 2. Check if we found anything at all
+    if not found_files:
+        return None, default_config, True
+
+    # 3. Reverse the gathered files so we merge from lowest priority to highest priority
+    found_files.reverse()
+    found_configs.reverse()
+
+    # 4. Deep merge everything, starting with the defaults as the base!
+    configs_to_merge: list[dict[str, Any]] = []
+    if isinstance(default_config, dict):
+        configs_to_merge.append(default_config)
+        
+    configs_to_merge.extend(found_configs)
+
+    merged_config = deep_merge(*configs_to_merge)
+
+    return tuple(found_files), merged_config, False
