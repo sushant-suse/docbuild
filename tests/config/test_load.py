@@ -217,15 +217,12 @@ def test_handle_config_deep_merge_precedence(tmp_path):
     search_dirs = [sys_dir, user_dir, local_dir]
     default_config = {"server": {"base": "default", "port": 8080}}
 
-    # 3. Import handle_config (adjust import path if your test file imports it differently, e.g., load_mod.handle_config)
-    from docbuild.config.load import handle_config
-
     found_files, merged, from_defaults = handle_config(
         user_path=None,
         search_dirs=search_dirs,
         basenames=["config.toml"],
         default_filename=None,
-        default_config=default_config
+        default_config=default_config,
     )
 
     # 4. Assertions
@@ -242,10 +239,10 @@ def test_handle_config_deep_merge_precedence(tmp_path):
     # The merged dictionary should correctly overlay Local > User > System > Default
     expected_merged = {
         "server": {
-            "base": "default",   # Kept from default
-            "port": 80,          # Overwritten by System
-            "debug": True,       # Added by User
-            "host": "local"      # Overwritten by Local (The ultimate winner!)
+            "base": "default",    # Kept from default
+            "port": 80,           # Overwritten by System
+            "debug": True,        # Added by User
+            "host": "local",      # Overwritten by Local (The ultimate winner!)
         }
     }
     assert merged == expected_merged
