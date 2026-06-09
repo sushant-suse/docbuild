@@ -127,9 +127,3 @@ def handle_config(
     # 4. Return the merged config, but reverse the file list so the
     # highest-priority file is at index 0 for error reporting.
     return tuple(reversed(found_files)), merged_config, False
-
-    configs_to_merge.extend(found_configs)
-
-    merged_config = deep_merge(*configs_to_merge)
-
-    return tuple(found_files), merged_config, False
