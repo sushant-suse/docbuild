@@ -12,6 +12,7 @@ on:
       - 'docs/**'
       - '.github/workflows/gh-pages.yml'
       - 'src/docbuild/__about__.py'
+      - 'changelog.d/**'
 
 permissions:
   contents: write
