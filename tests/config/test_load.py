@@ -246,3 +246,40 @@ def test_handle_config_deep_merge_precedence(tmp_path):
         }
     }
     assert merged == expected_merged
+
+
+def test_handle_config_user_path_deep_merge(tmp_path):
+    """Test that a specific user_path config is deeply merged on top of defaults."""
+    # 1. Create a partial user config file
+    user_file = tmp_path / "custom_config.toml"
+    user_file.write_text('[server]\nhost = "custom-host"\ndebug = true\n')
+
+    # 2. Define our base defaults
+    default_config = {
+        "server": {"host": "default-host", "port": 8080},
+        "max_workers": 4,
+    }
+
+    # 3. Call handle_config exclusively with the user_path
+    found_files, merged, from_defaults = handle_config(
+        user_path=str(user_file),  # Passing as string to ensure our previous test fix holds!
+        search_dirs=[],
+        basenames=None,
+        default_config=default_config,
+    )
+
+    # 4. Assertions
+    assert from_defaults is False
+    assert found_files == (user_file,)
+
+    # The final dictionary should be defaults + user_file
+    expected_merged = {
+        "server": {
+            "host": "custom-host",  # Overwritten by user_path
+            "port": 8080,           # Kept from defaults
+            "debug": True,          # Added by user_path
+        },
+        "max_workers": 4            # Kept from defaults
+    }
+
+    assert merged == expected_merged
