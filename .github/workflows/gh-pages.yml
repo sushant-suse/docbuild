@@ -47,12 +47,13 @@ jobs:
           echo "Set Python version is ${{ steps.setup-uv.outputs.python-version }}"
 
       - name: Install dependencies
-        run: uv sync --frozen --group docs
+        run: uv sync --frozen --group docs --group changelog
 
       - name: Determine documentation version
         run: ${{ env.CI_BIN_DIR }}/determine-version.sh
 
       - name: Build Changelog
+        if: github.ref_type != 'tag'
         run: uv run --frozen --no-sync towncrier build --yes --version "${{ env.DOC_VERSION }}"
 
       - name: Build documentation
