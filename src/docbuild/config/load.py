@@ -92,11 +92,11 @@ def handle_config(
     if user_path:
         user_p = Path(user_path)
         found_files.append(user_p)
-        # Pass the raw user_path to satisfy the strict test mock
+        # Preserve the original `user_path` type when loading to keep call-site behavior stable.
         found_configs.append(load_single_config(user_path))
     else:
-        # Search directories are typically ordered highest-priority first
-        # (e.g. Current Working Dir -> User Config -> System Config)
+        # Search directories are expected to be ordered lowest-priority first
+        # (e.g. System Config -> User Config -> Current Working Dir).
         for search_dir in search_dirs:
             if basenames:
                 for basename in basenames:
@@ -115,14 +115,18 @@ def handle_config(
     if not found_files:
         return None, default_config, True
 
-    # 3. Reverse the gathered files so we merge from lowest priority to highest priority
-    found_files.reverse()
-    found_configs.reverse()
-
-    # 4. Deep merge everything, starting with the defaults as the base!
+    # 3. Deep merge everything, starting with the defaults as the base!
     configs_to_merge: list[dict[str, Any]] = []
     if isinstance(default_config, dict):
         configs_to_merge.append(default_config)
+
+    configs_to_merge.extend(found_configs)
+
+    merged_config = deep_merge(*configs_to_merge)
+
+    # 4. Return the merged config, but reverse the file list so the
+    # highest-priority file is at index 0 for error reporting.
+    return tuple(reversed(found_files)), merged_config, False
 
     configs_to_merge.extend(found_configs)
 

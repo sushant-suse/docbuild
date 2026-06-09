@@ -197,3 +197,55 @@ def test_handle_config_falls_back_to_default_with_default_filename(tmp_path):
         assert config_files is None
         assert config == default_config
         assert from_defaults is True
+
+
+def test_handle_config_deep_merge_precedence(tmp_path):
+    """Test that handle_config deeply merges configs across search dirs in the correct order."""
+    # 1. Setup three dummy directories representing System, User, and Local
+    sys_dir = tmp_path / "system"
+    user_dir = tmp_path / "user"
+    local_dir = tmp_path / "local"
+
+    for d in (sys_dir, user_dir, local_dir):
+        d.mkdir()
+
+    # 2. Write TOML files with overlapping keys to test precedence
+    (sys_dir / "config.toml").write_text('[server]\nhost = "system"\nport = 80\n')
+    (user_dir / "config.toml").write_text('[server]\nhost = "user"\ndebug = true\n')
+    (local_dir / "config.toml").write_text('[server]\nhost = "local"\n')
+
+    search_dirs = [sys_dir, user_dir, local_dir]
+    default_config = {"server": {"base": "default", "port": 8080}}
+
+    # 3. Import handle_config (adjust import path if your test file imports it differently, e.g., load_mod.handle_config)
+    from docbuild.config.load import handle_config
+
+    found_files, merged, from_defaults = handle_config(
+        user_path=None,
+        search_dirs=search_dirs,
+        basenames=["config.toml"],
+        default_filename=None,
+        default_config=default_config
+    )
+
+    # 4. Assertions
+    assert from_defaults is False
+
+    # The files should be returned highest-priority first (reversed from search_dirs)
+    expected_files = (
+        local_dir / "config.toml",
+        user_dir / "config.toml",
+        sys_dir / "config.toml",
+    )
+    assert found_files == expected_files
+
+    # The merged dictionary should correctly overlay Local > User > System > Default
+    expected_merged = {
+        "server": {
+            "base": "default",   # Kept from default
+            "port": 80,          # Overwritten by System
+            "debug": True,       # Added by User
+            "host": "local"      # Overwritten by Local (The ultimate winner!)
+        }
+    }
+    assert merged == expected_merged
