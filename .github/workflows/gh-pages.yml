@@ -52,6 +52,9 @@ jobs:
       - name: Determine documentation version
         run: ${{ env.CI_BIN_DIR }}/determine-version.sh
 
+      - name: Build Changelog
+        run: uv run --frozen --no-sync towncrier build --yes --version "${{ env.DOC_VERSION }}"
+
       - name: Build documentation
         env:
           DOC_VERSION: ${{ env.DOC_VERSION }}
