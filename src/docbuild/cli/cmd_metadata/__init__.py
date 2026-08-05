@@ -2,15 +2,16 @@
 
 import asyncio
 import math
+from pathlib import Path
 
 import click
 from rich.console import Console
 
-from ...models.doctype import Doctype
-from ...tasks.metadata import process
-from ...utils.contextmgr import make_timer
-from ..callback import validate_doctypes
-from ..context import DocBuildContext
+from docbuild.cli.callback import validate_doctypes
+from docbuild.cli.context import DocBuildContext
+from docbuild.models.doctype import Doctype
+from docbuild.tasks.metadata.runner import process
+from docbuild.utils.contextmgr import make_timer
 
 # Set up rich consoles for output
 stdout = Console()
@@ -51,18 +52,43 @@ def metadata(
     :param ctx: The Click context object.
     """
     context: DocBuildContext = ctx.obj
+
+    if not context.envconfig:
+        console_err.print("Environment configuration is missing.")
+        ctx.exit(1)
+
     timer = make_timer("metadata")
     result = 1  # Default exit code for interruption or error
 
-    # The timer data object 't' will be populated by the context manager.
-    # We define it here so it's accessible in the 'finally' block.
+    # Unpack paths for the decoupled task
+    env = context.envconfig
+    main_portal_config = Path(env.paths.main_portal_config)
+    tmp_metadata_dir = Path(env.paths.tmp.tmp_metadata_dir)
+    repo_dir = Path(env.paths.repo_dir)
+    tmp_repo_dir = Path(env.paths.tmp_repo_dir)
+    meta_cache_dir = Path(env.paths.meta_cache_dir)
+    json_cache_dir = Path(env.paths.json_cache_dir)
+    dapsmetatmpl = str(env.build.daps.meta)
+
+    # Unpack max_workers for the new concurrency semaphore
+    max_workers = context.appconfig.max_workers if context.appconfig else 1
+
+    stdout.print(f"Config path: {env.paths.config_dir}")
+
     t = None
     try:
         with timer() as t:
             result = asyncio.run(
                 process(
-                    context,
-                    doctypes,
+                    main_portal_config=main_portal_config,
+                    tmp_metadata_dir=tmp_metadata_dir,
+                    repo_dir=repo_dir,
+                    tmp_repo_dir=tmp_repo_dir,
+                    meta_cache_dir=meta_cache_dir,
+                    json_cache_dir=json_cache_dir,
+                    dapsmetatmpl=dapsmetatmpl,
+                    max_workers=max_workers,
+                    doctypes=list(doctypes),
                     exitfirst=exitfirst,
                     skip_repo_update=skip_repo_update,
                 )
