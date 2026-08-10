@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.config.load &#8212; Docbuild Documentation 0.1.dev542+g4cb9565bc.d20260810</title>
+    <title>docbuild.models.product.Product &#8212; Docbuild Documentation 0.1.dev542+g4cb9565bc.d20260810</title>
   
   
   
@@ -48,7 +48,7 @@
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../../../../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'reference/_autoapi/docbuild/config/load/index';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'reference/_autoapi/docbuild/models/product/Product';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.20.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://opensuse.github.io/docbuild/versions.json';
@@ -60,8 +60,8 @@
     <link rel="icon" href="../../../../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" />
-    <link rel="next" title="docbuild.config.merge" href="../merge/index.html" />
-    <link rel="prev" title="docbuild.config.app.PlaceholderResolver" href="../app/PlaceholderResolver.html" />
+    <link rel="next" title="docbuild.models.repo" href="../repo/index.html" />
+    <link rel="prev" title="docbuild.models.product.BaseProductEnum" href="BaseProductEnum.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.22.0" />
@@ -420,84 +420,84 @@
 <li class="toctree-l3"><a class="reference internal" href="../../cli/defaults/index.html">docbuild.cli.defaults</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 current active has-children"><a class="reference internal" href="../index.html">docbuild.config</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l3 has-children"><a class="reference internal" href="../app/index.html">docbuild.config.app</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../app/PlaceholderResolutionError.html">docbuild.config.app.PlaceholderResolutionError</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../app/CircularReferenceError.html">docbuild.config.app.CircularReferenceError</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../app/PlaceholderSyntaxError.html">docbuild.config.app.PlaceholderSyntaxError</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../app/PlaceholderResolver.html">docbuild.config.app.PlaceholderResolver</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../config/index.html">docbuild.config</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../config/app/index.html">docbuild.config.app</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../config/app/PlaceholderResolutionError.html">docbuild.config.app.PlaceholderResolutionError</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../config/app/CircularReferenceError.html">docbuild.config.app.CircularReferenceError</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../config/app/PlaceholderSyntaxError.html">docbuild.config.app.PlaceholderSyntaxError</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../config/app/PlaceholderResolver.html">docbuild.config.app.PlaceholderResolver</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 current active"><a class="current reference internal" href="#">docbuild.config.load</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../merge/index.html">docbuild.config.merge</a></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../xml/index.html">docbuild.config.xml</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../xml/checks/index.html">docbuild.config.xml.checks</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../xml/list/index.html">docbuild.config.xml.list</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../xml/references/index.html">docbuild.config.xml.references</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../xml/semantic_xpath/index.html">docbuild.config.xml.semantic_xpath</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../xml/xinclude/index.html">docbuild.config.xml.xinclude</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/load/index.html">docbuild.config.load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/merge/index.html">docbuild.config.merge</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../config/xml/index.html">docbuild.config.xml</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../config/xml/checks/index.html">docbuild.config.xml.checks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../config/xml/list/index.html">docbuild.config.xml.list</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../config/xml/references/index.html">docbuild.config.xml.references</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../config/xml/semantic_xpath/index.html">docbuild.config.xml.semantic_xpath</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../config/xml/xinclude/index.html">docbuild.config.xml.xinclude</a></li>
 </ul>
 </details></li>
 </ul>
 </details></li>
 <li class="toctree-l2"><a class="reference internal" href="../../constants/index.html">docbuild.constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../logging/index.html">docbuild.logging</a></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../models/index.html">docbuild.models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/config/index.html">docbuild.models.config</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../models/config/app/index.html">docbuild.models.config.app</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../models/config/env/index.html">docbuild.models.config.env</a></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../index.html">docbuild.models</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 has-children"><a class="reference internal" href="../config/index.html">docbuild.models.config</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../config/app/index.html">docbuild.models.config.app</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../config/env/index.html">docbuild.models.config.env</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/deliverable/index.html">docbuild.models.deliverable</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../models/deliverable/paths/index.html">docbuild.models.deliverable.paths</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../models/deliverable/view/index.html">docbuild.models.deliverable.view</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../models/deliverable/Deliverable.html">docbuild.models.deliverable.Deliverable</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../deliverable/index.html">docbuild.models.deliverable</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../deliverable/paths/index.html">docbuild.models.deliverable.paths</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../deliverable/view/index.html">docbuild.models.deliverable.view</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../deliverable/Deliverable.html">docbuild.models.deliverable.Deliverable</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/doctype/index.html">docbuild.models.doctype</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../models/doctype/Doctype.html">docbuild.models.doctype.Doctype</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../doctype/index.html">docbuild.models.doctype</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../doctype/Doctype.html">docbuild.models.doctype.Doctype</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/language/index.html">docbuild.models.language</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../models/language/LanguageCode.html">docbuild.models.language.LanguageCode</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../language/index.html">docbuild.models.language</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../language/LanguageCode.html">docbuild.models.language.LanguageCode</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/lifecycle/index.html">docbuild.models.lifecycle</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../models/lifecycle/LifecycleFlag.html">docbuild.models.lifecycle.LifecycleFlag</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../lifecycle/index.html">docbuild.models.lifecycle</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../lifecycle/LifecycleFlag.html">docbuild.models.lifecycle.LifecycleFlag</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/manifest/index.html">docbuild.models.manifest</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../models/manifest/Description.html">docbuild.models.manifest.Description</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../models/manifest/CategoryTranslation.html">docbuild.models.manifest.CategoryTranslation</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../models/manifest/Category.html">docbuild.models.manifest.Category</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../models/manifest/Archive.html">docbuild.models.manifest.Archive</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../models/manifest/DocumentFormat.html">docbuild.models.manifest.DocumentFormat</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../models/manifest/SingleDocument.html">docbuild.models.manifest.SingleDocument</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../models/manifest/Product.html">docbuild.models.manifest.Product</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../models/manifest/Document.html">docbuild.models.manifest.Document</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../models/manifest/Manifest.html">docbuild.models.manifest.Manifest</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../manifest/index.html">docbuild.models.manifest</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../manifest/Description.html">docbuild.models.manifest.Description</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manifest/CategoryTranslation.html">docbuild.models.manifest.CategoryTranslation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manifest/Category.html">docbuild.models.manifest.Category</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manifest/Archive.html">docbuild.models.manifest.Archive</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manifest/DocumentFormat.html">docbuild.models.manifest.DocumentFormat</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manifest/SingleDocument.html">docbuild.models.manifest.SingleDocument</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manifest/Product.html">docbuild.models.manifest.Product</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manifest/Document.html">docbuild.models.manifest.Document</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manifest/Manifest.html">docbuild.models.manifest.Manifest</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/metadata/index.html">docbuild.models.metadata</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../models/metadata/Metadata.html">docbuild.models.metadata.Metadata</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../metadata/index.html">docbuild.models.metadata</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../metadata/Metadata.html">docbuild.models.metadata.Metadata</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/path/index.html">docbuild.models.path</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../models/path/EnsureWritableDirectory.html">docbuild.models.path.EnsureWritableDirectory</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../path/index.html">docbuild.models.path</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../path/EnsureWritableDirectory.html">docbuild.models.path.EnsureWritableDirectory</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/product/index.html">docbuild.models.product</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../models/product/StrEnumMeta.html">docbuild.models.product.StrEnumMeta</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../models/product/BaseProductEnum.html">docbuild.models.product.BaseProductEnum</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../models/product/Product.html">docbuild.models.product.Product</a></li>
+<li class="toctree-l3 current active has-children"><a class="reference internal" href="index.html">docbuild.models.product</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="StrEnumMeta.html">docbuild.models.product.StrEnumMeta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="BaseProductEnum.html">docbuild.models.product.BaseProductEnum</a></li>
+<li class="toctree-l4 current active"><a class="current reference internal" href="#">docbuild.models.product.Product</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/repo/index.html">docbuild.models.repo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../models/repo/Repo.html">docbuild.models.repo.Repo</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../repo/index.html">docbuild.models.repo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../repo/Repo.html">docbuild.models.repo.Repo</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/serverroles/index.html">docbuild.models.serverroles</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../models/serverroles/ServerRole.html">docbuild.models.serverroles.ServerRole</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../serverroles/index.html">docbuild.models.serverroles</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../serverroles/ServerRole.html">docbuild.models.serverroles.ServerRole</a></li>
 </ul>
 </details></li>
 </ul>
@@ -591,9 +591,12 @@
     <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">docbuild</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">docbuild.config</a></li>
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">docbuild.models</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">docbuild.config.load</span></li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">docbuild.models.product</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">docbuild.models.product.Product</span></li>
   </ul>
 </nav>
 </div>
@@ -610,77 +613,30 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-docbuild.config.load">
-<span id="docbuild-config-load"></span><h1>docbuild.config.load<a class="headerlink" href="#module-docbuild.config.load" title="Link to this heading">#</a></h1>
-<p>Load and process configuration files.</p>
-<section id="functions">
-<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.load.load_single_config" title="docbuild.config.load.load_single_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_single_config</span></code></a>(→ dict[str, Any])</p></td>
-<td><p>Load a single TOML config file and return its content.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.load.handle_config" title="docbuild.config.load.handle_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">handle_config</span></code></a>(→ tuple[tuple[pathlib.Path, ...)</p></td>
-<td><p>Return (config_files, config, from_defaults) for config file handling.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</section>
-<section id="module-contents">
-<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="docbuild.config.load.load_single_config">
-<span class="sig-prename descclassname"><span class="pre">docbuild.config.load.</span></span><span class="sig-name descname"><span class="pre">load_single_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">configfile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.config.load.load_single_config" title="Link to this definition">#</a></dt>
-<dd><p>Load a single TOML config file and return its content.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>configfile</strong> – Path to the config file.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The loaded config as a dictionary.</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#FileNotFoundError" title="(in Python v3.14)"><strong>FileNotFoundError</strong></a> – If the config file does not exist.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/tomllib.html#tomllib.TOMLDecodeError" title="(in Python v3.14)"><strong>tomllib.TOMLDecodeError</strong></a> – If the config file is not a valid TOML file
-or cannot be decoded.</p></li>
-</ul>
-</dd>
-</dl>
+  <section id="docbuild-models-product-product">
+<h1>docbuild.models.product.Product<a class="headerlink" href="#docbuild-models-product-product" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="docbuild.models.product.Product">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">docbuild.models.product.</span></span><span class="sig-name descname"><span class="pre">Product</span></span><a class="headerlink" href="#docbuild.models.product.Product" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">BaseProductEnum</span></code></p>
+<div class="graphviz"><img src="../../../../../_images/inheritance-f8187f4dd477418e3df2e0bb9fa81f7811cae20d.png" alt="Inheritance diagram of docbuild.models.product.Product" usemap="#inheritance09d5247e71" class="inheritance graphviz" /></div>
+<map id="inheritance09d5247e71" name="inheritance09d5247e71">
+<area shape="rect" id="node1" href="BaseProductEnum.html#docbuild.models.product.BaseProductEnum" target="_top" title="Base class for product enums with custom error handling." alt="" coords="388,5,528,31"/>
+<area shape="rect" id="node4" href="#docbuild.models.product.Product" target="_top" title="A :class:`~enum.StrEnum` for all known products, including wildcard ``*``." alt="" coords="576,5,648,31"/>
+<area shape="rect" id="node2" href="https://docs.python.org/3/library/enum.html#enum.StrEnum" target="_top" title="Enum where members are also (and must be) strings" alt="" coords="263,5,340,31"/>
+<area shape="rect" id="node3" href="https://docs.python.org/3/library/enum.html#enum.Enum" target="_top" title="Create a collection of name/value pairs." alt="" coords="5,5,77,31"/>
+<area shape="rect" id="node5" href="https://docs.python.org/3/library/enum.html#enum.ReprEnum" target="_top" title="Only changes the repr(), leaving str() and format() to the mixed&#45;in type." alt="" coords="125,5,215,31"/>
+</map><p>A <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.StrEnum" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">StrEnum</span></code></a> for all known products, including wildcard <code class="docutils literal notranslate"><span class="pre">*</span></code>.</p>
+<p>The enum value stores the full product name, while <a class="reference internal" href="#docbuild.models.product.Product.acronym" title="docbuild.models.product.Product.acronym"><code class="xref py py-attr docutils literal notranslate"><span class="pre">acronym</span></code></a> exposes
+the canonical short ID used in doctypes and XML product IDs.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="docbuild.models.product.Product.acronym">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">acronym</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#docbuild.models.product.Product.acronym" title="Link to this definition">#</a></dt>
+<dd><p>Return the canonical product acronym used in doctypes and XML IDs.</p>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="docbuild.config.load.handle_config">
-<span class="sig-prename descclassname"><span class="pre">docbuild.config.load.</span></span><span class="sig-name descname"><span class="pre">handle_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_dirs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.14)"><span class="pre">collections.abc.Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basenames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.14)"><span class="pre">collections.abc.Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><span class="pre">object</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Ellipsis</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><span class="pre">object</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.config.load.handle_config" title="Link to this definition">#</a></dt>
-<dd><p>Return (config_files, config, from_defaults) for config file handling.</p>
-<p>Note: The returned configuration is the <strong>raw loaded dictionary</strong>. No
-placeholder replacement or validation has been performed on it.
-Configurations are collected across all search directories and deeply merged
-on top of the default configuration to allow partial user configs.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>user_path</strong> – Path to the user-defined config file, if any.</p></li>
-<li><p><strong>search_dirs</strong> – Iterable of directories to search for config files.</p></li>
-<li><p><strong>basenames</strong> – Iterable of base filenames to search for.</p></li>
-<li><p><strong>default_filename</strong> – Default filename to use if no config file is found.</p></li>
-<li><p><strong>default_config</strong> – Default configuration to return if no config file is found.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><p>A tuple containing:</p>
-<ul class="simple">
-<li><p>A tuple of found config file paths or None if no config file is found.</p></li>
-<li><p>The loaded configuration as a dictionary or the default configuration.</p></li>
-<li><p>A boolean indicating if the default configuration was used exclusively.</p></li>
-</ul>
-</p>
-</dd>
-</dl>
 </dd></dl>
 
-</section>
 </section>
 
 
@@ -694,20 +650,20 @@ on top of the default configuration to allow partial user configs.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../app/PlaceholderResolver.html"
+       href="BaseProductEnum.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">docbuild.config.app.PlaceholderResolver</p>
+        <p class="prev-next-title">docbuild.models.product.BaseProductEnum</p>
       </div>
     </a>
     <a class="right-next"
-       href="../merge/index.html"
+       href="../repo/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">docbuild.config.merge</p>
+        <p class="prev-next-title">docbuild.models.repo</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -730,10 +686,8 @@ on top of the default configuration to allow partial user configs.</p>
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.load.load_single_config"><code class="docutils literal notranslate"><span class="pre">load_single_config()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.load.handle_config"><code class="docutils literal notranslate"><span class="pre">handle_config()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.product.Product"><code class="docutils literal notranslate"><span class="pre">docbuild.models.product.Product</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.product.Product.acronym"><code class="docutils literal notranslate"><span class="pre">docbuild.models.product.Product.acronym</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -743,7 +697,7 @@ on top of the default configuration to allow partial user configs.</p>
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/reference/_autoapi/docbuild/config/load/index.rst">
+    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/reference/_autoapi/docbuild/models/product/Product.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
@@ -758,7 +712,7 @@ on top of the default configuration to allow partial user configs.</p>
   <div class="sidebar-secondary-item">
 
   <div class="tocsection sourcelink">
-    <a href="../../../../../_sources/reference/_autoapi/docbuild/config/load/index.rst.txt">
+    <a href="../../../../../_sources/reference/_autoapi/docbuild/models/product/Product.rst.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>
