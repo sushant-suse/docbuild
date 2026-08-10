@@ -4,6 +4,7 @@ from collections.abc import Sequence
 import logging
 from pathlib import Path
 import sys
+import tempfile
 import tomllib
 from typing import Any, cast
 
@@ -90,14 +91,10 @@ def handle_validation_error(
 def load_app_config(
     ctx: click.Context,
     app_config: Path,
-    max_workers: str | None
+    max_workers: str | None,
+    skip_validation: bool = False
 ) -> None:
-    """Load and validate Application configuration.
-
-    :param ctx: The Click context object. The result will be added to ``ctx.obj.appconfig``.
-    :param app_config: The path to the application config file provided via CLI.
-    :param max_workers: The max_workers value from CLI options.
-    """
+    """Load and validate Application configuration."""
     context = ctx.obj
     result = handle_config(
         app_config,
@@ -110,18 +107,27 @@ def load_app_config(
         tuple[tuple[Path, ...] | None, dict[str, Any], bool], result
     )
 
+    # Always store the raw dict so `config list` has access to it
+    context.raw_appconfig = raw_appconfig
+
     if max_workers is not None:
         raw_appconfig["max_workers"] = max_workers
 
-    context.appconfig = AppConfig.from_dict(raw_appconfig)
+    try:
+        context.appconfig = AppConfig.from_dict(raw_appconfig)
+    except (ValueError, ValidationError) as e:
+        if skip_validation:
+            log.warning("Application config validation failed. Proceeding with raw data.")
+        else:
+            raise e
 
 
-def load_env_config(ctx: click.Context, env_config: Path) -> None:
-    """Load and validate Environment configuration.
-
-    :param ctx: The Click context object. The result will be added to ``ctx.obj.envconfig``.
-    :param env_config: The path to the environment config file provided via CLI.
-    """
+def load_env_config(
+    ctx: click.Context,
+    env_config: Path,
+    skip_validation: bool = False
+) -> None:
+    """Load and validate Environment configuration."""
     context = ctx.obj
     result = handle_config(
         env_config,
@@ -134,7 +140,18 @@ def load_env_config(ctx: click.Context, env_config: Path) -> None:
         tuple[tuple[Path, ...] | None, dict[str, Any], bool], result
     )
 
-    context.envconfig = EnvConfig.from_dict(raw_envconfig)
+    # Always store the raw dict so `config list` has access to it
+    context.raw_envconfig = raw_envconfig
+
+    try:
+        context.envconfig = EnvConfig.from_dict(raw_envconfig)
+    except (ValueError, ValidationError) as e:
+        if skip_validation:
+            log.warning("Environment config validation failed. Proceeding with raw data.")
+        else:
+            raise e
+
+
 
 @click.group(
     name=APP_NAME,
@@ -235,27 +252,52 @@ def cli(
     current_model: type[BaseModel] = AppConfig
     current_files: Sequence[Path] | None = None
 
+    # Determine if we should skip validation
+    is_config_list = (ctx.invoked_subcommand == "config") and ("list" in sys.argv)
+    skip_validation = is_config_list and "--validate" not in sys.argv
+
     try:
         # --- PHASE 1: Load Application Config ---
         current_model = AppConfig
         current_files = (app_config,) if app_config else None
-        load_app_config(ctx, app_config, max_workers)
+        load_app_config(ctx, app_config, max_workers, skip_validation)
 
         # --- PHASE 2: Load Environment Config ---
         current_model = EnvConfig
         current_files = (env_config,) if env_config else None
-        load_env_config(ctx, env_config)
+        load_env_config(ctx, env_config, skip_validation)
 
-        # Setup logging
-        logging_config = context.appconfig.logging.model_dump(
-            by_alias=True, exclude_none=True
-        )
-        setup_logging(cliverbosity=verbose,
-                      log_dir=context.envconfig.paths.tmp.log_dir,
-                      user_config={"logging": logging_config}
-        )
-        # log.debug("Logging initialized with config: %s", logging_config)
+        # Setup logging safely
+        if context.appconfig and context.envconfig:
+            logging_config = context.appconfig.logging.model_dump(
+                by_alias=True, exclude_none=True
+            )
+            log_dir = context.envconfig.paths.tmp.log_dir
+        else:
+            # We bypassed validation (e.g., to list a broken config).
+            # Fall back to a safe, console-only configuration to avoid filesystem errors
+            # from unresolved placeholders or missing directory permissions.
+            logging_config = {
+                "version": 1,
+                "disable_existing_loggers": False,
+                "handlers": {
+                    "console": {
+                        "class_name": "logging.StreamHandler",
+                        "level": "INFO",
+                    }
+                },
+                "root": {
+                    "level": "INFO",
+                    "handlers": ["console"]
+                }
+            }
+            log_dir = Path(tempfile.gettempdir())
 
+        setup_logging(
+            cliverbosity=verbose,
+            log_dir=log_dir,
+            user_config={"logging": logging_config}
+        )
 
     except (ValueError, ValidationError, tomllib.TOMLDecodeError) as e:
         handle_validation_error(e, current_model, current_files, verbose, ctx)
