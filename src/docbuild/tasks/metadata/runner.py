@@ -139,10 +139,19 @@ async def process_doctype(
 
     # Group by (repo URL, branch) so each unique checkout is shared
     groups: dict[tuple[str, str], list[Deliverable]] = {}
-    for d in deliverables:
-        groups.setdefault((d.git.url, d.branch), []).append(d)
+    failed: list[Deliverable] = []
 
-    log.info("Processing %d deliverables across %d worktree group(s).", len(deliverables), len(groups))
+    for d in deliverables:
+        try:
+            groups.setdefault((d.git.url, d.branch), []).append(d)
+        except Exception as e:
+            log.error("Failed to determine Git routing for %s: %s", d.pdlangdc, e)
+            failed.append(d)
+
+    log.info(
+        "Processing %d deliverables across %d worktree group(s).",
+        len(deliverables) - len(failed), len(groups)
+    )
 
     group_tasks = [
         asyncio.create_task(
@@ -156,7 +165,6 @@ async def process_doctype(
     ]
     results = await asyncio.gather(*group_tasks, return_exceptions=True)
 
-    failed: list[Deliverable] = []
     for result in results:
         if isinstance(result, list):
             failed.extend(result)
@@ -239,7 +247,7 @@ async def process(
     if all_failed_deliverables:
         console_err.print(f"Found {len(all_failed_deliverables)} failed deliverables:")
         for d in all_failed_deliverables:
-            console_err.print(f"- {d.full_id}")
+            console_err.print(f"- {d.pdlangdc}")
         return 1
 
     return 0
