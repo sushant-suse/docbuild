@@ -338,7 +338,12 @@ def load_env_config(
     "env_overrides",
     metavar="KEY=VALUE",
     multiple=True,
-    help="Override an environment config value (e.g., 'paths.tmp_dir=/new/path').",
+    help=(
+        "Override an environment config value (e.g., 'paths.tmp_dir=/new/path'). "
+        "For keys that contains dots, use quotes or brackets. "
+        " xslt.html.[show.edit.link]=true and "
+        " xslt.html.'show.edit.link'=true are equivalent."
+    ),
 )
 @click.pass_context
 def cli(
