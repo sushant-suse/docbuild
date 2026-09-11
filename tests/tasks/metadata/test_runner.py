@@ -2,7 +2,7 @@
 
 from pathlib import Path
 from typing import Any
-from unittest.mock import AsyncMock, Mock, patch
+from unittest.mock import ANY, AsyncMock, Mock, patch
 
 from lxml import etree  # type: ignore
 import pytest
@@ -41,6 +41,7 @@ def runner_kwargs(tmp_path: Path) -> dict[str, Any]:
         "meta_cache_dir": tmp_path / "cache" / "metadata",
         "json_cache_dir": tmp_path / "cache" / "json",
         "dapsmetatmpl": "daps-command-template",
+        "daps_list_srcfiles_tmpl": "daps -d {dcfile} list-srcfiles --hashes",
         "max_workers": 8,
     }
 
@@ -96,6 +97,7 @@ class TestProcessDoctype:
             meta_cache_dir=tmp_path / "cache" / "metadata",
             prebuilt_dir=tmp_path / "prebuilt",
             dapsmetatmpl="daps-template",
+            daps_list_srcfiles_tmpl="daps-list-tmpl",
             max_workers=8,
             exitfirst=False,
             skip_repo_update=True,
@@ -126,6 +128,7 @@ class TestProcessDoctype:
             meta_cache_dir=tmp_path / "cache" / "metadata",
             prebuilt_dir=tmp_path / "prebuilt",
             dapsmetatmpl="daps-template",
+            daps_list_srcfiles_tmpl="daps-list-tmpl",
             max_workers=8,
             exitfirst=False,
             skip_repo_update=True,
@@ -163,6 +166,7 @@ class TestProcessDoctype:
             meta_cache_dir=tmp_path / "cache" / "metadata",
             prebuilt_dir=tmp_path / "prebuilt",
             dapsmetatmpl="daps-template",
+            daps_list_srcfiles_tmpl="daps-list-tmpl",
             max_workers=1,  # Force sequential to guarantee order in test
             exitfirst=True,
             skip_repo_update=True,
@@ -193,6 +197,7 @@ class TestProcessDoctype:
             meta_cache_dir=tmp_path / "cache" / "metadata",
             prebuilt_dir=tmp_path / "prebuilt",
             dapsmetatmpl="daps-template",
+            daps_list_srcfiles_tmpl="daps-list-tmpl",
             max_workers=8,
             exitfirst=False,
             skip_repo_update=True,
@@ -251,9 +256,11 @@ class TestProcess:
             runner_kwargs["meta_cache_dir"],
             Path("/tmp"),
             runner_kwargs["dapsmetatmpl"],
+            runner_kwargs["daps_list_srcfiles_tmpl"],
             runner_kwargs["max_workers"],
             exitfirst=False,
             skip_repo_update=False,
+            env_config_hash=ANY,
         )
 
     @patch.object(runner_pkg, "store_productdocset_json", new_callable=Mock)
@@ -317,7 +324,9 @@ class TestProcess:
             runner_kwargs["meta_cache_dir"],
             Path("/tmp"),
             runner_kwargs["dapsmetatmpl"],
+            runner_kwargs["daps_list_srcfiles_tmpl"],
             runner_kwargs["max_workers"],
             exitfirst=False,
             skip_repo_update=False,
+            env_config_hash=ANY,
         )

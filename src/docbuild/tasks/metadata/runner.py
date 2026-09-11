@@ -2,6 +2,7 @@
 
 import asyncio
 from collections.abc import Sequence
+import hashlib
 import logging
 from pathlib import Path
 
@@ -47,10 +48,12 @@ async def process_doctype(
     meta_cache_dir: Path,
     prebuilt_dir: Path,
     dapsmetatmpl: str,
+    daps_list_srcfiles_tmpl: str,
     max_workers: int,
     *,
     exitfirst: bool = False,
     skip_repo_update: bool = False,
+    env_config_hash: str = "",
 ) -> list[Deliverable]:
     """Process the doctypes and create metadata files using an aiostream pipeline.
 
@@ -96,7 +99,9 @@ async def process_doctype(
                     meta_cache_dir,
                     prebuilt_dir=prebuilt_dir,
                     dapstmpl=dapsmetatmpl,
+                    daps_list_srcfiles_tmpl=daps_list_srcfiles_tmpl,
                     skip_repo_update=skip_repo_update,
+                    env_config_hash=env_config_hash,
                 ),
                 name=f"metadata:{deliverable.full_id}",
             )
@@ -134,6 +139,7 @@ async def process(
     json_cache_dir: Path,
     prebuilt_dir: Path,
     dapsmetatmpl: str,
+    daps_list_srcfiles_tmpl: str,
     max_workers: int,
     doctypes: Sequence[Doctype] | None,
     *,
@@ -163,13 +169,17 @@ async def process(
     tmp_metadata_dir.mkdir(parents=True, exist_ok=True)
 
     stitchfilename = tmp_metadata_dir / "stitched-metadata.xml"
-    stitchfilename.write_text(
-        etree.tostring(
-            stitchnode,
-            pretty_print=True,
-            encoding="unicode",
-        )
+
+    # Generate the XML string once
+    stitch_xml_str = etree.tostring(
+        stitchnode,
+        pretty_print=True,
+        encoding="unicode",
     )
+    stitchfilename.write_text(stitch_xml_str)
+
+    # Create a hash of the entire stitched configuration to detect env/config changes!
+    env_config_hash = hashlib.sha256(stitch_xml_str.encode("utf-8")).hexdigest()
 
     log.info("Stitched metadata XML written to %s", str(stitchfilename))
 
@@ -186,9 +196,11 @@ async def process(
                 meta_cache_dir,
                 prebuilt_dir,
                 dapsmetatmpl,
+                daps_list_srcfiles_tmpl,
                 max_workers,
                 exitfirst=exitfirst,
                 skip_repo_update=skip_repo_update,
+                env_config_hash=env_config_hash,
             ),
             name=f"metadata:{dt!s}",
         )
