@@ -15,7 +15,7 @@ Attributes
 .. autoapisummary::
 
    docbuild.constants.APP_NAME
-   docbuild.constants.DEFAULT_SERVER_NAME
+   docbuild.constants.DEFAULT_ENV_NAME
    docbuild.constants.DEFAULT_LANGS
    docbuild.constants.ALLOWED_LANGUAGES
    docbuild.constants.DEFAULT_DELIVERABLES
@@ -34,6 +34,7 @@ Attributes
    docbuild.constants.CONFIG_HOME
    docbuild.constants.DATA_HOME
    docbuild.constants.CACHE_HOME
+   docbuild.constants.CACHE_FILE_EXT
    docbuild.constants.RUNTIME_DIR
    docbuild.constants.APP_CONFIG_BASENAMES
    docbuild.constants.PROJECT_LEVEL_APP_CONFIG_FILENAMES
@@ -65,7 +66,7 @@ Module Contents
    The name of the application, used in paths and config files.
 
 
-.. py:data:: DEFAULT_SERVER_NAME
+.. py:data:: DEFAULT_ENV_NAME
    :value: 'default-env'
 
 
@@ -190,6 +191,14 @@ Module Contents
    :type:  pathlib.Path
 
    The user-specific cache directory, typically located at ~/.cache/docbuild.
+
+
+.. py:data:: CACHE_FILE_EXT
+   :type:  str
+   :value: '.cache.json'
+
+
+   The standard file extension used for docbuild cache files.
 
 
 .. py:data:: RUNTIME_DIR
