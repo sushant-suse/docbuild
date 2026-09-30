@@ -1,6 +1,7 @@
 """Runner for the build task."""
 
 import asyncio
+import datetime
 import logging
 import os
 from pathlib import Path
@@ -10,6 +11,7 @@ from typing import Any, Literal
 
 from aiostream import pipe, stream
 from lxml import etree  # type: ignore
+import yaml
 
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
@@ -43,8 +45,38 @@ async def generate_llmstxt(deliverable: Deliverable, target_dest: Path | str, bu
         llms_dest = target_dest / llmstxt_dir
         llms_dest.mkdir(parents=True, exist_ok=True)
 
-        title = getattr(deliverable.xml, "title", deliverable.full_id)
+        d_xml = getattr(deliverable, "xml", None)
+        title = getattr(d_xml, "title", deliverable.full_id) if d_xml else deliverable.full_id
         index_lines = [f"# {title}", ""]
+
+        # Base attributes that don't change per file
+        today_date = datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%d")
+
+        # Safely extract values using getattr to satisfy Pylance and handle test mocks
+        categories = getattr(d_xml, "categories", []) if d_xml else []
+        product = getattr(d_xml, "product_name", getattr(d_xml, "product_id", "")) if d_xml else ""
+        version = getattr(d_xml, "docset_version", getattr(d_xml, "docset_path", "")) if d_xml else ""
+        language = getattr(d_xml, "lang", "") if d_xml else ""
+
+        frontmatter_base = {
+            "title": title,
+            "deliverable_id": deliverable.full_id,
+            "product": product,
+            "version": version,
+            "language": language,
+            "categories": categories,
+            "generator": "daps",
+            "build_date": today_date,
+        }
+
+        # Safely construct the base URL components (handling DummyDeliverable in tests)
+        url_product_id = getattr(d_xml, "product_id", "unknown") if d_xml else "unknown"
+        if hasattr(deliverable, "make_safe_name"):
+            url_product = deliverable.make_safe_name(url_product_id)
+        else:
+            url_product = url_product_id.replace("/", "_")
+
+        url_docset = getattr(d_xml, "docset_path", "unknown") if d_xml else "unknown"
 
         html_files = list(target_dest.rglob("*.html"))
 
@@ -56,10 +88,22 @@ async def generate_llmstxt(deliverable: Deliverable, target_dest: Path | str, bu
                 html_content = await asyncio.to_thread(html_file.read_text, encoding="utf-8")
                 md_content = await asyncio.to_thread(clean_and_convert, html_content)
 
+                # Construct the YAML Frontmatter
                 rel_path = html_file.relative_to(target_dest)
+
+                # SLES URL Pattern: https://documentation.suse.com/sles/15-SP5/html/index.html
+                base_url = f"https://documentation.suse.com/{url_product}/{url_docset}/html/{html_file.name}"
+
+                frontmatter = dict(frontmatter_base)
+                frontmatter["source_url"] = base_url
+
+                # Format as YAML
+                yaml_block = yaml.dump(frontmatter, default_flow_style=False, sort_keys=False, allow_unicode=True)
+                final_md_content = f"---\n{yaml_block}---\n\n{md_content}"
+
                 md_file = llms_dest / rel_path.with_suffix(".md")
                 md_file.parent.mkdir(parents=True, exist_ok=True)
-                await asyncio.to_thread(md_file.write_text, md_content, encoding="utf-8")
+                await asyncio.to_thread(md_file.write_text, final_md_content, encoding="utf-8")
 
                 md_rel_to_html = Path(os.path.relpath(md_file, html_file.parent)).as_posix()
                 llms_txt_rel_to_html = Path(os.path.relpath(target_dest / "llms.txt", html_file.parent)).as_posix()
