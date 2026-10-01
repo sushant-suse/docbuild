@@ -21,6 +21,7 @@ from ...utils.contextmgr import PersistentOnErrorTemporaryDirectory
 from ...utils.git import ManagedGitRepo
 from ...utils.shell import run_command
 from ...utils.sync import is_remote_path, rsync
+from ..metadata.prebuilt import read_json_ld
 from ..metadata.repos import update_repositories
 from ..metadata.runner import get_deliverable_from_doctype, get_deliverable_worker_limit
 from ..portal import parse_portal_config
@@ -82,9 +83,17 @@ async def _process_single_html_file(
         html_content = await asyncio.to_thread(html_file.read_text, encoding="utf-8")
         md_content = await asyncio.to_thread(clean_and_convert, html_content)
 
-        dynamic_title, dynamic_desc, dynamic_date = extract_json_ld_metadata(
-            html_content, static_title, today_date
-        )
+        # Use shared read_json_ld helper from prebuilt module
+        ld_data = await asyncio.to_thread(read_json_ld, html_file)
+
+        dynamic_title = ld_data.get("name", static_title) if ld_data else static_title
+        dynamic_desc = ld_data.get("description", "") if ld_data else ""
+        dynamic_date = today_date
+
+        if ld_data and "dateModified" in ld_data:
+            raw_date = ld_data["dateModified"]
+            if raw_date:
+                dynamic_date = raw_date.split("T")[0]
 
         rel_path = html_file.relative_to(target_dest)
         base_url = f"https://documentation.suse.com/{url_product}/{url_docset}/html/{html_file.name}"
