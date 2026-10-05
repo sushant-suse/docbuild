@@ -10,6 +10,7 @@ from typing import Any, Literal
 
 from aiostream import pipe, stream
 from lxml import etree  # type: ignore
+import yaml
 
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
@@ -17,6 +18,7 @@ from ...utils.contextmgr import PersistentOnErrorTemporaryDirectory
 from ...utils.git import ManagedGitRepo
 from ...utils.shell import run_command
 from ...utils.sync import is_remote_path, rsync
+from ..metadata.prebuilt import read_json_ld
 from ..metadata.repos import update_repositories
 from ..metadata.runner import get_deliverable_from_doctype, get_deliverable_worker_limit
 from ..portal import parse_portal_config
@@ -25,17 +27,81 @@ from .llms import clean_and_convert, inject_llms_links
 log = logging.getLogger(__name__)
 
 
-async def generate_llmstxt(deliverable: Deliverable, target_dest: Path | str, build_llmstxt: bool, llmstxt_dir: str) -> None:
-    """Generate LLMs text and inject markdown links into HTML files concurrently.
+async def _process_single_html_file(
+    html_file: Path,
+    target_dest: Path,
+    llms_dest: Path,
+    llmstxt_dir: str,
+    domain: str,
+    url_product: str,
+    url_docset: str,
+    static_title: str,
+    frontmatter_base: dict[str, Any],
+) -> str | None:
+    """Process a single HTML file: extract metadata, write Markdown with frontmatter, and inject links."""
+    if llmstxt_dir in html_file.parts:
+        return None
+    try:
+        # 1. Read HTML content once
+        html_content = await asyncio.to_thread(html_file.read_text, encoding="utf-8")
+        md_content = await asyncio.to_thread(clean_and_convert, html_content)
 
-    Only generates for local targets. Skipped for remote targets since file operations
-    cannot be performed on remote paths.
-    """
-    if not build_llmstxt:
-        return
+        # 2. Extract JSON-LD from already loaded string content (no double disk read)
+        ld_data = read_json_ld(html_content)
 
-    # Skip LLMS text generation for remote targets
-    if isinstance(target_dest, str):
+        dynamic_title = ld_data.get("name", static_title) if ld_data else static_title
+        dynamic_desc = ld_data.get("description", "") if ld_data else ""
+
+        rel_path = html_file.relative_to(target_dest)
+        base_url = f"{domain}/{url_product}/{url_docset}/html/{rel_path.as_posix()}"
+
+        frontmatter = {"title": dynamic_title}
+        if dynamic_desc:
+            frontmatter["description"] = dynamic_desc
+
+        frontmatter.update(frontmatter_base)
+        frontmatter["source_url"] = base_url
+
+        # Only inject build_date if dateModified is present in JSON-LD
+        if ld_data and "dateModified" in ld_data:
+            raw_date = ld_data["dateModified"]
+            if raw_date:
+                frontmatter["build_date"] = raw_date.split("T")[0]
+
+        # Use yaml.safe_dump for secure serialization
+        yaml_block = yaml.safe_dump(
+            frontmatter, default_flow_style=False, sort_keys=False, allow_unicode=True
+        )
+        final_md_content = f"---\n{yaml_block}---\n\n{md_content}"
+
+        md_file = llms_dest / rel_path.with_suffix(".md")
+        md_file.parent.mkdir(parents=True, exist_ok=True)
+        await asyncio.to_thread(md_file.write_text, final_md_content, encoding="utf-8")
+
+        md_rel_to_html = Path(os.path.relpath(md_file, html_file.parent)).as_posix()
+        llms_txt_rel_to_html = Path(os.path.relpath(target_dest / "llms.txt", html_file.parent)).as_posix()
+
+        new_html = await asyncio.to_thread(
+            inject_llms_links, html_content, md_rel_to_html, llms_txt_rel_to_html
+        )
+        await asyncio.to_thread(html_file.write_text, new_html, encoding="utf-8")
+
+        index_entry = Path(os.path.relpath(md_file, target_dest)).as_posix()
+        return f"- [{html_file.name}]({index_entry})"
+    except Exception as e:
+        log.error("Failed processing %s: %s", html_file, e)
+        return None
+
+
+async def generate_llmstxt(
+    deliverable: Deliverable,
+    target_dest: Path | str,
+    build_llmstxt: bool,
+    llmstxt_dir: str,
+    canonical_domain: str = "https://documentation.suse.com",
+) -> None:
+    """Generate LLMs text and inject markdown links into HTML files concurrently."""
+    if not build_llmstxt or isinstance(target_dest, str):
         return
 
     try:
@@ -43,37 +109,53 @@ async def generate_llmstxt(deliverable: Deliverable, target_dest: Path | str, bu
         llms_dest = target_dest / llmstxt_dir
         llms_dest.mkdir(parents=True, exist_ok=True)
 
-        title = getattr(deliverable.xml, "title", deliverable.full_id)
-        index_lines = [f"# {title}", ""]
+        d_xml = getattr(deliverable, "xml", None)
+        static_title = getattr(d_xml, "title", deliverable.full_id) if d_xml else deliverable.full_id
+        index_lines = [f"# {static_title}", ""]
+
+        categories = getattr(d_xml, "categories", []) if d_xml else []
+        product = getattr(d_xml, "product_name", getattr(d_xml, "product_id", "")) if d_xml else ""
+        version = getattr(d_xml, "docset_version", getattr(d_xml, "docset_path", "")) if d_xml else ""
+        language = str(getattr(d_xml, "lang", "")) if d_xml else ""
+
+        # Use dictionary comprehension to filter empty keys (reduces C901 complexity)
+        raw_attrs = {
+            "product": product,
+            "version": version,
+            "language": language,
+            "categories": categories,
+        }
+        frontmatter_base: dict[str, Any] = {"deliverable_id": deliverable.full_id}
+        frontmatter_base.update({k: v for k, v in raw_attrs.items() if v})
+
+        # Only inject 'generator: daps' if this is an actual DAPS build (not a prebuilt)
+        if not getattr(deliverable, "is_prebuilt", False):
+            frontmatter_base["generator"] = "daps"
+
+        url_product_id = getattr(d_xml, "product_id", "unknown") if d_xml else "unknown"
+        if hasattr(deliverable, "make_safe_name"):
+            url_product = deliverable.make_safe_name(url_product_id)
+        else:
+            url_product = url_product_id.replace("/", "_")
+
+        url_docset = getattr(d_xml, "docset_path", "unknown") if d_xml else "unknown"
+        domain = canonical_domain.rstrip("/")
 
         html_files = list(target_dest.rglob("*.html"))
 
         async def process_file(html_file: Path) -> str | None:
-            if llmstxt_dir in html_file.parts:
-                return None
-            try:
-                # Offload disk I/O and CPU-bound parsing to a background thread
-                html_content = await asyncio.to_thread(html_file.read_text, encoding="utf-8")
-                md_content = await asyncio.to_thread(clean_and_convert, html_content)
+            return await _process_single_html_file(
+                html_file=html_file,
+                target_dest=target_dest,
+                llms_dest=llms_dest,
+                llmstxt_dir=llmstxt_dir,
+                domain=domain,
+                url_product=url_product,
+                url_docset=url_docset,
+                static_title=static_title,
+                frontmatter_base=frontmatter_base,
+            )
 
-                rel_path = html_file.relative_to(target_dest)
-                md_file = llms_dest / rel_path.with_suffix(".md")
-                md_file.parent.mkdir(parents=True, exist_ok=True)
-                await asyncio.to_thread(md_file.write_text, md_content, encoding="utf-8")
-
-                md_rel_to_html = Path(os.path.relpath(md_file, html_file.parent)).as_posix()
-                llms_txt_rel_to_html = Path(os.path.relpath(target_dest / "llms.txt", html_file.parent)).as_posix()
-
-                new_html = await asyncio.to_thread(inject_llms_links, html_content, md_rel_to_html, llms_txt_rel_to_html)
-                await asyncio.to_thread(html_file.write_text, new_html, encoding="utf-8")
-
-                index_entry = Path(os.path.relpath(md_file, target_dest)).as_posix()
-                return f"- [{html_file.name}]({index_entry})"
-            except Exception as e:
-                log.error("Failed processing %s: %s", html_file, e)
-                return None
-
-        # Process HTML files concurrently using aiostream
         pipeline = stream.iterate(html_files) | pipe.map(process_file, ordered=False, task_limit=10)
 
         async with pipeline.stream() as streamer:
@@ -157,15 +239,15 @@ async def process_deliverable_build(
                 tmpl = daps_tmpls.get(fmt, "daps -d {{dcfile}} --builddir {{builddir}} {{format}}")
 
                 # Persist the output directory instead of auto-deleting it
-                deliverable_build_dir = Path(tempfile.mkdtemp(
-                    dir=tmp_build_base_dir,
-                    prefix=f"build_{safe_id}_",
-                    suffix=f"_{fmt}",
-                ))
-
-                fmt_success, _ = await build_format(
-                    deliverable, fmt, cwd, deliverable_build_dir, tmpl
+                deliverable_build_dir = Path(
+                    tempfile.mkdtemp(
+                        dir=tmp_build_base_dir,
+                        prefix=f"build_{safe_id}_",
+                        suffix=f"_{fmt}",
+                    )
                 )
+
+                fmt_success, _ = await build_format(deliverable, fmt, cwd, deliverable_build_dir, tmpl)
 
                 if not fmt_success:
                     success = False
@@ -180,9 +262,7 @@ async def process_deliverable_build(
                     # Final destination includes the format (e.g. /target/sles/15/en-us/html)
                     target_base_str = str(target_base_dir)
                     if is_remote_path(target_base_str):
-                        target_dest: str | Path = (
-                            f"{target_base_str.rstrip('/')}/{target_suffix}/{fmt}"
-                        )
+                        target_dest: str | Path = f"{target_base_str.rstrip('/')}/{target_suffix}/{fmt}"
                     else:
                         local_target = Path(target_base_dir) / target_suffix / fmt
                         local_target.mkdir(parents=True, exist_ok=True)
@@ -193,14 +273,17 @@ async def process_deliverable_build(
                     try:
                         # Sync contents of the build directory to the target destination
                         sync_result = await rsync(deliverable_build_dir, target_dest, content_only=True)
-                        if fmt == 'html':
+                        if fmt == "html":
                             await generate_llmstxt(deliverable, target_dest, build_llmstxt, llmstxt_dir)
                         if sync_result.returncode == 0:
                             log.info("Successfully synced %s for %s", fmt, deliverable.full_id)
                         else:
                             log.error(
                                 "Failed to sync %s for %s to %s:\n%s",
-                                fmt, deliverable.full_id, target_dest, sync_result.stderr
+                                fmt,
+                                deliverable.full_id,
+                                target_dest,
+                                sync_result.stderr,
                             )
                             success = False
                     except Exception as e:
@@ -226,9 +309,7 @@ async def process_doctype(
     llmstxt_dir: str = "docs",
 ) -> list[Deliverable]:
     """Process a doctype and build its deliverables using aiostream."""
-    deliverables: list[Deliverable] = await asyncio.to_thread(
-        get_deliverable_from_doctype, root, doctype
-    )
+    deliverables: list[Deliverable] = await asyncio.to_thread(get_deliverable_from_doctype, root, doctype)
 
     deliverables = [deli for deli in deliverables if deli.xml.is_dc]
     deliverables.sort()
@@ -244,7 +325,15 @@ async def process_doctype(
         try:
             return await asyncio.create_task(
                 process_deliverable_build(
-                    d, repo_dir, tmp_repo_dir, tmp_build_base_dir, target_base_dir, target_dir_dyn, daps_tmpls, build_llmstxt, llmstxt_dir
+                    d,
+                    repo_dir,
+                    tmp_repo_dir,
+                    tmp_build_base_dir,
+                    target_base_dir,
+                    target_dir_dyn,
+                    daps_tmpls,
+                    build_llmstxt,
+                    llmstxt_dir,
                 ),
                 name=f"build:{d.full_id}",
             )
@@ -289,7 +378,18 @@ async def process(
     tasks = [
         asyncio.create_task(
             process_doctype(
-                root, dt, repo_dir, tmp_repo_dir, tmp_build_base_dir, target_base_dir, target_dir_dyn, max_workers, daps_tmpls, skip_repo_update=skip_repo_update, build_llmstxt=build_llmstxt, llmstxt_dir=llmstxt_dir
+                root,
+                dt,
+                repo_dir,
+                tmp_repo_dir,
+                tmp_build_base_dir,
+                target_base_dir,
+                target_dir_dyn,
+                max_workers,
+                daps_tmpls,
+                skip_repo_update=skip_repo_update,
+                build_llmstxt=build_llmstxt,
+                llmstxt_dir=llmstxt_dir,
             ),
             name=f"build:{dt}",
         )
