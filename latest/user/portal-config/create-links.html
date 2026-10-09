@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Creating external Links &#8212; Docbuild Documentation 0.1.dev657+g95dca6c57.d20261007</title>
+    <title>Creating external Links &#8212; Docbuild Documentation 0.1.dev665+g5d1168c7d.d20261009</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="../../_static/documentation_options.js?v=6d4741fd"></script>
+    <script src="../../_static/documentation_options.js?v=9345eb65"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,7 +63,7 @@
     <link rel="prev" title="Creating Cross-References" href="create-xrefs.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.24.0" />
+  <meta name="docsearch:version" content="0.25.0" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -391,6 +391,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../config/placeholders.html">Using Placeholders</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../config/config-file.html">Using a TOML Configuration File</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../config/config-cli.html">Overwriting Config Options on the Command Line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/theme.html">Configuring the Terminal Theme</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../config/view.html">Viewing the Environment Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../config/validate.html">Validating Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../config/multi-configs.html">Using Multiple Environment Configurations</a></li>
@@ -509,11 +510,18 @@ After the <code class="docutils literal notranslate"><span class="pre">&lt;/reso
 </div>
 </li>
 <li><p>Change the link in the <code class="docutils literal notranslate"><span class="pre">&lt;url</span> <span class="pre">href=&quot;...&quot;&gt;</span></code> element.</p>
-<p>Depending on the target format, you may need to change the <code class="docutils literal notranslate"><span class="pre">format</span></code>
-attribute too. Currently, only <code class="docutils literal notranslate"><span class="pre">html</span></code> and <code class="docutils literal notranslate"><span class="pre">pdf</span></code> are supported.</p>
+<p>Depending on the target format, you can set the <code class="docutils literal notranslate"><span class="pre">format</span></code>
+attribute. The allowed formats are <code class="docutils literal notranslate"><span class="pre">html</span></code>, <code class="docutils literal notranslate"><span class="pre">single-html</span></code>, <code class="docutils literal notranslate"><span class="pre">pdf</span></code>,
+<code class="docutils literal notranslate"><span class="pre">epub</span></code>, <code class="docutils literal notranslate"><span class="pre">zip</span></code>, <code class="docutils literal notranslate"><span class="pre">tar</span></code>, and <code class="docutils literal notranslate"><span class="pre">other</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">&lt;link&gt;</span></code> element also accepts optional attributes:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">category</span></code>: assign a category ID to group the link under a specific section.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gated</span></code>: set to <code class="docutils literal notranslate"><span class="pre">true</span></code> if the target resource requires authentication.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">titleformat</span></code>: specify how titles are displayed.</p></li>
+</ul>
 </li>
-<li><p>Add your descripiton in the <code class="docutils literal notranslate"><span class="pre">&lt;desc&gt;</span></code> element.</p>
-<p>The child elements are limited set of HTML.</p>
+<li><p>Add your description in the <code class="docutils literal notranslate"><span class="pre">&lt;desc&gt;</span></code> element.</p>
+<p>The child elements are a limited set of HTML.</p>
 </li>
 <li><p>Optionally, add additional translations for the link.</p>
 <p>Use an <code class="docutils literal notranslate"><span class="pre">&lt;desc</span> <span class="pre">lang=&quot;...&quot;&gt;</span></code> element for each language. Change the

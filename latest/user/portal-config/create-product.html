@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Creating a Product &#8212; Docbuild Documentation 0.1.dev657+g95dca6c57.d20261007</title>
+    <title>Creating a Product &#8212; Docbuild Documentation 0.1.dev665+g5d1168c7d.d20261009</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="../../_static/documentation_options.js?v=6d4741fd"></script>
+    <script src="../../_static/documentation_options.js?v=9345eb65"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,7 +63,7 @@
     <link rel="prev" title="Creating a Portal Configuration" href="create-portal.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.24.0" />
+  <meta name="docsearch:version" content="0.25.0" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -391,6 +391,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../config/placeholders.html">Using Placeholders</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../config/config-file.html">Using a TOML Configuration File</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../config/config-cli.html">Overwriting Config Options on the Command Line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/theme.html">Configuring the Terminal Theme</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../config/view.html">Viewing the Environment Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../config/validate.html">Validating Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../config/multi-configs.html">Using Multiple Environment Configurations</a></li>
@@ -504,7 +505,7 @@ $<span class="w"> </span>touch<span class="w"> </span>config.d/nas/nas.xml
 <li><p>Edit the product configuration file and add the following content:</p>
 <div class="literal-block-wrapper docutils container" id="nas-xml">
 <div class="code-block-caption"><span class="caption-text">Example <code class="file docutils literal notranslate"><span class="pre">nas.xml</span></code> Configuration</span><a class="headerlink" href="#nas-xml" title="Link to this code">#</a></div>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;product</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;nas&quot;</span><span class="w"> </span><span class="na">family=</span><span class="s">&quot;f.linux&quot;</span><span class="w"> </span><span class="na">series=</span><span class="s">&quot;s.pas&quot;</span><span class="w"> </span><span class="na">rank=</span><span class="s">&quot;...&quot;</span><span class="nt">&gt;</span>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;product</span><span class="w"> </span><span class="na">xml:id=</span><span class="s">&quot;nas&quot;</span><span class="w"> </span><span class="na">family=</span><span class="s">&quot;f.linux&quot;</span><span class="w"> </span><span class="na">series=</span><span class="s">&quot;s.pas&quot;</span><span class="w"> </span><span class="na">rank=</span><span class="s">&quot;10&quot;</span><span class="nt">&gt;</span>
 <span class="w">   </span><span class="nt">&lt;name&gt;</span>Network<span class="w"> </span>Attached<span class="w"> </span>Storage<span class="nt">&lt;/name&gt;</span>
 <span class="w">   </span><span class="nt">&lt;acronym&gt;</span>nas<span class="nt">&lt;/acronym&gt;</span>
 <span class="w">   </span><span class="nt">&lt;maintainers&gt;</span>

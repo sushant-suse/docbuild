@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Creating a Portal Configuration &#8212; Docbuild Documentation 0.1.dev657+g95dca6c57.d20261007</title>
+    <title>Creating a Portal Configuration &#8212; Docbuild Documentation 0.1.dev665+g5d1168c7d.d20261009</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="../../_static/documentation_options.js?v=6d4741fd"></script>
+    <script src="../../_static/documentation_options.js?v=9345eb65"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,7 +63,7 @@
     <link rel="prev" title="Building Blocks" href="building-blocks.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.24.0" />
+  <meta name="docsearch:version" content="0.25.0" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -391,6 +391,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../config/placeholders.html">Using Placeholders</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../config/config-file.html">Using a TOML Configuration File</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../config/config-cli.html">Overwriting Config Options on the Command Line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/theme.html">Configuring the Terminal Theme</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../config/view.html">Viewing the Environment Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../config/validate.html">Validating Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../config/multi-configs.html">Using Multiple Environment Configurations</a></li>
@@ -512,11 +513,18 @@ and add the following content:</p>
 <code class="file docutils literal notranslate"><span class="pre">global_productfamilies.xml</span></code>, and <code class="file docutils literal notranslate"><span class="pre">global_series.xml</span></code>
 with the appropriate content for your portal.
 See section <a class="reference internal" href="building-blocks.html#global-settings"><span class="std std-ref">Global Settings</span></a> for details on the expected structure.</p></li>
-<li><p>Create a directory for the the first product (in this example, it’s
+<li><p>Create a directory for the first product (in this example, it’s
 <code class="file docutils literal notranslate"><span class="pre">productA</span></code>) and add a product definition file with the name
 <code class="file docutils literal notranslate"><span class="pre">productA/productA.xml</span></code>.
 See section <a class="reference internal" href="building-blocks.html#product-definition"><span class="std std-ref">Product Definition</span></a> for details on the expected structure.</p></li>
 </ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When configuration files are split with XInclude, <strong class="command">docbuild portal validate</strong>
+automatically resolves all inclusions before validating against the schema.
+If validating manually with <strong class="command">jing</strong>, resolve the XIncludes first using
+<strong class="command">xmllint --xinclude</strong>.</p>
+</div>
 </section>
 
 

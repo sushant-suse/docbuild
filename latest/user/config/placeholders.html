@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Using Placeholders &#8212; Docbuild Documentation 0.1.dev657+g95dca6c57.d20261007</title>
+    <title>Using Placeholders &#8212; Docbuild Documentation 0.1.dev665+g5d1168c7d.d20261009</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="../../_static/documentation_options.js?v=6d4741fd"></script>
+    <script src="../../_static/documentation_options.js?v=9345eb65"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,7 +63,7 @@
     <link rel="prev" title="Key Naming Conventions" href="naming-conventions.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.24.0" />
+  <meta name="docsearch:version" content="0.25.0" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -391,6 +391,7 @@
 <li class="toctree-l2 current active"><a aria-current="page" class="current reference internal" href="#">Using Placeholders</a></li>
 <li class="toctree-l2"><a class="reference internal" href="config-file.html">Using a TOML Configuration File</a></li>
 <li class="toctree-l2"><a class="reference internal" href="config-cli.html">Overwriting Config Options on the Command Line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="theme.html">Configuring the Terminal Theme</a></li>
 <li class="toctree-l2"><a class="reference internal" href="view.html">Viewing the Environment Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="validate.html">Validating Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="multi-configs.html">Using Multiple Environment Configurations</a></li>
@@ -527,6 +528,10 @@ key <code class="docutils literal notranslate"><span class="pre">name</span></co
 <p>If you have nested sections, use dot notation to reference the keys (for example, <code class="docutils literal notranslate"><span class="pre">section.subsection.key</span></code>).</p>
 </li>
 </ul>
+<section id="debugging-placeholders">
+<h2>Debugging Placeholders<a class="headerlink" href="#debugging-placeholders" title="Link to this heading">#</a></h2>
+<p>To inspect the configuration with placeholders left unresolved, use the <code class="docutils literal notranslate"><span class="pre">-U</span></code> or <code class="docutils literal notranslate"><span class="pre">--unresolved</span></code> flag with <strong class="command">docbuild config list</strong>. See <a class="reference internal" href="view.html#config-viewing-unresolved-placeholders"><span class="std std-ref">Viewing Unresolved Placeholders</span></a>.</p>
+</section>
 </section>
 
 
@@ -567,6 +572,18 @@ key <code class="docutils literal notranslate"><span class="pre">name</span></co
                 <dialog id="pst-secondary-sidebar-modal"></dialog>
                 <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#debugging-placeholders">Debugging Placeholders</a></li>
+</ul>
+  </nav></div>
 
   <div class="sidebar-secondary-item">
 
