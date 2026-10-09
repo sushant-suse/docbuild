@@ -130,3 +130,32 @@ def test_get_deliverable_from_doctype(xmlconfig, doctype_str, expected_count, ex
         assert {d.docsuite for d in deliverables} == expected_ids
 
 
+def test_get_deliverable_empty_locale_inherits_en_blueprint():
+    """Verify empty locales inherit synthetic xrefs pointing to English deliverables."""
+    xml_content = """
+    <portal xmlns:xml="http://www.w3.org/XML/1998/namespace">
+      <product xml:id="sles">
+        <name>SUSE Linux Enterprise Server</name>
+        <docset xml:id="sles.15-sp6" path="15-SP6" lifecycle="supported">
+          <resources>
+            <locale lang="en-us">
+              <branch>main</branch>
+              <deliverable xml:id="sec-guide"><dc file="DC-sec"/></deliverable>
+            </locale>
+            <locale lang="de-de">
+              <branch>main</branch>
+            </locale>
+          </resources>
+        </docset>
+      </product>
+    </portal>
+    """
+    root = etree.ElementTree(etree.fromstring(xml_content))
+    doctype = Doctype.from_str("sles/15-SP6/de-de")
+
+    deliverables = get_deliverable_from_doctype(root, doctype)
+
+    assert len(deliverables) == 1
+    d = deliverables[0]
+    assert d.xml.is_xref is True
+    assert d.xml.target_id == "sec-guide"
