@@ -151,7 +151,7 @@ Key naming convention:
     :Type: :code:`str`
     :Default: ``{base_cache_dir}/{general.name}``
 
-    The server-specific cache directory, derived from base_cache_dir and environment name.
+    The server-specific cache directory, derived from base_cache_dir and server name.
 
 .. _envtoml-paths-meta-cache-dir:
 
@@ -276,9 +276,10 @@ Defines target paths
 
 ``target_base_dir``
     :Type: :code:`str`
-    :Default: ``doc@10.100.60.1:/srv/docs``
+    :Default: ``~/Documents/docbuild/target``
 
-    The base path for the deployment target, including server and directory.
+    The LOCAL base directory for built documentation.
+    Remote destinations are configured in the [remote] section instead.
 
 .. _envtoml-paths-target-target-dir-dyn:
 
@@ -286,7 +287,7 @@ Defines target paths
     :Type: :code:`str`
     :Default: ``{{product}}``
 
-    A dynamic template for the final target directory on the remote server.
+    A dynamic template for the subdirectory under target_base_dir.
 
 .. _envtoml-paths-target-backup-dir:
 
@@ -295,6 +296,33 @@ Defines target paths
     :Default: ``~/.local/state/docbuild/default-env/backup``
 
     The directory where backups of external builds are stored.
+
+.. _envtoml-section-remote:
+
+[remote]
+--------
+
+The remote destination where built documentation is published.
+
+This section is optional: there is no remote destination unless it is set.
+When set, both keys below must be given together.
+
+.. _envtoml-remote-server:
+
+``server``
+    :Type: :code:`str`
+    :Default: ``n/a``
+
+    The SSH server as "user@host" or "host" (an IP address or DNS name).
+
+.. _envtoml-remote-path:
+
+``path``
+    :Type: :code:`str`
+    :Default: ``n/a``
+
+    The absolute directory on the remote server where documentation is published.
+    The path must be absolute, for example: "/srv/docs".
 
 .. _envtoml-section-build:
 

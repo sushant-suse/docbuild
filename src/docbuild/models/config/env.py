@@ -86,20 +86,27 @@ runtime during the build process.
             "common": {},
             "html": {},
             "pdf": {}
-        }
+        },
+        // Remote destination for publishing built documentation.
+        // Both keys are unset by default, so publish is disabled unless
+        // [remote] is configured. Corresponds to the EnvRemote model.
+        "remote": {"server": null, "path": null}
     }
 """
 
 from copy import deepcopy
 from pathlib import Path
-from typing import Annotated, Any, Self
+import re
+from typing import Annotated, Any, Final, Self
 
 from pydantic import (
     BaseModel,
     ConfigDict,
     Field,
     HttpUrl,
+    IPvAnyAddress,
     field_serializer,
+    field_validator,
     model_validator,
 )
 
@@ -116,12 +123,14 @@ from ...constants import (
     CONFIG_HOME,
     DATA_HOME,
     DEFAULT_ENV_NAME,
+    HOSTNAME_REGEX,
     RUNTIME_DIR,
+    SSH_USERNAME_REGEX,
     STATE_HOME,
 )
 from ..envroles import EnvRole
 from ..language import LanguageCode
-from ..path import WritablePath
+from ..path import AbsolutePath, WritablePath
 
 # --- Custom Types and Utilities ---
 
@@ -135,6 +144,38 @@ DomainName = Annotated[
         examples=["example.com", "sub.domain.net"],
     ),
 ]
+
+
+# Patterns identifying rsync-style remote destinations in a path string.
+REMOTE_URL_PATTERNS: Final[tuple[re.Pattern[str], ...]] = (
+    # Standard URI scheme (e.g., "https://", "git://", "ssh://")
+    re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*://"),
+    # SCP-style remote location (e.g., "user@host:path/to/repo")
+    re.compile(r"^[^/\s@:]+@[^/\s:]+:"),
+    # Rsync daemon module access (e.g., "host::module/path")
+    re.compile(r"^[^/\s@:]+::"),
+    # Short SSH remote path without user (e.g., "host:/path/to/repo")
+    re.compile(r"^[^/\s@:]+:/"),
+)
+
+
+def target_is_remote(value: str) -> bool:
+    """Check whether *value* looks like an rsync-style remote destination.
+
+    A value is remote if it matches one of the following forms:
+
+    * ``scheme://`` (for example ``rsync://host/module`` or ``ssh://host/x``)
+    * ``user@host:`` (for example ``user@host:/srv/docs``)
+    * ``host::`` (for example ``host::module``)
+    * ``host:/`` (for example ``host:/srv/docs``)
+
+    Everything else is treated as local, including relative paths,
+    ``my:dir`` and ``a:b/c`` (no drive-letter special cases are needed).
+
+    :param value: The path string to inspect.
+    :return: True if the value looks like a remote destination; False otherwise.
+    """
+    return any(pattern.match(value) for pattern in REMOTE_URL_PATTERNS)
 
 
 # --- Build Sub-Models (To allow extra sections in env.toml) ---
@@ -386,23 +427,29 @@ class EnvTargetPaths(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    # SPLIT: static base directory or remote destination
+    # SPLIT: static local base directory
     target_base_dir: str = Field(
         default=f"{Path.home()}/Documents/{APP_NAME}/target",
-        title="Target Server Base Directory",
-        description="The static remote destination or base path for built documentation.",
-        examples=["doc@10.100.100.100:/srv/docs"],
+        title="Target Base Directory",
+        description=(
+            "The local base directory where build writes its deliverables. "
+            "The remote destination is configured in the [remote] section."
+        ),
+        examples=["~/Documents/docbuild/target"],
     )
-    "The base destination for final built documentation."
+    "The local base directory where build writes its deliverables."
 
     # SPLIT: dynamic suffix
     target_dir_dyn: str = Field(
         default="{{lang}}/{{product}}/{{docset}}",
         title="Target Directory Suffix",
-        description="The dynamic suffix of the remote path containing runtime placeholders.",
+        description=(
+            "The dynamic suffix of the path under the local target_base_dir "
+            "where build writes its deliverables."
+        ),
         examples=["{{lang}}/{{product}}/{{docset}}"],
     )
-    "Dynamic suffix for final remote destination."
+    "Dynamic suffix for the target directory under target_base_dir."
 
     backup_dir: Path = Field(
         default=f"{STATE_HOME}/{{general.name}}/backup",
@@ -411,6 +458,26 @@ class EnvTargetPaths(BaseModel):
         examples=["/var/lib/docbuild/backups"],
     )
     "Local directory for storing build backups before deployment."
+
+    @field_validator("target_base_dir")
+    @classmethod
+    def _reject_remote_target_base_dir(cls, value: str) -> str:
+        """Reject remote-looking destination strings.
+
+        Remote destinations are configured in the ``[remote]`` section instead
+        of as rsync-style ``target_base_dir`` values.
+
+        :param value: The configured ``target_base_dir`` value.
+        :return: The unchanged value.
+        :raises ValueError: If the value looks like a remote path.
+        """
+        if target_is_remote(value):
+            raise ValueError(
+                f"target_base_dir must be a local directory, but {value!r} looks like "
+                "a remote destination. Migrate the remote destination to the [remote] "
+                "section and keep target_base_dir local."
+            )
+        return value
 
 
 class EnvPaths(BaseModel):
@@ -585,6 +652,132 @@ class EnvXslt(BaseModel):
     pdf: dict[str, Any] = Field(default_factory=dict, title="PDF-specific XSLT Parameters")
 
 
+class SSHEndpoint(BaseModel):
+    """SSH connection details for the host that receives published docs."""
+
+    # HOSTNAME_REGEX uses a look-ahead assertion which the Rust regex engine
+    # used by pydantic-core cannot compile; the python-re engine is required.
+    model_config = ConfigDict(extra="forbid", frozen=True, regex_engine="python-re")
+
+    user: Annotated[
+        str | None,
+        Field(
+            default=None,
+            pattern=SSH_USERNAME_REGEX.pattern,
+            description="SSH login name. If unset, the ssh config or current user is used.",
+            examples=["doc"],
+        ),
+    ] = None
+    host: Annotated[
+        IPvAnyAddress | Annotated[str, Field(pattern=HOSTNAME_REGEX.pattern)],
+        Field(
+            description="IP address or DNS name of the server.",
+            examples=["192.0.2.10", "docs.example.com"],
+        ),
+    ]
+
+    @model_validator(mode="before")
+    @classmethod
+    def _split_user_host(cls, data: object) -> object:
+        """Parse the ``user@host`` string shorthand before field validation.
+
+        A single string is split on the last ``@``: the part before is the
+        user, the part after is the host. Without ``@`` the whole string is
+        the host. Dictionaries and SSHEndpoint instances pass through
+        unchanged. Port syntax (``host:port``) is not supported.
+
+        :param data: The raw value from the configuration.
+        :return: A dictionary with ``user``/``host`` keys for string input,
+            or the unchanged input otherwise.
+        :raises ValueError: If the string is empty or has surrounding
+            whitespace (both "do not guess" cases that must be rejected).
+        """
+        if not isinstance(data, str):
+            return data
+        user: str | None = None
+        host = data
+        if "@" in data:
+            user, host = data.rsplit("@", 1)
+            if user == "":
+                raise ValueError(f"invalid SSH endpoint {data!r}: empty user")
+        if not host or host != host.strip():
+            raise ValueError(
+                f"invalid SSH endpoint {data!r}: "
+                "the host must be non-empty and must not have surrounding whitespace"
+            )
+        return {"user": user, "host": host}
+
+    @model_validator(mode="after")
+    def _reject_control_characters(self) -> Self:
+        r"""Reject whitespace and control characters in user and host.
+
+        The python-re engine matches ``$`` before a trailing newline, so a
+        pattern alone would accept ``user``/``host`` values that carry a
+        trailing ``\\n``. This validator rejects any whitespace or control
+        character (space, tab, ``\\n``, ``\\r``, ``\\x00``-``\\x1f``, ``\\x7f``)
+        in the string fields. ``host`` may be an IP address object; it is
+        converted to its string form before the check.
+        """
+        for name, value in (("user", self.user), ("host", str(self.host))):
+            if value is not None and any(
+                ord(char) < 0x20 or ord(char) == 0x7F or char.isspace()
+                for char in value
+            ):
+                raise ValueError(
+                    f"{name} must not contain whitespace or control characters"
+                )
+        return self
+
+    def __str__(self) -> str:
+        """Return the human-readable string representation (e.g., 'user@host').
+
+        :return: Formatted SSH target string.
+        """
+        if self.user:
+            return f"{self.user}@{self.host}"
+        return str(self.host)
+
+
+class EnvRemote(BaseModel):
+    """Defines the remote destination for publishing built documentation."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    server: SSHEndpoint | None = Field(
+        default=None,
+        title="Remote Server",
+        description=(
+            "The remote server that receives the built documentation. "
+            "The default is 'no remote' (None); publish is disabled."
+        ),
+        examples=["doc@example.com"],
+    )
+    "The SSH server endpoint (``user@host`` or ``host``) used by publish, or None."
+
+    path: AbsolutePath | None = Field(
+        default=None,
+        title="Remote Directory",
+        description=(
+            "The absolute directory on the remote server where documentation "
+            "is published. The default is 'no remote' (None); publish is disabled."
+        ),
+        examples=["/srv/docs"],
+    )
+    "The absolute remote directory used by publish, or None."
+
+    @model_validator(mode="after")
+    def _both_or_neither(self) -> Self:
+        """Require both 'server' and 'path', or neither.
+
+        :return: The unchanged model instance.
+        :raises ValueError: If exactly one of ``server`` or ``path`` is set.
+        """
+        if (self.server is None) != (self.path is None):
+            msg = "The [remote] section needs both 'server' and 'path', or neither."
+            raise ValueError(msg)
+        return self
+
+
 class EnvConfig(BaseModel):
     """Root model for the environment configuration (env.toml)."""
 
@@ -618,6 +811,13 @@ class EnvConfig(BaseModel):
         description="Custom XSLT parameters passed directly to DAPS.",
     )
     "XSLT processing parameters."
+
+    remote: EnvRemote = Field(
+        default_factory=EnvRemote,
+        title="Remote Configuration",
+        description="Settings for the remote destination used by publish.",
+    )
+    "Remote publish destination."
 
     # --- Placeholder Resolution ---
     @model_validator(mode="before")
