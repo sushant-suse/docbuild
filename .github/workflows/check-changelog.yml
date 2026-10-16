@@ -52,7 +52,7 @@ jobs:
             ### ⚠️ Missing changelog fragment
             No newsfragment was found in `changelog.d/`.
             Please add one, or add the `skip-changelog` label if no entry is needed.
-            See the setcion [Adding News Fragments](https://opensuse.github.io/docbuild/latest/developer/add-newsfragments.html) for details.
+            See the section [Adding News Fragments](https://opensuse.github.io/docbuild/latest/developer/add-newsfragments.html) for details.
 
       - name: Remove changelog comment
         if: steps.fragments.outputs.missing == 'false'
