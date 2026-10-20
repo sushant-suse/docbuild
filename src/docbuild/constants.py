@@ -1,6 +1,7 @@
 """Constants for the CLI application."""
 
 from dataclasses import dataclass
+import os
 from pathlib import Path
 import re
 from typing import Final
@@ -90,8 +91,29 @@ SYSTEM_CONFIG_DIR: Path = Path("/etc") / APP_NAME
 """The system-wide configuration directory, typically located
 at /etc/docbuild."""
 
+
+def xdg_site_config_dirs(appname: str) -> tuple[Path, ...]:
+    """Return system config directories from :envvar:`XDG_CONFIG_DIRS`.
+
+    Directories keep the order defined by the XDG Base Directory Specification
+    (the first entry has the highest priority) and duplicates are removed.
+
+    :param appname: Name of the application.
+    :returns: Tuple of directory paths ordered highest-to-lowest priority.
+    """
+    raw = platformdirs.site_config_dir(appname, multipath=True).split(os.pathsep)
+    return tuple(Path(p) for p in dict.fromkeys(raw) if p)
+
+
+XDG_CONFIG_DIRS_PATHS: tuple[Path, ...] = xdg_site_config_dirs(APP_NAME)
+"""The system-wide configuration directories from :envvar:`XDG_CONFIG_DIRS`,
+highest priority first (default: :file:`/etc/xdg/docbuild` on Linux). Together,
+they form the lowest-priority system-wide location."""
+
 CONFIG_PATHS: tuple[Path, ...] = (
-    # The system-wide config path:
+    # XDG system dirs (unpacked lowest-priority first, so first XDG dir wins among XDG):
+    *reversed(XDG_CONFIG_DIRS_PATHS),
+    # The fixed system-wide config path (overrides the XDG default(s)):
     SYSTEM_CONFIG_DIR,
     # The user config path:
     CONFIG_HOME,
