@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.utils.sync.RsyncOptions &#8212; Docbuild Documentation 0.1.dev694+gccfb4a855.d20261020</title>
+    <title>docbuild.utils.sync.RsyncOptions &#8212; Docbuild Documentation 0.1.dev703+g0c5ee58e3.d20261022</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../../../../_static/documentation_options.js?v=69ac7a62"></script>
+    <script src="../../../../../_static/documentation_options.js?v=855c386c"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -392,7 +392,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../../__main__/index.html">docbuild.__main__</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../cli/index.html">docbuild.cli</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../cli/callback/index.html">docbuild.cli.callback</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cli/cmd_build/index.html">docbuild.cli.cmd_build</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../cli/cmd_build/index.html">docbuild.cli.cmd_build</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_build/cmd_run/index.html">docbuild.cli.cmd_build.cmd_run</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3"><a class="reference internal" href="../../cli/cmd_c14n/index.html">docbuild.cli.cmd_c14n</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../cli/cmd_cache/index.html">docbuild.cli.cmd_cache</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../cli/cmd_cli/index.html">docbuild.cli.cmd_cli</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -421,6 +424,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_repo/cmd_list/index.html">docbuild.cli.cmd_repo.cmd_list</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli/completion/index.html">docbuild.cli.completion</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../cli/console/index.html">docbuild.cli.console</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../cli/context/index.html">docbuild.cli.context</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../cli/context/DocBuildContext.html">docbuild.cli.context.DocBuildContext</a></li>
@@ -694,6 +698,15 @@
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="docbuild.utils.sync.RsyncOptions.files_from">
+<span class="sig-name descname"><span class="pre">files_from</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">pathlib.Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#docbuild.utils.sync.RsyncOptions.files_from" title="Link to this definition">#</a></dt>
+<dd><p>Path (or string) to a file that lists what to transfer (<code class="docutils literal notranslate"><span class="pre">--files-from</span></code>).</p>
+<p>Each path in the file is relative to the source path. In archive mode, <code class="docutils literal notranslate"><span class="pre">-r</span></code> is
+also passed, because rsync turns off the recursion implied by <code class="docutils literal notranslate"><span class="pre">-a</span></code> when a file
+list is used. The file is not read or validated by <code class="docutils literal notranslate"><span class="pre">rsync()</span></code>.</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="docbuild.utils.sync.RsyncOptions.extra_args">
 <span class="sig-name descname"><span class="pre">extra_args</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></span><a class="headerlink" href="#docbuild.utils.sync.RsyncOptions.extra_args" title="Link to this definition">#</a></dt>
 <dd><p>Additional arbitrary rsync command-line arguments not modeled as explicit fields.
@@ -770,6 +783,7 @@ Enables use of 100+ unsupported rsync options (e.g., [”–exclude=*.tmp”, �
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.sync.RsyncOptions.verbose"><code class="docutils literal notranslate"><span class="pre">docbuild.utils.sync.RsyncOptions.verbose</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.sync.RsyncOptions.partial"><code class="docutils literal notranslate"><span class="pre">docbuild.utils.sync.RsyncOptions.partial</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.sync.RsyncOptions.exclude"><code class="docutils literal notranslate"><span class="pre">docbuild.utils.sync.RsyncOptions.exclude</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.sync.RsyncOptions.files_from"><code class="docutils literal notranslate"><span class="pre">docbuild.utils.sync.RsyncOptions.files_from</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.sync.RsyncOptions.extra_args"><code class="docutils literal notranslate"><span class="pre">docbuild.utils.sync.RsyncOptions.extra_args</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.sync.RsyncOptions.to_args"><code class="docutils literal notranslate"><span class="pre">docbuild.utils.sync.RsyncOptions.to_args()</span></code></a></li>
 </ul>
