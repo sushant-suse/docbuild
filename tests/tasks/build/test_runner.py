@@ -14,7 +14,7 @@ from docbuild.tasks.build.runner import (
     build_format,
     generate_llmstxt,
     process,
-    process_deliverable_build,
+    process_deliverable_group,
     process_doctype,
 )
 
@@ -60,10 +60,10 @@ async def test_build_format_failure(tmp_path: Path) -> None:
 
 @pytest.mark.asyncio
 @patch("docbuild.tasks.build.runner.ManagedGitRepo", autospec=True)
-async def test_process_deliverable_build_success(
+async def test_process_deliverable_group_success(
     mock_mgr_class: Mock, tmp_path: Path
 ) -> None:
-    """Test successful build execution for enabled formats and rsync."""
+    """Test successful build execution for a group of deliverables and rsync."""
     mock_deliverable = Mock(
         spec=Deliverable,
         full_id="sles/15:TEST",
@@ -91,8 +91,10 @@ async def test_process_deliverable_build_success(
         mock_run.return_value = Mock(returncode=0, stdout="Build OK", stderr="")
         mock_rsync.return_value = Mock(returncode=0, stdout="Sync OK", stderr="")
 
-        success, deliverable = await process_deliverable_build(
-            mock_deliverable,
+        group_key = ("https://git.test", "main")
+        failed = await process_deliverable_group(
+            group_key,
+            [mock_deliverable],
             tmp_path,
             tmp_path,
             tmp_path,
@@ -101,8 +103,7 @@ async def test_process_deliverable_build_success(
             daps_tmpls
         )
 
-        assert success is True
-        assert deliverable == mock_deliverable
+        assert failed == []
         mock_mgr_instance.create_worktree.assert_called_once()
         mock_run.assert_called_once()
         mock_rsync.assert_called_once()
@@ -130,18 +131,20 @@ async def test_process_doctype_build(
         spec=Deliverable,
         full_id="sles/15:A",
         subdir="",
+        branch="main",
         format={"html": True},
     )
+    d1.git.url = "https://git.test"
     d1.xml.is_dc = True
 
     daps_tmpls = {"html": "daps html"}
 
     with (
         patch.object(build_runner, "get_deliverable_from_doctype", return_value=[d1]),
-        patch.object(build_runner, "process_deliverable_build", new_callable=AsyncMock) as mock_build,
+        patch.object(build_runner, "process_deliverable_group", new_callable=AsyncMock) as mock_group_build,
         patch.object(build_runner, "update_repositories", new_callable=AsyncMock) as mock_update,
     ):
-        mock_build.return_value = (True, d1)
+        mock_group_build.return_value = []
         failed = await process_doctype(
             root=empty_xml_root,
             doctype=doctype,
@@ -156,7 +159,7 @@ async def test_process_doctype_build(
         )
 
         assert failed == []
-        mock_build.assert_called_once()
+        mock_group_build.assert_called_once()
         mock_update.assert_called_once()
 
 
