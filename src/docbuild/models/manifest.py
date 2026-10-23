@@ -134,10 +134,12 @@ class Category(BaseModel):
         Category._current_rank += 1
         return Category._current_rank
 
-    id: str = Field(serialization_alias="categoryId")
+    id: str = Field(alias="categoryId")
     # Automatically called. Depends on the order of the XML element.
     rank: int = Field(default_factory=_increment_rank)
     translations: list[CategoryTranslation] = Field(default_factory=list)
+
+    model_config = ConfigDict(populate_by_name=True)
 
     @classmethod
     def reset_rank(cls: type[Self]) -> None:
@@ -304,6 +306,12 @@ class SingleDocument(BaseModel):
     datemodified: date | None = Field(default=None, alias="dateModified")
 
     model_config = ConfigDict(populate_by_name=True)
+
+    @field_validator("datemodified", mode="before")
+    @classmethod
+    def normalize_empty_date(cls, value: object) -> object:
+        """Treat the serialized empty date as an absent date."""
+        return None if value == "" else value
 
     @field_validator("title")
     @classmethod
