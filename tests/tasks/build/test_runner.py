@@ -5,12 +5,15 @@ from unittest.mock import AsyncMock, Mock, patch
 
 from lxml import etree  # type: ignore
 import pytest
+import yaml
 
+from docbuild.cli.defaults import DEFAULT_ENV_CONFIG
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.doctype import Doctype
 import docbuild.tasks.build.runner as build_runner
 from docbuild.tasks.build.runner import (
     build_format,
+    generate_llmstxt,
     process,
     process_doctype,
     process_single_deliverable,
@@ -58,6 +61,42 @@ async def test_build_format_failure(tmp_path: Path) -> None:
 
 
 @pytest.mark.asyncio
+async def test_build_format_default_template_has_no_runtime_braces() -> None:
+    """Verify build templates receive runtime values."""
+    mock_d = Mock(spec=Deliverable, full_id="test:DC")
+    mock_d.xml.dcfile = "DC-test"
+    cwd = Path(".")
+    build_dir = Path("build")
+    template = str(DEFAULT_ENV_CONFIG["build"]["daps"]["html"]).replace(
+        "{build.daps.command}", "daps"
+    )
+
+    with patch.object(build_runner, "run_command", new_callable=AsyncMock) as mock_run:
+        mock_run.return_value = Mock(returncode=0, stdout="Build OK", stderr="")
+
+        success, _ = await build_format(
+            mock_d,
+            "html",
+            cwd,
+            build_dir,
+            template,
+        )
+
+    assert success is True
+    mock_run.assert_awaited_once_with(
+        [
+            "daps",
+            "--builddir",
+            "build",
+            "-d",
+            "DC-test",
+            "html",
+        ],
+        cwd=cwd,
+    )
+
+
+@pytest.mark.asyncio
 async def test_process_single_deliverable_success(tmp_path: Path) -> None:
     """Test successful build execution and rsync for a single deliverable."""
     mock_deliverable = Mock(
@@ -87,7 +126,7 @@ async def test_process_single_deliverable_success(tmp_path: Path) -> None:
             str(tmp_path),
             tmp_path,
             tmp_path / "target",
-            "{product}/{docset}/{lang}",
+            "{{product}}/{{docset}}/{{lang}}",
             daps_tmpls,
             True,
             "docs",
@@ -198,6 +237,95 @@ async def test_process_entry_point(tmp_path: Path) -> None:
         assert result == 1
 
 
+@pytest.mark.asyncio
 async def test_generate_llmstxt_yaml_frontmatter_extraction(tmp_path: Path) -> None:
-    # (Tests omitted for brevity since they are identical to before)
-    pass
+    """Test YAML frontmatter extraction, relative path URL building, and date handling."""
+    target_dir = tmp_path / "target"
+    target_dir.mkdir()
+
+    # Create nested HTML file to verify rel_path.as_posix() in URL
+    html_file = target_dir / "books" / "chapter.html"
+    html_file.parent.mkdir(parents=True)
+
+    html_content = """<!DOCTYPE html>
+    <html>
+    <head>
+        <script type="application/ld+json">
+        {
+            "name": "Dynamic Chapter Title",
+            "description": "Dynamic chapter description.",
+            "dateModified": "2026-02-15T12:00:00Z"
+        }
+        </script>
+    </head>
+    <body><h1>Test Content</h1><p>Some text</p></body>
+    </html>"""
+    html_file.write_text(html_content, encoding="utf-8")
+
+    class DummyDeliverable:
+        full_id = "test_deliverable"
+        xml = None
+
+    await generate_llmstxt(
+        deliverable=DummyDeliverable(),
+        target_dest=target_dir,
+        build_llmstxt=True,
+        llmstxt_dir="docs",
+        canonical_domain="https://doc.example.com",
+    )
+
+    md_file = target_dir / "docs" / "books" / "chapter.md"
+    assert md_file.exists()
+
+    content = md_file.read_text(encoding="utf-8")
+    assert content.startswith("---")
+
+    frontmatter_raw = content.split("---")[1]
+    data = yaml.safe_load(frontmatter_raw)
+
+    assert data["title"] == "Dynamic Chapter Title"
+    assert data["description"] == "Dynamic chapter description."
+    assert data["source_url"] == "https://doc.example.com/unknown/unknown/html/books/chapter.html"
+    assert data["build_date"] == "2026-02-15"
+
+
+@pytest.mark.asyncio
+async def test_generate_llmstxt_frontmatter_omits_missing_date(tmp_path: Path) -> None:
+    """Test that build_date is omitted from frontmatter if dateModified is absent."""
+    target_dir = tmp_path / "target"
+    target_dir.mkdir()
+
+    html_file = target_dir / "index.html"
+    html_content = """<!DOCTYPE html>
+    <html>
+    <head>
+        <script type="application/ld+json">
+        {
+            "name": "Title Without Date"
+        }
+        </script>
+    </head>
+    <body><h1>Index</h1></body>
+    </html>"""
+    html_file.write_text(html_content, encoding="utf-8")
+
+    class DummyDeliverable:
+        full_id = "test_deliverable"
+        xml = None
+
+    await generate_llmstxt(
+        deliverable=DummyDeliverable(),
+        target_dest=target_dir,
+        build_llmstxt=True,
+        llmstxt_dir="docs",
+    )
+
+    md_file = target_dir / "docs" / "index.md"
+    assert md_file.exists()
+
+    content = md_file.read_text(encoding="utf-8")
+    frontmatter_raw = content.split("---")[1]
+    data = yaml.safe_load(frontmatter_raw)
+
+    assert data["title"] == "Title Without Date"
+    assert "build_date" not in data

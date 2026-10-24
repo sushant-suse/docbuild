@@ -14,6 +14,7 @@ from aiostream import pipe, stream
 from lxml import etree  # type: ignore
 import yaml
 
+from ...config.app import normalize_runtime_placeholders
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
 from ...utils.contextmgr import PersistentOnErrorTemporaryDirectory
@@ -183,7 +184,7 @@ async def build_format(
     dcfile = deliverable.xml.dcfile
     assert dcfile is not None, "Deliverable must have a DC file."
 
-    cmd_str = daps_tmpl.format(
+    cmd_str = normalize_runtime_placeholders(daps_tmpl).format(
         dcfile=dcfile,
         builddir=str(build_dir),
         format=fmt,
@@ -239,7 +240,8 @@ async def process_single_deliverable(
             if not fmt_success:
                 success = False
             else:
-                target_suffix = target_dir_dyn.format(
+                # Resolve placeholders for the target path using upstream's normalize_runtime_placeholders
+                target_suffix = normalize_runtime_placeholders(target_dir_dyn).format(
                     product=deliverable.xml.product_id,
                     docset=deliverable.xml.docset_path,
                     lang=deliverable.xml.lang,
