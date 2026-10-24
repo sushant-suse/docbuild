@@ -2,6 +2,7 @@
 
 import asyncio
 from collections import defaultdict
+from collections.abc import Awaitable, Callable
 import logging
 import os
 from pathlib import Path
@@ -222,7 +223,8 @@ async def process_single_deliverable(
 
     for fmt, is_enabled in deliverable.format.items():
         if is_enabled:
-            tmpl = daps_tmpls.get(fmt, "daps -d {{dcfile}} --builddir {{builddir}} {{format}}")
+            # Fixed string formatting template (removed double braces)
+            tmpl = daps_tmpls.get(fmt, "daps -d {dcfile} --builddir {builddir} {format}")
 
             deliverable_build_dir = Path(
                 tempfile.mkdtemp(
@@ -271,63 +273,107 @@ async def process_single_deliverable(
     return success, deliverable
 
 
-async def process_deliverable_group(
-    group_key: tuple[str, str],
+async def _safe_process_one(
+    d: Deliverable,
+    wt_dir: str,
+    semaphore: asyncio.Semaphore,
+    process_single_func: Callable[[Deliverable, str], Awaitable[tuple[bool, Deliverable]]],
+) -> tuple[bool, Deliverable]:
+    """Safely process a single deliverable using the provided function and semaphore."""
+    try:
+        async with semaphore:
+            return await process_single_func(d, wt_dir)
+    except (OSError, KeyError, ValueError) as exc:
+        log.error("Unexpected error for %s: %s", d.full_id, exc)
+        return False, d
+    except Exception as exc:
+        log.error("Fatal error for %s: %s", d.full_id, exc)
+        return False, d
+
+
+async def _process_group(
+    group_item: tuple[tuple[str, str], list[Deliverable]],
+    repo_dir: Path,
+    tmp_repo_dir: Path,
+    build_limit: int,
+    semaphore: asyncio.Semaphore,
+    process_single_func: Callable[[Deliverable, str], Awaitable[tuple[bool, Deliverable]]],
+) -> list[Deliverable]:
+    """Process a single repository group within an isolated worktree."""
+    group_key, group_deliverables = group_item
+    repo_url, branch = group_key
+    safe_prefix = f"wt_{group_deliverables[0].make_safe_name(group_deliverables[0].full_id)}_grp{len(group_deliverables)}_"
+
+    async with PersistentOnErrorTemporaryDirectory(dir=tmp_repo_dir, prefix=safe_prefix) as wt_dir:
+        mg = ManagedGitRepo(repo_url, repo_dir)
+        try:
+            await mg.create_worktree(wt_dir, branch)
+        except Exception as e:
+            log.error("Failed to create worktree for %s branch %s: %s", repo_url, branch, e)
+            return group_deliverables
+
+        # Replaced the lambda with a proper async wrapper for aiostream
+        async def process_mapped(d: Deliverable) -> tuple[bool, Deliverable]:
+            return await _safe_process_one(d, wt_dir, semaphore, process_single_func)
+
+        pipeline = stream.iterate(group_deliverables) | pipe.map(
+            process_mapped,
+            task_limit=build_limit,
+            ordered=True,
+        )
+
+        failed_in_group = []
+        try:
+            async with pipeline.stream() as streamer:
+                async for success, d in streamer:
+                    if not success:
+                        failed_in_group.append(d)
+        except Exception as e:
+            log.error("Group pipeline failed: %s", e)
+            failed_in_group.extend(group_deliverables)
+
+        return failed_in_group
+
+
+async def process_with_shared_worktrees(
     deliverables: list[Deliverable],
     repo_dir: Path,
     tmp_repo_dir: Path,
-    tmp_build_base_dir: Path,
-    target_base_dir: Path,
-    target_dir_dyn: str,
-    daps_tmpls: dict[str, str],
-    build_llmstxt: bool = True,
-    llmstxt_dir: str = "docs",
+    max_workers: int,
+    process_single_func: Callable[[Deliverable, str], Awaitable[tuple[bool, Deliverable]]],
 ) -> list[Deliverable]:
-    """Process a group of deliverables sharing the same repo and branch via a single worktree."""
-    repo_url, branch = group_key
-    safe_prefix = f"wt_{deliverables[0].make_safe_name(deliverables[0].full_id)}_grp{len(deliverables)}_"
+    """Group deliverables by repo/branch and create a shared Git worktree per group.
 
-    async with PersistentOnErrorTemporaryDirectory(
-        dir=tmp_repo_dir,
-        prefix=safe_prefix,
-    ) as worktree_dir:
-        mg = ManagedGitRepo(repo_url, repo_dir)
-        try:
-            await mg.create_worktree(worktree_dir, branch)
-        except Exception as e:
-            log.error("Failed to create worktree for %s branch %s: %s", repo_url, branch, e)
-            return deliverables  # All fail if worktree creation fails
+    Process them concurrently with a global semaphore to enforce max_workers.
+    This function is fully decoupled and can be easily reused by metadata or other tasks.
+    """
+    groups: dict[tuple[str, str], list[Deliverable]] = defaultdict(list)
+    for d in deliverables:
+        groups[(d.git.url, d.branch)].append(d)
 
-        tasks = [
-            asyncio.create_task(
-                process_single_deliverable(
-                    d,
-                    worktree_dir,
-                    tmp_build_base_dir,
-                    target_base_dir,
-                    target_dir_dyn,
-                    daps_tmpls,
-                    build_llmstxt,
-                    llmstxt_dir,
-                ),
-                name=f"build:{d.full_id}",
-            )
-            for d in deliverables
-        ]
+    group_limit = get_deliverable_worker_limit(max_workers, len(groups))
+    build_limit = get_deliverable_worker_limit(max_workers, len(deliverables))
+    build_semaphore = asyncio.Semaphore(build_limit)
 
-        results = await asyncio.gather(*tasks, return_exceptions=True)
+    async def mapped_process_group(item: tuple[tuple[str, str], list[Deliverable]]) -> list[Deliverable]:
+        return await _process_group(
+            item, repo_dir, tmp_repo_dir, build_limit, build_semaphore, process_single_func
+        )
 
-        failed = []
-        for d, res in zip(deliverables, results, strict=False):
-            if isinstance(res, Exception):
-                log.error("Unexpected error for %s: %s", d.full_id, res)
-                failed.append(d)
-            else:
-                success, _ = res
-                if not success:
-                    failed.append(d)
+    pipeline = stream.iterate(list(groups.items())) | pipe.map(
+        mapped_process_group, task_limit=group_limit, ordered=True
+    )
 
-        return failed
+    failed: list[Deliverable] = []
+    try:
+        async with pipeline.stream() as streamer:
+            async for group_failed in streamer:
+                failed.extend(group_failed)
+    except Exception as e:
+        log.error("Global pipeline failed: %s", e)
+        failed.extend(deliverables)
+
+    return failed
 
 
 async def process_doctype(
@@ -356,45 +402,21 @@ async def process_doctype(
     else:
         await update_repositories(deliverables, repo_dir)
 
-    # Group deliverables by (repo_url, branch) to minimize git worktrees
-    groups: dict[tuple[str, str], list[Deliverable]] = defaultdict(list)
-    for d in deliverables:
-        groups[(d.git.url, d.branch)].append(d)
+    async def build_single(d: Deliverable, worktree_dir: str) -> tuple[bool, Deliverable]:
+        return await process_single_deliverable(
+            d,
+            worktree_dir,
+            tmp_build_base_dir,
+            target_base_dir,
+            target_dir_dyn,
+            daps_tmpls,
+            build_llmstxt,
+            llmstxt_dir,
+        )
 
-    worker_limit = get_deliverable_worker_limit(max_workers, len(groups))
-
-    async def group_wrapper(group_item: tuple[tuple[str, str], list[Deliverable]]) -> list[Deliverable]:
-        group_key, group_deliverables = group_item
-        try:
-            return await process_deliverable_group(
-                group_key,
-                group_deliverables,
-                repo_dir,
-                tmp_repo_dir,
-                tmp_build_base_dir,
-                target_base_dir,
-                target_dir_dyn,
-                daps_tmpls,
-                build_llmstxt,
-                llmstxt_dir,
-            )
-        except Exception as e:
-            log.error("Group build task error for %s: %s", group_key, e)
-            return group_deliverables
-
-    pipeline: Any = stream.iterate(list(groups.items())) | pipe.map(
-        group_wrapper, task_limit=worker_limit, ordered=True  # type: ignore[arg-type]
+    return await process_with_shared_worktrees(
+        deliverables, repo_dir, tmp_repo_dir, max_workers, build_single
     )
-
-    failed: list[Deliverable] = []
-    try:
-        async with pipeline.stream() as streamer:
-            async for group_failed in streamer:
-                failed.extend(group_failed)
-    except Exception as e:
-        log.error("Pipeline failed unexpectedly: %s", e)
-
-    return failed
 
 
 async def process(
