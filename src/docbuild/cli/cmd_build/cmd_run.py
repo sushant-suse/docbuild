@@ -158,6 +158,7 @@ def run(
                 doctypes=doctypes,
                 daps_tmpls=daps_tmpls,
                 skip_repo_update=build_skip_repo,
+                rsync_options=env.rsync.to_options(),
                 build_llmstxt=env.build.build_llmstxt,
                 llmstxt_dir=env.paths.llmstxt_dir,
             ),

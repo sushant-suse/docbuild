@@ -18,6 +18,7 @@ from docbuild.tasks.build.runner import (
     process_deliverable_build,
     process_doctype,
 )
+from docbuild.utils.sync import RsyncOptions
 
 
 class SortableMock(Mock):
@@ -95,10 +96,13 @@ async def test_build_format_default_template_has_no_runtime_braces() -> None:
     )
 
 
+@pytest.mark.parametrize(
+    "rsync_options", [None, RsyncOptions(exclude=[]), RsyncOptions(exclude=["*.tmp"])]
+)
 @pytest.mark.asyncio
 @patch("docbuild.tasks.build.runner.ManagedGitRepo", autospec=True)
 async def test_process_deliverable_build_success(
-    mock_mgr_class: Mock, tmp_path: Path
+    mock_mgr_class: Mock, tmp_path: Path, rsync_options: RsyncOptions | None
 ) -> None:
     """Test successful build execution for enabled formats and rsync."""
     mock_deliverable = Mock(
@@ -135,7 +139,8 @@ async def test_process_deliverable_build_success(
             tmp_path,
             tmp_path / "target",
             "{{product}}/{{docset}}/{{lang}}",
-            daps_tmpls
+            daps_tmpls,
+            rsync_options=rsync_options,
         )
 
         assert success is True
@@ -154,7 +159,7 @@ async def test_process_deliverable_build_success(
         assert src_path.is_absolute()
         assert src_path.parts[-1].endswith("_html")
         assert dest == expected_target
-        assert mock_rsync.call_args.kwargs == {"content_only": True}
+        assert mock_rsync.call_args.kwargs == {"content_only": True, "options": rsync_options}
 
 
 @pytest.mark.asyncio
@@ -190,10 +195,12 @@ async def test_process_doctype_build(
             max_workers=2,
             daps_tmpls=daps_tmpls,
             skip_repo_update=False,
+            rsync_options=RsyncOptions(exclude=["*.tmp"]),
         )
 
         assert failed == []
         mock_build.assert_called_once()
+        assert mock_build.call_args.kwargs["rsync_options"].exclude == ["*.tmp"]
         mock_update.assert_called_once()
 
 
@@ -211,9 +218,11 @@ async def test_process_entry_point(tmp_path: Path) -> None:
         result = await process(
             tmp_path, tmp_path, tmp_path, tmp_path,
             tmp_path / "target", "{product}",
-            1, [doctype], daps_tmpls
+            1, [doctype], daps_tmpls,
+            rsync_options=RsyncOptions(exclude=[]),
         )
         assert result == 0
+        assert mock_pd.call_args.kwargs["rsync_options"].exclude == []
 
         mock_pd.return_value = [Mock(spec=Deliverable)]
         result = await process(
