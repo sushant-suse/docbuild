@@ -15,14 +15,13 @@ import yaml
 from ...config.app import normalize_runtime_placeholders
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
-from ...utils.contextmgr import PersistentOnErrorTemporaryDirectory
-from ...utils.git import ManagedGitRepo
 from ...utils.shell import run_command
 from ...utils.sync import RsyncOptions, rsync
 from ..metadata.prebuilt import read_json_ld
 from ..metadata.repos import update_repositories
-from ..metadata.runner import get_deliverable_from_doctype, get_deliverable_worker_limit
+from ..metadata.runner import get_deliverable_from_doctype
 from ..portal import parse_portal_config
+from ..worktrees import process_with_shared_worktrees
 from .llms import clean_and_convert, inject_llms_links
 
 log = logging.getLogger(__name__)
@@ -205,10 +204,9 @@ async def build_format(
         return False, str(e)
 
 
-async def process_deliverable_build(
+async def process_single_deliverable(
     deliverable: Deliverable,
-    repo_dir: Path,
-    tmp_repo_dir: Path,
+    worktree_dir: Path,
     tmp_build_base_dir: Path,
     target_base_dir: Path,
     target_dir_dyn: str,
@@ -217,81 +215,66 @@ async def process_deliverable_build(
     llmstxt_dir: str = "docs",
     rsync_options: RsyncOptions | None = None,
 ) -> tuple[bool, Deliverable]:
-    """Process a single deliverable: checkout worktree, build formats, and sync."""
+    """Build and sync formats for a single deliverable using an existing worktree."""
     safe_id = deliverable.make_safe_name(deliverable.full_id)
     success = True
+    cwd = worktree_dir / deliverable.subdir if deliverable.subdir else worktree_dir
 
-    # 1. Create temporary worktree (cleaned up automatically)
-    async with PersistentOnErrorTemporaryDirectory(
-        dir=tmp_repo_dir,
-        prefix=f"wt_{safe_id}_",
-    ) as worktree_dir:
-        mg = ManagedGitRepo(deliverable.git.url, repo_dir)
-        try:
-            await mg.create_worktree(worktree_dir, deliverable.branch)
-        except Exception as e:
-            log.error("Failed to create worktree for %s: %s", deliverable.full_id, e)
-            return False, deliverable
+    for fmt, is_enabled in deliverable.format.items():
+        if is_enabled:
+            # Fixed string formatting template (removed double braces)
+            tmpl = daps_tmpls.get(fmt, "daps -d {dcfile} --builddir {builddir} {format}")
 
-        cwd = Path(worktree_dir) / deliverable.subdir if deliverable.subdir else Path(worktree_dir)
+            deliverable_build_dir = Path(
+                tempfile.mkdtemp(
+                    dir=tmp_build_base_dir,
+                    prefix=f"build_{safe_id}_",
+                    suffix=f"_{fmt}",
+                )
+            )
 
-        # 2. Build all enabled formats (output persists in tmp_build_base_dir)
-        for fmt, is_enabled in deliverable.format.items():
-            if is_enabled:
-                tmpl = daps_tmpls.get(fmt, "daps -d {{dcfile}} --builddir {{builddir}} {{format}}")
+            fmt_success, _ = await build_format(deliverable, fmt, cwd, deliverable_build_dir, tmpl)
 
-                # Persist the output directory instead of auto-deleting it
-                deliverable_build_dir = Path(
-                    tempfile.mkdtemp(
-                        dir=tmp_build_base_dir,
-                        prefix=f"build_{safe_id}_",
-                        suffix=f"_{fmt}",
-                    )
+            if not fmt_success:
+                success = False
+            else:
+                # Resolve placeholders for the target path using upstream's normalize_runtime_placeholders
+                target_suffix = normalize_runtime_placeholders(target_dir_dyn).format(
+                    product=deliverable.xml.product_id,
+                    docset=deliverable.xml.docset_path,
+                    lang=deliverable.xml.lang,
                 )
 
-                fmt_success, _ = await build_format(deliverable, fmt, cwd, deliverable_build_dir, tmpl)
+                local_target = Path(target_base_dir) / target_suffix / fmt
+                local_target.mkdir(parents=True, exist_ok=True)
+                target_dest = local_target
 
-                if not fmt_success:
-                    success = False
-                else:
-                    # 3. Resolve placeholders for the target path
-                    target_suffix = normalize_runtime_placeholders(target_dir_dyn).format(
-                        product=deliverable.xml.product_id,
-                        docset=deliverable.xml.docset_path,
-                        lang=deliverable.xml.lang,
+                log.debug("Syncing %s result to %s", fmt, target_dest)
+
+                try:
+                    # Sync contents of the build directory to the target destination
+                    sync_result = await rsync(
+                        deliverable_build_dir,
+                        target_dest,
+                        content_only=True,
+                        options=rsync_options,
                     )
-
-                    # Final destination includes the format (e.g. /target/sles/15/en-us/html)
-                    local_target = Path(target_base_dir) / target_suffix / fmt
-                    local_target.mkdir(parents=True, exist_ok=True)
-                    target_dest = local_target
-
-                    log.debug("Syncing %s result to %s", fmt, target_dest)
-
-                    try:
-                        # Sync contents of the build directory to the target destination
-                        sync_result = await rsync(
-                            deliverable_build_dir,
+                    if fmt == "html":
+                        await generate_llmstxt(deliverable, target_dest, build_llmstxt, llmstxt_dir)
+                    if sync_result.returncode == 0:
+                        log.info("Successfully synced %s for %s", fmt, deliverable.full_id)
+                    else:
+                        log.error(
+                            "Failed to sync %s for %s to %s:\n%s",
+                            fmt,
+                            deliverable.full_id,
                             target_dest,
-                            content_only=True,
-                            options=rsync_options,
+                            sync_result.stderr,
                         )
-                        if fmt == "html":
-                            await generate_llmstxt(deliverable, target_dest, build_llmstxt, llmstxt_dir)
-                        if sync_result.returncode == 0:
-                            log.info("Successfully synced %s for %s", fmt, deliverable.full_id)
-                        else:
-                            log.error(
-                                "Failed to sync %s for %s to %s:\n%s",
-                                fmt,
-                                deliverable.full_id,
-                                target_dest,
-                                sync_result.stderr,
-                            )
-                            success = False
-                    except Exception as e:
-                        log.error("Exception occurred while syncing %s for %s: %s", fmt, deliverable.full_id, e)
                         success = False
+                except Exception as e:
+                    log.error("Exception occurred while syncing %s for %s: %s", fmt, deliverable.full_id, e)
+                    success = False
 
     return success, deliverable
 
@@ -305,6 +288,7 @@ async def process_doctype(
     target_base_dir: Path,
     target_dir_dyn: str,
     max_workers: int,
+    semaphore: asyncio.Semaphore,
     daps_tmpls: dict[str, str],
     *,
     skip_repo_update: bool = False,
@@ -312,7 +296,7 @@ async def process_doctype(
     llmstxt_dir: str = "docs",
     rsync_options: RsyncOptions | None = None,
 ) -> list[Deliverable]:
-    """Process a doctype and build its deliverables using aiostream."""
+    """Process a doctype and build its deliverables using grouped aiostream pipelines."""
     deliverables: list[Deliverable] = await asyncio.to_thread(get_deliverable_from_doctype, root, doctype)
 
     deliverables = [deli for deli in deliverables if deli.xml.is_dc]
@@ -323,43 +307,22 @@ async def process_doctype(
     else:
         await update_repositories(deliverables, repo_dir)
 
-    worker_limit = get_deliverable_worker_limit(max_workers, len(deliverables))
+    async def build_single(d: Deliverable, worktree_dir: Path) -> tuple[bool, Deliverable]:
+        return await process_single_deliverable(
+            d,
+            worktree_dir,
+            tmp_build_base_dir,
+            target_base_dir,
+            target_dir_dyn,
+            daps_tmpls,
+            build_llmstxt,
+            llmstxt_dir,
+            rsync_options=rsync_options,
+        )
 
-    async def build_wrapper(d: Deliverable, *args: object) -> tuple[bool, Deliverable]:
-        try:
-            return await asyncio.create_task(
-                process_deliverable_build(
-                    d,
-                    repo_dir,
-                    tmp_repo_dir,
-                    tmp_build_base_dir,
-                    target_base_dir,
-                    target_dir_dyn,
-                    daps_tmpls,
-                    build_llmstxt,
-                    llmstxt_dir,
-                    rsync_options=rsync_options,
-                ),
-                name=f"build:{d.full_id}",
-            )
-        except Exception as e:
-            log.error("Build task error for %s: %s", d.full_id, e)
-            return False, d
-
-    pipeline: Any = stream.iterate(deliverables) | pipe.map(
-        build_wrapper, task_limit=worker_limit, ordered=True  # type: ignore[arg-type]
+    return await process_with_shared_worktrees(
+        deliverables, repo_dir, tmp_repo_dir, max_workers, semaphore, build_single
     )
-
-    failed: list[Deliverable] = []
-    try:
-        async with pipeline.stream() as streamer:
-            async for success, deliverable in streamer:
-                if not success:
-                    failed.append(deliverable)
-    except Exception as e:
-        log.error("Pipeline failed unexpectedly: %s", e)
-
-    return failed
 
 
 async def process(
@@ -380,6 +343,7 @@ async def process(
 ) -> int:
     """Execute the build task pipeline."""
     root = await parse_portal_config(main_portal_config)
+    global_semaphore = asyncio.Semaphore(max_workers)
 
     tasks = [
         asyncio.create_task(
@@ -392,6 +356,7 @@ async def process(
                 target_base_dir,
                 target_dir_dyn,
                 max_workers,
+                global_semaphore,
                 daps_tmpls,
                 skip_repo_update=skip_repo_update,
                 build_llmstxt=build_llmstxt,

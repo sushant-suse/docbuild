@@ -1,5 +1,6 @@
 """Unit tests for docbuild.tasks.build.runner."""
 
+import asyncio
 from pathlib import Path
 from unittest.mock import AsyncMock, Mock, patch
 
@@ -15,9 +16,10 @@ from docbuild.tasks.build.runner import (
     build_format,
     generate_llmstxt,
     process,
-    process_deliverable_build,
     process_doctype,
+    process_single_deliverable,
 )
+from docbuild.tasks.worktrees import process_with_shared_worktrees
 from docbuild.utils.sync import RsyncOptions
 
 
@@ -41,7 +43,7 @@ async def test_build_format_no_dcfile(tmp_path: Path) -> None:
     mock_d.xml.dcfile = None
 
     with pytest.raises(AssertionError, match=r"Deliverable must have a DC file\."):
-        await build_format(mock_d, "html", tmp_path, tmp_path, "daps -d {{dcfile}} html")
+        await build_format(mock_d, "html", tmp_path, tmp_path, "daps -d {dcfile} html")
 
 
 @pytest.mark.asyncio
@@ -54,7 +56,7 @@ async def test_build_format_failure(tmp_path: Path) -> None:
         mock_run.return_value = Mock(returncode=1, stdout="", stderr="Build crashed")
 
         success, err = await build_format(
-            mock_d, "html", tmp_path, tmp_path, "daps -d {{dcfile}} --builddir {{builddir}} html"
+            mock_d, "html", tmp_path, tmp_path, "daps -d {dcfile} --builddir {builddir} html"
         )
         assert success is False
         assert err == "Build crashed"
@@ -100,11 +102,8 @@ async def test_build_format_default_template_has_no_runtime_braces() -> None:
     "rsync_options", [None, RsyncOptions(exclude=[]), RsyncOptions(exclude=["*.tmp"])]
 )
 @pytest.mark.asyncio
-@patch("docbuild.tasks.build.runner.ManagedGitRepo", autospec=True)
-async def test_process_deliverable_build_success(
-    mock_mgr_class: Mock, tmp_path: Path, rsync_options: RsyncOptions | None
-) -> None:
-    """Test successful build execution for enabled formats and rsync."""
+async def test_process_single_deliverable_success(tmp_path: Path, rsync_options: RsyncOptions | None) -> None:
+    """Test successful build execution and rsync for a single deliverable."""
     mock_deliverable = Mock(
         spec=Deliverable,
         full_id="sles/15:TEST",
@@ -116,14 +115,9 @@ async def test_process_deliverable_build_success(
     mock_deliverable.xml.product_id = "sles"
     mock_deliverable.xml.docset_path = "15"
     mock_deliverable.xml.lang = "en-us"
-    mock_deliverable.git.url = "https://git.test"
     mock_deliverable.make_safe_name.return_value = "safe_sles_15_TEST"
 
-    # Mock the worktree creation
-    mock_mgr_instance = mock_mgr_class.return_value
-    mock_mgr_instance.create_worktree = AsyncMock()
-
-    daps_tmpls = {"html": "daps -d {{dcfile}} --builddir {{builddir}} html"}
+    daps_tmpls = {"html": "daps -d {dcfile} --builddir {builddir} {format}"}
 
     with (
         patch.object(build_runner, "run_command", new_callable=AsyncMock) as mock_run,
@@ -132,9 +126,8 @@ async def test_process_deliverable_build_success(
         mock_run.return_value = Mock(returncode=0, stdout="Build OK", stderr="")
         mock_rsync.return_value = Mock(returncode=0, stdout="Sync OK", stderr="")
 
-        success, deliverable = await process_deliverable_build(
+        success, _ = await process_single_deliverable(
             mock_deliverable,
-            tmp_path,
             tmp_path,
             tmp_path,
             tmp_path / "target",
@@ -144,12 +137,9 @@ async def test_process_deliverable_build_success(
         )
 
         assert success is True
-        assert deliverable == mock_deliverable
-        mock_mgr_instance.create_worktree.assert_called_once()
         mock_run.assert_called_once()
         mock_rsync.assert_called_once()
 
-        # The local target directory is created before syncing
         expected_target = tmp_path / "target/sles/15/en-us/html"
         assert expected_target.is_dir()
 
@@ -163,6 +153,35 @@ async def test_process_deliverable_build_success(
 
 
 @pytest.mark.asyncio
+@patch("docbuild.tasks.worktrees.ManagedGitRepo", autospec=True)
+async def test_process_with_shared_worktrees_success(
+    mock_mgr_class: Mock, tmp_path: Path
+) -> None:
+    """Test the reusable grouping abstraction creates worktrees and executes the pipeline."""
+    mock_d = SortableMock(spec=Deliverable, full_id="sles/15:A", branch="main")
+    mock_d.git.url = "https://git.test"
+    mock_d.make_safe_name.return_value = "safe"
+
+    mock_mgr_instance = mock_mgr_class.return_value
+    mock_mgr_instance.create_worktree = AsyncMock()
+
+    async def dummy_process(d: Deliverable, wt: Path) -> tuple[bool, Deliverable]:
+        return True, d
+
+    failed = await process_with_shared_worktrees(
+        [mock_d],
+        tmp_path,
+        tmp_path,
+        max_workers=2,
+        semaphore=asyncio.Semaphore(2),
+        process_single_func=dummy_process,
+    )
+
+    assert failed == []
+    mock_mgr_instance.create_worktree.assert_called_once()
+
+
+@pytest.mark.asyncio
 async def test_process_doctype_build(
     empty_xml_root: etree._ElementTree, tmp_path: Path
 ) -> None:
@@ -172,18 +191,20 @@ async def test_process_doctype_build(
         spec=Deliverable,
         full_id="sles/15:A",
         subdir="",
+        branch="main",
         format={"html": True},
     )
+    d1.git.url = "https://git.test"
     d1.xml.is_dc = True
 
-    daps_tmpls = {"html": "daps html"}
+    daps_tmpls = {"html": "daps {format}"}
 
     with (
         patch.object(build_runner, "get_deliverable_from_doctype", return_value=[d1]),
-        patch.object(build_runner, "process_deliverable_build", new_callable=AsyncMock) as mock_build,
+        patch.object(build_runner, "process_with_shared_worktrees", new_callable=AsyncMock) as mock_group_build,
         patch.object(build_runner, "update_repositories", new_callable=AsyncMock) as mock_update,
     ):
-        mock_build.return_value = (True, d1)
+        mock_group_build.return_value = []
         failed = await process_doctype(
             root=empty_xml_root,
             doctype=doctype,
@@ -193,14 +214,14 @@ async def test_process_doctype_build(
             target_base_dir=tmp_path / "target",
             target_dir_dyn="{product}",
             max_workers=2,
+            semaphore=asyncio.Semaphore(2),
             daps_tmpls=daps_tmpls,
             skip_repo_update=False,
             rsync_options=RsyncOptions(exclude=["*.tmp"]),
         )
 
         assert failed == []
-        mock_build.assert_called_once()
-        assert mock_build.call_args.kwargs["rsync_options"].exclude == ["*.tmp"]
+        mock_group_build.assert_called_once()
         mock_update.assert_called_once()
 
 
@@ -233,6 +254,7 @@ async def test_process_entry_point(tmp_path: Path) -> None:
         assert result == 1
 
 
+@pytest.mark.asyncio
 async def test_generate_llmstxt_yaml_frontmatter_extraction(tmp_path: Path) -> None:
     """Test YAML frontmatter extraction, relative path URL building, and date handling."""
     target_dir = tmp_path / "target"
@@ -284,6 +306,7 @@ async def test_generate_llmstxt_yaml_frontmatter_extraction(tmp_path: Path) -> N
     assert data["build_date"] == "2026-02-15"
 
 
+@pytest.mark.asyncio
 async def test_generate_llmstxt_frontmatter_omits_missing_date(tmp_path: Path) -> None:
     """Test that build_date is omitted from frontmatter if dateModified is absent."""
     target_dir = tmp_path / "target"
