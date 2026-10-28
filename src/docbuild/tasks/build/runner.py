@@ -22,6 +22,7 @@ from ..metadata.repos import update_repositories
 from ..metadata.runner import get_deliverable_from_doctype
 from ..portal import parse_portal_config
 from ..publish import render_target_suffix
+from ..translations import resolve_actual_translations
 from ..worktrees import process_with_shared_worktrees
 from .llms import clean_and_convert, inject_llms_links
 
@@ -114,7 +115,7 @@ async def generate_llmstxt(
         static_title = getattr(d_xml, "title", deliverable.full_id) if d_xml else deliverable.full_id
         index_lines = [f"# {static_title}", ""]
 
-        categories = getattr(d_xml, "categories", []) if d_xml else []
+        categories = list(d_xml.categories() or []) if d_xml and hasattr(d_xml, "categories") else []
         product = getattr(d_xml, "product_name", getattr(d_xml, "product_id", "")) if d_xml else ""
         version = getattr(d_xml, "docset_version", getattr(d_xml, "docset_path", "")) if d_xml else ""
         language = str(getattr(d_xml, "lang", "")) if d_xml else ""
@@ -188,6 +189,14 @@ async def build_format(
         format=fmt,
     )
     args = shlex.split(cmd_str)
+
+    # Inject canonicals and hreflangs for HTML outputs via DAPS
+    if args and args[0] == "daps" and fmt in ("html", "single-html"):
+        translations = getattr(deliverable, "resolved_translations", deliverable.xml.translations)
+        if translations:
+            hreflangs = " ".join(sorted(translations))
+            args.extend(["--stringparam", f"canonicals.hreflangs={hreflangs}"])
+            log.debug("Injecting canonicals.hreflangs=%s", hreflangs)
 
     log.info("Building %s for %s...", fmt, deliverable.full_id)
 
@@ -275,7 +284,9 @@ async def process_single_deliverable(
     return success, deliverable
 
 
+
 async def process_doctype(
+
     root: etree._ElementTree,
     doctype: Doctype,
     repo_dir: Path,
@@ -302,6 +313,16 @@ async def process_doctype(
         log.info("Skipping repository updates for %s as requested.", repo_dir)
     else:
         await update_repositories(deliverables, repo_dir)
+
+    # Pre-resolve valid translations across all languages for these deliverables
+    if deliverables:
+        translations_map = await resolve_actual_translations(root, doctype, repo_dir)
+        for d in deliverables:
+            key = getattr(d.xml, "target_id", None) or getattr(d.xml, "dcfile", None)
+            if key and key in translations_map:
+                d.resolved_translations = translations_map[key]
+            else:
+                d.resolved_translations = {str(getattr(d.xml, "lang", "en-us"))}
 
     async def build_single(d: Deliverable, worktree_dir: Path) -> tuple[bool, Deliverable]:
         return await process_single_deliverable(
