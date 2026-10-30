@@ -7,7 +7,6 @@ import contextvars
 import logging
 
 from rich.console import Group
-from rich.layout import Layout
 from rich.live import Live
 from rich.panel import Panel
 from rich.progress import (
@@ -51,6 +50,8 @@ class LiveLogHandler(logging.Handler):
                 color = "yellow"
             elif record.levelno == logging.DEBUG:
                 color = "dim"
+            elif any(word in msg.lower() for word in ["success", "done", "finished"]):
+                color = "green"
 
             text = Text(msg, style=color)
             self.log_buffer.append(text)
@@ -78,16 +79,11 @@ class LiveProgressManager:
         )
 
         # 2. Setup Layout
-        self.layout = Layout()
-        self.layout.split_column(
-            Layout(name="upper"),
-            Layout(name="lower", size=self.log_lines + 2)
+        self.log_panel = Panel("", title="[b]Live Logs[/b]", border_style="dim", height=self.log_lines + 2)
+        self.layout = Group(
+            Panel(self.progress, title=f"[b]{self.title}[/b]", border_style="blue"),
+            self.log_panel
         )
-        self.layout["upper"].update(
-            Panel(self.progress, title=f"[b]{self.title}[/b]", border_style="blue")
-        )
-        self.log_panel = Panel("", title="[b]Live Logs[/b]", border_style="dim")
-        self.layout["lower"].update(self.log_panel)
 
         self.live = Live(self.layout, refresh_per_second=10)
         self.log_handler = LiveLogHandler(self, max_lines=self.log_lines)

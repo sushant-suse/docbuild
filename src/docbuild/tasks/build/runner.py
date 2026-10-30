@@ -364,13 +364,18 @@ async def process(
     global_semaphore = asyncio.Semaphore(max_workers)
 
     manager = get_live_manager()
+    overall_task = manager.progress.add_task(f"[bold white]Overall Progress ({len(doctypes)} items)", total=len(doctypes)) if manager else None
+
     tasks = []
     for dt in doctypes:
-        task_id = manager.progress.add_task(f"[cyan]{dt}", total=100) if manager else None
 
-        async def _wrapped_process(dt: "Doctype" = dt, task_id: int | None = task_id) -> list:
+        async def _wrapped_process(dt: "Doctype" = dt) -> list:
+            # Register individual task right before execution so UI stays clean
+            dt_ui = str(dt).replace("@unknown", "")
+            task_id = manager.progress.add_task(f"[cyan]{dt_ui}", total=100) if manager else None
+
             if manager and task_id is not None:
-                manager.progress.update(task_id, advance=10) # Show started
+                manager.progress.update(task_id, advance=10)
 
             res = await process_doctype(
                 root, dt, repo_dir, tmp_repo_dir, tmp_build_base_dir, target_base_dir, target_dir_dyn,
@@ -378,9 +383,16 @@ async def process(
                 build_llmstxt=build_llmstxt, llmstxt_dir=llmstxt_dir, rsync_options=rsync_options,
             )
 
-            if manager and task_id is not None:
-                status = f"[green]{dt} ✅" if not res else f"[red]{dt} ❌"
-                manager.progress.update(task_id, completed=100, description=status)
+            if manager:
+                if task_id is not None:
+                    if not res: # Success
+                        # Hide successful items to save space
+                        manager.progress.update(task_id, visible=False)
+                    else: # Failed
+                        status = f"[red]{dt_ui} ❌"
+                        manager.progress.update(task_id, completed=100, description=status)
+                if overall_task is not None:
+                    manager.progress.advance(overall_task)
             return res
 
         tasks.append(asyncio.create_task(_wrapped_process(), name=f"build:{dt}"))
