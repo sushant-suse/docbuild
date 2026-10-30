@@ -80,6 +80,7 @@ class LiveProgressManager:
 
         # 2. Setup Layout
         self.log_panel = Panel("", title="[b]Live Logs[/b]", border_style="dim", height=self.log_lines + 2)
+        self.init_task = self.progress.add_task("[dim]Initializing build environment...", total=None)
         self.layout = Group(
             Panel(self.progress, title=f"[b]{self.title}[/b]", border_style="blue"),
             self.log_panel

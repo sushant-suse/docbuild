@@ -364,6 +364,9 @@ async def process(
     global_semaphore = asyncio.Semaphore(max_workers)
 
     manager = get_live_manager()
+    if manager and hasattr(manager, "init_task"):
+        manager.progress.update(manager.init_task, visible=False)
+
     overall_task = manager.progress.add_task(f"[bold white]Overall Progress ({len(doctypes)} items)", total=len(doctypes)) if manager else None
 
     tasks = []
