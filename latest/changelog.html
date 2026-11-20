@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.1.dev776+gfb4c035b4.d20261119</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.1.dev780+g287abd799.d20261120</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="_static/documentation_options.js?v=1c7cf565"></script>
+    <script src="_static/documentation_options.js?v=8a2f5de9"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -155,6 +155,13 @@
 <nav>
   <ul class="bd-navbar-elements navbar-nav">
     
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="quickstart/index.html">
+    Quick Start
+  </a>
+</li>
+
+
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="user/index.html">
     <svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-person" viewBox="0 0 16 16" aria-hidden="true"><path d="M10.561 8.073a6.005 6.005 0 0 1 3.432 5.142.75.75 0 1 1-1.498.07 4.5 4.5 0 0 0-8.99 0 .75.75 0 0 1-1.498-.07 6.004 6.004 0 0 1 3.431-5.142 3.999 3.999 0 1 1 5.123 0ZM10.5 5a2.5 2.5 0 1 0-5 0 2.5 2.5 0 0 0 5 0Z"></path></svg> User Guide
@@ -289,6 +296,13 @@
 <nav>
   <ul class="bd-navbar-elements navbar-nav">
     
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="quickstart/index.html">
+    Quick Start
+  </a>
+</li>
+
+
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="user/index.html">
     <svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-person" viewBox="0 0 16 16" aria-hidden="true"><path d="M10.561 8.073a6.005 6.005 0 0 1 3.432 5.142.75.75 0 1 1-1.498.07 4.5 4.5 0 0 0-8.99 0 .75.75 0 0 1-1.498-.07 6.004 6.004 0 0 1 3.431-5.142 3.999 3.999 0 1 1 5.123 0ZM10.5 5a2.5 2.5 0 1 0-5 0 2.5 2.5 0 0 0 5 0Z"></path></svg> User Guide
@@ -459,6 +473,8 @@ Fixed Markdown frontmatter generation by serializing assigned category IDs inste
 Build failures now report stdout, stderr, and exit codes, and JSON-LD diagnostics identify the affected HTML file. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/776">GH #776</a>)</p></li>
 <li><p>Fixed unwanted navigation content in Markdown converted from DAPS HTML without generator metadata (command <strong class="command">docbuild build llms</strong>).
 Skip links, site logos, breadcrumbs, and duplicate navigation titles are now removed while document headings and images are preserved. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/777">GH #777</a>)</p></li>
+<li><p>Fixed duplicate <code class="docutils literal notranslate"><span class="pre">&lt;link</span> <span class="pre">rel=&quot;alternate&quot;&gt;</span></code> tags injected into HTML headers during retroactive LLM generation. Replaced relative paths with absolute web URLs to properly route automated AI crawlers. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/786">GH #786</a>)</p></li>
+<li><p>Fixed an issue where retroactive LLM generation placed Markdown files directly into the root <code class="docutils literal notranslate"><span class="pre">/docs/</span></code> directory instead of preserving the <code class="docutils literal notranslate"><span class="pre">language/product/docset/html</span></code> output hierarchy. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/787">GH #787</a>)</p></li>
 </ul>
 </section>
 <section id="improved-documentation">
@@ -466,6 +482,7 @@ Skip links, site logos, breadcrumbs, and duplicate navigation titles are now rem
 <ul class="simple">
 <li><p>Explain the default output directory and show how to choose the standard location. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/774">GH #774</a>)</p></li>
 <li><p>Added a Quick Start card to the documentation landing-page grid and improved navigation by spacing icons from their labels and separating top-level links with vertical dividers. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/783">GH #783</a>)</p></li>
+<li><p>Add a new Quick Start Guide. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/789">GH #789</a>)</p></li>
 </ul>
 </section>
 <section id="features">
@@ -473,6 +490,9 @@ Skip links, site logos, breadcrumbs, and duplicate navigation titles are now rem
 <ul class="simple">
 <li><p>Improved Markdown output generated for LLMs by converting HTML tables and images into native Markdown, formatting DocBook and Antora admonitions as blockquotes, fixing heading number spacing, and removing leftover HTML artifacts and empty list markers. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/675">GH #675</a>)</p></li>
 <li><p>Added the global <code class="docutils literal notranslate"><span class="pre">-A</span></code> / <code class="docutils literal notranslate"><span class="pre">--set-app</span></code> command-line option to override application configuration values. The option supports the same <code class="docutils literal notranslate"><span class="pre">KEY=VALUE</span></code> syntax and dotted-key handling as <code class="docutils literal notranslate"><span class="pre">--set-env</span></code>. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/681">GH #681</a>)</p></li>
+<li><p>Added live status showing the current HTML directory while generating a sitemap
+with <strong class="command">docbuild build sitemap</strong> or <strong class="command">docbuild build run</strong>.
+Animation is disabled for non-interactive terminals and verbose logging. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/713">GH #713</a>)</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">llms</span></code> command is now available as <strong class="command">docbuild build llms</strong>, grouped
 alongside the other build-related commands. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/761">GH #761</a>)</p></li>
 <li><p>Improved the <code class="docutils literal notranslate"><span class="pre">tools/migrate-config.sh</span></code> migration script, which now also accepts a Docserv config directory, enables XInclude output by default, and provides the schema in the output directory, and updated its documentation accordingly. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/763">GH #763</a>)</p></li>
